@@ -11,17 +11,16 @@ He explained on the official site (see <http://jgp.sourceforge.net>):
 > JGNUplot is a JAVA written interface which uses gnuplot as plotting engine."
 
 ## Prerequisites ##
-- You need to have gnuplot installed (see <http://www.gnuplot.info>)
-*(It is recommended to install version 4.1 to get all features)*
-- You need the Java Runtime Environment
+- You need to have `gnuplot` installed (see <http://www.gnuplot.info>)
+- You need a Java Runtime Environment (5+)
 
-## Installation ##
+## Installing from a release archive ##
 1. Unzip the "tar.gz" or "zip" archive into a directory of your choice
-2. Make the file jgp executeable `chmod +x jgp`
-3. Execute `./jgp`. You may also start JGP with `java -cp ./classes jgp.gui.JGP`
+2. Make the file `jgp` executable: `chmod +x jgp`
+3. Execute `./jgp`. You may also start JGP with `java -cp <JARFILE.jar> jgp.gui.JGP`
 *(Do not background the process, JGP was found to crash if backgrounded)*
 
 ## Compiling ##
-The source is provided along with the JAVA binaries. To compile JGP:
-1. Make the file makeJGNUplot executeable `chmod +x makeJGNUplot`
-2. Execute `./makeJGNUplot` or run `javac  -d classes  ./src/jgp/*.java ./src/jgp/gui/*.java`
+JGNUplot can be built using *Maven*. Enter the root directory and run:
+
+	mvn clean install package
