@@ -1,0 +1,5 @@
+# JGNUplot build script.
+# Maximilian H. Fabricius Sept. 2004
+
+
+javac  -d classes  ./src/jgp/*.java ./src/jgp/gui/*.java

@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="336.78729"
+   height="162.0309"
+   id="svg3710"
+   sodipodi:version="0.32"
+   inkscape:version="0.44"
+   version="1.0"
+   sodipodi:docbase="/home/mxhf/workspace/GNUPlot"
+   sodipodi:docname="splash.svg"
+   inkscape:export-filename="/home/mxhf/workspace/GNUPlot/classes/gnuplot/gui/splash.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs3712">
+    <use
+       style="fill:currentColor; stroke:none"
+       id="gpPt12"
+       xlink:href="#gpPt11" />
+    <use
+       transform="rotate(45)"
+       id="gpPt11"
+       xlink:href="#gpPt3" />
+    <use
+       style="fill:currentColor; stroke:none"
+       id="gpPt10"
+       xlink:href="#gpPt9" />
+    <use
+       transform="rotate(180)"
+       id="gpPt9"
+       xlink:href="#gpPt7" />
+    <use
+       style="fill:currentColor; stroke:none"
+       id="gpPt8"
+       xlink:href="#gpPt7" />
+    <path
+       d="M0,-1.33 L-1.33,0.67 L1.33,0.67 z"
+       style="stroke-width:0.222"
+       id="gpPt7" />
+    <use
+       style="fill:currentColor; stroke:none"
+       id="gpPt6"
+       xlink:href="#gpPt5" />
+    <circle
+       r="1"
+       cy="0"
+       cx="0"
+       style="stroke-width:0.222"
+       id="gpPt5" />
+    <use
+       style="fill:currentColor; stroke:none"
+       id="gpPt4"
+       xlink:href="#gpPt3" />
+    <rect
+       height="2"
+       width="2"
+       y="-1"
+       x="-1"
+       style="stroke-width:0.222"
+       id="gpPt3" />
+    <path
+       d="M-1,0 L1,0 M0,-1 L0,1 M-1,-1 L1,1 M-1,1 L1,-1"
+       style="stroke-width:0.222"
+       id="gpPt2" />
+    <path
+       d="M-1,-1 L1,1 M1,-1 L-1,1"
+       style="stroke-width:0.222"
+       id="gpPt1" />
+    <path
+       d="M-1,0 h2 M0,-1 v2"
+       style="stroke-width:0.222"
+       id="gpPt0" />
+    <circle
+       r="1"
+       id="gpDot" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="242.28906"
+     inkscape:cy="120.96626"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1260"
+     inkscape:window-height="871"
+     inkscape:window-x="172"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata3715">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-0.806904,0.591192)">
+    <rect
+       y="-0.59119207"
+       x="0.80690402"
+       height="162.0309"
+       width="336.78729"
+       id="rect4611"
+       style="opacity:1;fill:white;fill-opacity:1;stroke:none;stroke-width:2.89350319;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       style="opacity:1;fill:white;fill-opacity:1;stroke:#0000d0;stroke-width:2.72632885;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3724"
+       width="322.81232"
+       height="150.07625"
+       x="6.7842321"
+       y="5.3861361" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.12090492px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="11.30771"
+       y="17.659903"
+       id="text9843"
+       transform="scale(1.036045,0.965209)"><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="17.659903"
+         id="tspan9861">damp(t) = exp(-s*wn*t)/sqrt(1.0-s*s)</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="26.561034"
+         id="tspan9863">per(t) = sin(wn*sqrt(1.0-s**2)*t - atan(-sqrt(1.0-s**2)/s))</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="35.462165"
+         id="tspan9865">c(t) = 1-damp(t)*per(t)</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="44.363296"
+         id="tspan9867">#</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="53.264427"
+         id="tspan9869"># wn is natural undamped frequency</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="62.165558"
+         id="tspan9871"># s is damping factor</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="71.066689"
+         id="tspan9873">#</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="79.967821"
+         id="tspan9875">wn = 1.0</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="88.868952"
+         id="tspan9877">set xrange [0:13]</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="97.770083"
+         id="tspan9879">set samples 50</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="106.67121"
+         id="tspan9881">set dummy t</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="115.57235"
+         id="tspan9883">set key box</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="124.47348"
+         id="tspan9885">#</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="133.37461"
+         id="tspan9887"># plot c(t) for several different damping factors s</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="142.27574"
+         id="tspan9889">#</tspan><tspan
+         sodipodi:role="line"
+         x="11.30771"
+         y="151.17687"
+         id="tspan9891">plot s=.1,c(t),s=.3,c(t),s=.5,c(t),s=.7,c(t),s=.9,c(t),s=1.0,c(t),s=1.5,c(t),s=2.0,c(t)</tspan></text>
+    <rect
+       style="opacity:1;fill:white;fill-opacity:1;stroke:none;stroke-width:3.29999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect11146"
+       width="157.85713"
+       height="113.57143"
+       x="170.09262"
+       y="7.8682885" />
+    <text
+       xml:space="preserve"
+       style="font-size:35.51631546px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Nimbus Sans L"
+       x="63.23465"
+       y="85.639412"
+       id="text3706"
+       transform="scale(0.923784,1.082504)"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3708"
+         x="63.23465"
+         y="85.639412">JGNUplot V0.1</tspan></text>
+    <g
+       id="g11040"
+       transform="matrix(0.281385,0,0,0.237741,162.6831,8.193529)">
+      <g
+         id="g10815"
+         style="color:white;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10817"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10819"
+           d="M 58.8,444 L 67.8,444 M 574.4,444 L 565.4,444" />
+        <g
+           id="g10821"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,448.5)">
+          <text
+             id="text10823">0</text>
+        </g>
+        <path
+           id="path10825"
+           d="M 58.8,396.5 L 67.8,396.5 M 574.4,396.5 L 565.4,396.5" />
+        <g
+           id="g10827"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,401)">
+          <text
+             id="text10829">0.2</text>
+        </g>
+        <path
+           id="path10831"
+           d="M 58.8,349 L 67.8,349 M 574.4,349 L 565.4,349" />
+        <g
+           id="g10833"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,353.5)">
+          <text
+             id="text10835">0.4</text>
+        </g>
+        <path
+           id="path10837"
+           d="M 58.8,301.5 L 67.8,301.5 M 574.4,301.5 L 565.4,301.5" />
+        <g
+           id="g10839"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,306)">
+          <text
+             id="text10841">0.6</text>
+        </g>
+        <path
+           id="path10843"
+           d="M 58.8,254 L 67.8,254 M 574.4,254 L 565.4,254" />
+        <g
+           id="g10845"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,258.5)">
+          <text
+             id="text10847">0.8</text>
+        </g>
+        <path
+           id="path10849"
+           d="M 58.8,206.6 L 67.8,206.6 M 574.4,206.6 L 565.4,206.6" />
+        <g
+           id="g10851"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,211.1)">
+          <text
+             id="text10853">1</text>
+        </g>
+        <path
+           id="path10855"
+           d="M 58.8,159.1 L 67.8,159.1 M 574.4,159.1 L 565.4,159.1" />
+        <g
+           id="g10857"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,163.6)">
+          <text
+             id="text10859">1.2</text>
+        </g>
+        <path
+           id="path10861"
+           d="M 58.8,111.6 L 67.8,111.6 M 574.4,111.6 L 565.4,111.6" />
+        <g
+           id="g10863"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,116.1)">
+          <text
+             id="text10865">1.4</text>
+        </g>
+        <path
+           id="path10867"
+           d="M 58.8,64.1 L 67.8,64.1 M 574.4,64.1 L 565.4,64.1" />
+        <g
+           id="g10869"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,68.6)">
+          <text
+             id="text10871">1.6</text>
+        </g>
+        <path
+           id="path10873"
+           d="M 58.8,16.6 L 67.8,16.6 M 574.4,16.6 L 565.4,16.6" />
+        <g
+           id="g10875"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(50.5,21.1)">
+          <text
+             id="text10877">1.8</text>
+        </g>
+        <path
+           id="path10879"
+           d="M 58.8,444 L 58.8,435 M 58.8,16.6 L 58.8,25.6" />
+        <g
+           id="g10881"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(58.8,466.5)">
+          <text
+             id="text10883">0</text>
+        </g>
+        <path
+           id="path10885"
+           d="M 138.1,444 L 138.1,435 M 138.1,16.6 L 138.1,25.6" />
+        <g
+           id="g10887"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(138.1,466.5)">
+          <text
+             id="text10889">2</text>
+        </g>
+        <path
+           id="path10891"
+           d="M 217.4,444 L 217.4,435 M 217.4,16.6 L 217.4,25.6" />
+        <g
+           id="g10893"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(217.4,466.5)">
+          <text
+             id="text10895">4</text>
+        </g>
+        <path
+           id="path10897"
+           d="M 296.8,444 L 296.8,435 M 296.8,16.6 L 296.8,25.6" />
+        <g
+           id="g10899"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(296.8,466.5)">
+          <text
+             id="text10901">6</text>
+        </g>
+        <path
+           id="path10903"
+           d="M 376.1,444 L 376.1,435 M 376.1,16.6 L 376.1,25.6" />
+        <g
+           id="g10905"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(376.1,466.5)">
+          <text
+             id="text10907">8</text>
+        </g>
+        <path
+           id="path10909"
+           d="M 455.4,444 L 455.4,435 M 455.4,16.6 L 455.4,25.6" />
+        <g
+           id="g10911"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(455.4,466.5)">
+          <text
+             id="text10913">10</text>
+        </g>
+        <path
+           id="path10915"
+           d="M 534.7,444 L 534.7,435 M 534.7,16.6 L 534.7,25.6" />
+        <g
+           id="g10917"
+           style="font-size:12px;text-anchor:middle;fill:black;stroke:none;font-family:Arial"
+           transform="translate(534.7,466.5)">
+          <text
+             id="text10919">12</text>
+        </g>
+        <path
+           id="path10921"
+           d="M 58.8,444 L 574.4,444 L 574.4,16.6 L 58.8,16.6 L 58.8,444 M 474.1,169.6 L 474.1,25.6 L 566.1,25.6 L 566.1,169.6 L 474.1,169.6 M 474.1,25.6 L 566.1,25.6" />
+      </g>
+      <g
+         id="g10923"
+         style="color:red;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10925"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10927"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,39.1)">
+          <text
+             id="text10929">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g10931"
+         style="color:red;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10933"
+           d="M 515.6,34.6 L 557.8,34.6 M 58.8,444 L 69.3,435.8 L 79.8,412.5 L 90.4,376.3 L 100.9,330.4 L 111.4,278.4 L 121.9,224.3 L 132.5,171.7 L 143,124.2 L 153.5,84.8 L 164,55.7 L 174.5,38.4 L 185.1,33.5 L 195.6,40.6 L 206.1,58.6 L 216.6,85.8 L 227.2,119.8 L 237.7,158 L 248.2,197.5 L 258.7,235.6 L 269.2,269.8 L 279.8,297.8 L 290.3,318.2 L 300.8,329.9 L 311.3,332.7 L 321.9,326.6 L 332.4,312.7 L 342.9,292.3 L 353.4,267.1 L 364,239.1 L 374.5,210.3 L 385,182.7 L 395.5,158.2 L 406,138.3 L 416.6,124 L 427.1,116.1 L 437.6,114.8 L 448.1,119.7 L 458.7,130.4 L 469.2,145.7 L 479.7,164.3 L 490.2,184.9 L 500.7,205.9 L 511.3,225.8 L 521.8,243.4 L 532.3,257.6 L 542.8,267.5 L 553.4,272.8 L 563.9,273.3 L 574.4,269.3" />
+      </g>
+      <g
+         id="g10935"
+         style="color:green;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10937"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10939"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,57.1)">
+          <text
+             id="text10941">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g10943"
+         style="color:green;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10945"
+           d="M 515.6,52.6 L 557.8,52.6 M 58.8,444 L 69.3,436.1 L 79.8,414.5 L 90.4,382.7 L 100.9,344.1 L 111.4,302.3 L 121.9,260.5 L 132.5,221.3 L 143,187 L 153.5,158.9 L 164,138.1 L 174.5,124.8 L 185.1,118.7 L 195.6,119.2 L 206.1,125.3 L 216.6,135.7 L 227.2,149.2 L 237.7,164.4 L 248.2,180.1 L 258.7,195.2 L 269.2,208.8 L 279.8,220.3 L 290.3,229.2 L 300.8,235.3 L 311.3,238.6 L 321.9,239.4 L 332.4,238 L 342.9,234.7 L 353.4,230.1 L 364,224.6 L 374.5,218.8 L 385,213.1 L 395.5,207.7 L 406,203.1 L 416.6,199.4 L 427.1,196.7 L 437.6,195 L 448.1,194.3 L 458.7,194.5 L 469.2,195.5 L 479.7,197 L 490.2,199 L 500.7,201.1 L 511.3,203.3 L 521.8,205.3 L 532.3,207.2 L 542.8,208.7 L 553.4,209.9 L 563.9,210.6 L 574.4,211" />
+      </g>
+      <g
+         id="g10947"
+         style="color:blue;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10949"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10951"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,75.1)">
+          <text
+             id="text10953">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g10955"
+         style="color:blue;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10957"
+           d="M 515.6,70.6 L 557.8,70.6 M 58.8,444 L 69.3,436.4 L 79.8,416.4 L 90.4,388.2 L 100.9,355.4 L 111.4,321.1 L 121.9,287.7 L 132.5,257.2 L 143,230.6 L 153.5,208.8 L 164,191.9 L 174.5,179.8 L 185.1,172.2 L 195.6,168.5 L 206.1,168 L 216.6,170 L 227.2,173.7 L 237.7,178.6 L 248.2,184.1 L 258.7,189.7 L 269.2,195 L 279.8,199.8 L 290.3,203.9 L 300.8,207.2 L 311.3,209.7 L 321.9,211.4 L 332.4,212.4 L 342.9,212.8 L 353.4,212.8 L 364,212.3 L 374.5,211.7 L 385,210.8 L 395.5,209.9 L 406,209 L 416.6,208.2 L 427.1,207.4 L 437.6,206.8 L 448.1,206.3 L 458.7,205.9 L 469.2,205.7 L 479.7,205.6 L 490.2,205.5 L 500.7,205.6 L 511.3,205.6 L 521.8,205.8 L 532.3,205.9 L 542.8,206.1 L 553.4,206.2 L 563.9,206.3 L 574.4,206.4" />
+      </g>
+      <g
+         id="g10959"
+         style="color:aqua;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10961"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10963"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,93.1)">
+          <text
+             id="text10965">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g10967"
+         style="color:aqua;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10969"
+           d="M 515.6,88.6 L 557.8,88.6 M 58.8,444 L 69.3,436.6 L 79.8,418.1 L 90.4,393 L 100.9,364.7 L 111.4,336 L 121.9,308.6 L 132.5,283.8 L 143,262.1 L 153.5,243.9 L 164,229.2 L 174.5,217.7 L 185.1,209.2 L 195.6,203.1 L 206.1,199.1 L 216.6,196.8 L 227.2,195.8 L 237.7,195.7 L 248.2,196.3 L 258.7,197.3 L 269.2,198.5 L 279.8,199.8 L 290.3,201.1 L 300.8,202.4 L 311.3,203.4 L 321.9,204.4 L 332.4,205.1 L 342.9,205.8 L 353.4,206.2 L 364,206.6 L 374.5,206.8 L 385,207 L 395.5,207 L 406,207.1 L 416.6,207 L 427.1,207 L 437.6,207 L 448.1,206.9 L 458.7,206.8 L 469.2,206.8 L 479.7,206.7 L 490.2,206.7 L 500.7,206.6 L 511.3,206.6 L 521.8,206.6 L 532.3,206.6 L 542.8,206.5 L 553.4,206.5 L 563.9,206.5 L 574.4,206.5" />
+      </g>
+      <g
+         id="g10971"
+         style="color:#157545;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10973"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10975"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,111.1)">
+          <text
+             id="text10977">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g10979"
+         style="color:#157545;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10981"
+           d="M 515.6,106.6 L 557.8,106.6 M 58.8,444 L 69.3,436.9 L 79.8,419.6 L 90.4,397.1 L 100.9,372.5 L 111.4,348 L 121.9,325 L 132.5,304.1 L 143,285.7 L 153.5,269.9 L 164,256.5 L 174.5,245.5 L 185.1,236.5 L 195.6,229.2 L 206.1,223.5 L 216.6,218.9 L 227.2,215.4 L 237.7,212.8 L 248.2,210.8 L 258.7,209.3 L 269.2,208.2 L 279.8,207.5 L 290.3,207 L 300.8,206.6 L 311.3,206.4 L 321.9,206.3 L 332.4,206.2 L 342.9,206.2 L 353.4,206.2 L 364,206.2 L 374.5,206.3 L 385,206.3 L 395.5,206.3 L 406,206.4 L 416.6,206.4 L 427.1,206.4 L 437.6,206.5 L 448.1,206.5 L 458.7,206.5 L 469.2,206.5 L 479.7,206.5 L 490.2,206.5 L 500.7,206.5 L 511.3,206.5 L 521.8,206.5 L 532.3,206.5 L 542.8,206.6 L 553.4,206.6 L 563.9,206.6 L 574.4,206.6" />
+      </g>
+      <g
+         id="g10983"
+         style="color:#000094;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10985"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10987"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,129.1)">
+          <text
+             id="text10989">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g10991"
+         style="color:#000094;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path10993"
+           d="M 515.6,124.6 L 557.8,124.6" />
+      </g>
+      <g
+         id="g10995"
+         style="color:#f90;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g10997"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g10999"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,147.1)">
+          <text
+             id="text11001">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g11003"
+         style="color:#f90;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path11005"
+           d="M 515.6,142.6 L 557.8,142.6 M 58.8,444 L 69.3,437.5 L 79.8,423.4 L 90.4,406.6 L 100.9,389.4 L 111.4,372.8 L 121.9,357.3 L 132.5,343 L 143,330 L 153.5,318.2 L 164,307.4 L 174.5,297.7 L 185.1,288.9 L 195.6,281 L 206.1,273.8 L 216.6,267.4 L 227.2,261.5 L 237.7,256.2 L 248.2,251.4 L 258.7,247.1 L 269.2,243.2 L 279.8,239.7 L 290.3,236.5 L 300.8,233.6 L 311.3,231 L 321.9,228.6 L 332.4,226.5 L 342.9,224.6 L 353.4,222.8 L 364,221.3 L 374.5,219.9 L 385,218.6 L 395.5,217.4 L 406,216.4 L 416.6,215.4 L 427.1,214.6 L 437.6,213.8 L 448.1,213.1 L 458.7,212.5 L 469.2,211.9 L 479.7,211.4 L 490.2,210.9 L 500.7,210.5 L 511.3,210.1 L 521.8,209.8 L 532.3,209.5 L 542.8,209.2 L 553.4,208.9 L 563.9,208.7 L 574.4,208.5" />
+      </g>
+      <g
+         id="g11007"
+         style="color:#0099a1;fill:none;stroke:currentColor;stroke-width:1" />
+      <g
+         id="g11009"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <g
+           id="g11011"
+           style="font-size:12px;text-anchor:end;fill:black;stroke:none;font-family:Arial"
+           transform="translate(507.3,165.1)">
+          <text
+             id="text11013">c(t)</text>
+        </g>
+      </g>
+      <g
+         id="g11015"
+         style="color:#0099a1;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path11017"
+           d="M 515.6,160.6 L 557.8,160.6 M 58.8,444 L 69.3,438 L 79.8,425.9 L 90.4,412.3 L 100.9,398.7 L 111.4,385.7 L 121.9,373.5 L 132.5,362.1 L 143,351.4 L 153.5,341.5 L 164,332.2 L 174.5,323.6 L 185.1,315.6 L 195.6,308.1 L 206.1,301.1 L 216.6,294.6 L 227.2,288.6 L 237.7,283 L 248.2,277.7 L 258.7,272.8 L 269.2,268.3 L 279.8,264 L 290.3,260.1 L 300.8,256.4 L 311.3,253 L 321.9,249.8 L 332.4,246.8 L 342.9,244.1 L 353.4,241.5 L 364,239.1 L 374.5,236.9 L 385,234.8 L 395.5,232.9 L 406,231.1 L 416.6,229.4 L 427.1,227.8 L 437.6,226.3 L 448.1,225 L 458.7,223.7 L 469.2,222.5 L 479.7,221.4 L 490.2,220.4 L 500.7,219.5 L 511.3,218.6 L 521.8,217.8 L 532.3,217 L 542.8,216.3 L 553.4,215.6 L 563.9,215 L 574.4,214.4" />
+      </g>
+      <g
+         id="g11019"
+         style="color:black;fill:none;stroke:currentColor;stroke-width:1">
+        <path
+           id="path11021"
+           d="M 58.8,444 L 574.4,444 L 574.4,16.6 L 58.8,16.6 L 58.8,444" />
+      </g>
+    </g>
+    <text
+       sodipodi:linespacing="125%"
+       transform="scale(0.923784,1.082504)"
+       id="text11148"
+       y="83.791809"
+       x="61.069611"
+       style="font-size:35.51628494px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Nimbus Sans L"
+       xml:space="preserve"><tspan
+         y="83.791809"
+         x="61.069611"
+         id="tspan11150"
+         sodipodi:role="line">JGNUplot V0.1</tspan></text>
+  </g>
+</svg>
