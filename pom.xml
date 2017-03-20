@@ -13,7 +13,7 @@
                 <archive>
                     <manifest>
                         <addClasspath>true</addClasspath>
-                        <mainClass>jgp.gui.JGP</mainClass>
+                        <mainClass>org.hopandfork.jgnuplot.gui.JGP</mainClass>
                     </manifest>
                 </archive>
             </configuration>
