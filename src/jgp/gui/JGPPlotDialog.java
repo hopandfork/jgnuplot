@@ -40,8 +40,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import jgp.JGPFileFormat;
-import jgp.JGPgnuplot;
+import jgp.FileFormat;
+import jgp.GnuplotExecutor;
 
 public class JGPPlotDialog extends JGPDialog implements ActionListener {
 	
@@ -176,7 +176,7 @@ public class JGPPlotDialog extends JGPDialog implements ActionListener {
 
 		owner.println("calling GNUplot...");
 
-		JGPgnuplot gp = owner.getGNUplot();
+		GnuplotExecutor gp = owner.getGNUplot();
 		
 		gp.psColor = this.cbColor.isSelected();
 		
@@ -191,7 +191,7 @@ public class JGPPlotDialog extends JGPDialog implements ActionListener {
 		
 		try {
 			gp.setOut(owner);
-			gp.plotToFile(psFileName, (JGPFileFormat) cbFileFormat.getSelectedItem() );
+			gp.plotToFile(psFileName, (FileFormat) cbFileFormat.getSelectedItem() );
 		} catch (IOException e) {
 			owner.taShell.setText(e.getMessage());
 		} catch (InterruptedException e) {

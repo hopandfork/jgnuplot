@@ -19,16 +19,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package jgp;
+package jgp.data;
 
+import jgp.GnuplotColor;
+import jgp.PlotStyle;
 
-public abstract class JGPPlotObject  implements JGPPlotable {
+public abstract class PlottableItem {
 
 	public String title;
 	public boolean doPlot = true;
-	public jgp.JGPStyle style;
+	public jgp.PlotStyle style;
 	
-	public JGPColor color;
+	public GnuplotColor color;
 	
 	//additional style options like linecolor, pointsize a.s.o.
 	public String addStyleOpt;
@@ -41,7 +43,7 @@ public abstract class JGPPlotObject  implements JGPPlotable {
 		return title;
 	}
 
-	public JGPStyle getStyle() {
+	public PlotStyle getStyle() {
 		return this.style;
 	}
 
@@ -52,8 +54,12 @@ public abstract class JGPPlotObject  implements JGPPlotable {
 	public abstract String getDataString() ;
 
 	public abstract String getPlotString();
-
-	public void setStyle(JGPStyle s) {
+	public abstract String getPreProcessProgram();
+	public abstract void setPreProcessProgram(String textContent);
+	public abstract PlottableItem getClone();
+	
+	
+	public void setStyle(PlotStyle s) {
 		this.style = s;
 	}
 
@@ -79,11 +85,11 @@ public abstract class JGPPlotObject  implements JGPPlotable {
 		this.addStyleOpt = addStyleOpt;
 	}
 
-	public JGPColor getColor() {
+	public GnuplotColor getColor() {
 		return color;
 	}
 
-	public void setColor(JGPColor color) {
+	public void setColor(GnuplotColor color) {
 		this.color = color;
 	}
 

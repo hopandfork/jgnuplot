@@ -24,7 +24,7 @@ package jgp.gui;
 
 import javax.swing.JComboBox;
 
-import jgp.JGPRelativePos;
+import jgp.RelativePos;
 
 public class JGPRelativePosComboBox extends JComboBox {
 	/**
@@ -34,7 +34,7 @@ public class JGPRelativePosComboBox extends JComboBox {
 
 	JGPRelativePosComboBox(){
 		
-        for (JGPRelativePos rp : JGPRelativePos.values())
+        for (RelativePos rp : RelativePos.values())
         	this.addItem(rp);
             
 		

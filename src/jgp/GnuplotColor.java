@@ -24,44 +24,44 @@ package jgp;
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 
-public class JGPColor extends Color {
+public class GnuplotColor extends Color {
 
-	public JGPColor(ColorSpace cspace, float[] components, float alpha) {
+	public GnuplotColor(ColorSpace cspace, float[] components, float alpha) {
 		super(cspace, components, alpha);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(float r, float g, float b, float a) {
+	public GnuplotColor(float r, float g, float b, float a) {
 		super(r, g, b, a);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(float r, float g, float b) {
+	public GnuplotColor(float r, float g, float b) {
 		super(r, g, b);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(int rgba, boolean hasalpha) {
+	public GnuplotColor(int rgba, boolean hasalpha) {
 		super(rgba, hasalpha);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(int r, int g, int b, int a) {
+	public GnuplotColor(int r, int g, int b, int a) {
 		super(r, g, b, a);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(int r, int g, int b) {
+	public GnuplotColor(int r, int g, int b) {
 		super(r, g, b);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(int rgb) {
+	public GnuplotColor(int rgb) {
 		super(rgb);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPColor(Color c) {
+	public GnuplotColor(Color c) {
 		super(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
 		// TODO Auto-generated constructor stub
 	}
@@ -84,15 +84,14 @@ public class JGPColor extends Color {
 	}
 
 	
-	public static JGPColor parseHexString(String hex){
-		String s = "";
+	public static GnuplotColor parseHexString(String hex){
 		int r,g,b;
 		r = Integer.parseInt(hex.substring(0,2),16);
 		g = Integer.parseInt(hex.substring(2,4),16);
 		b = Integer.parseInt(hex.substring(4,6),16);
 
 		
-		JGPColor c = new JGPColor(r,g,b);
+		GnuplotColor c = new GnuplotColor(r,g,b);
 		return c;
 	}
 }

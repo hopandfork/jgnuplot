@@ -22,14 +22,14 @@
 package jgp;
 
 
-public class JGPLabel {
+public class Label {
 	private double x;
 	
 	private double y;
 	
 	private String text;
 	
-	private JGPRelativePos relativePos = JGPRelativePos.first;
+	private RelativePos relativePos = RelativePos.first;
 	
 	private boolean doPlot = true;
 	
@@ -83,15 +83,15 @@ public class JGPLabel {
 		if (i == 0)			text = (String)value ;
 		else if (i == 1)	x = ((Double)value).doubleValue();
 		else if (i == 2)	y = ((Double)value).doubleValue();
-		else if (i == 3)	relativePos = (JGPRelativePos)value;
+		else if (i == 3)	relativePos = (RelativePos)value;
 		else if (i == 4)	doPlot = ((Boolean) value).booleanValue();
 	}
 
-	public JGPRelativePos getRelativePos() {
+	public RelativePos getRelativePos() {
 		return relativePos;
 	}
 
-	public void setRelativePos(JGPRelativePos relativePos) {
+	public void setRelativePos(RelativePos relativePos) {
 		this.relativePos = relativePos;
 	}
 }

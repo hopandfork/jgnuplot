@@ -41,14 +41,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import jgp.JGPColor;
-import jgp.JGPDataSet;
-import jgp.JGPLabel;
-import jgp.JGPPlotable;
-import jgp.JGPRelativePos;
-import jgp.JGPStyle;
-import jgp.JGPVariable;
-import jgp.JGPgnuplot;
+import jgp.GnuplotColor;
+import jgp.Label;
+import jgp.RelativePos;
+import jgp.PlotStyle;
+import jgp.Variable;
+import jgp.GnuplotExecutor;
+import jgp.data.DataSet;
+import jgp.data.PlottableItem;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -247,7 +247,7 @@ public class JGPProjectManager extends JGPXMLManager {
 					String splotType;
 					splotType =
 						 document.getElementsByTagName(PLOT_TYPE).item(0).getTextContent() ; 
-					if (splotType.equals(JGPgnuplot.PlotType.TWO_DIM.toString()))
+					if (splotType.equals(GnuplotExecutor.PlotType.TWO_DIM.toString()))
 						mainWindow.rb2D.setSelected(true);
 					else
 						mainWindow.rb3D.setSelected(true);
@@ -310,12 +310,12 @@ public class JGPProjectManager extends JGPXMLManager {
 		NodeList datasets =
 		      document.getElementsByTagName(DATASET);
 		for (int i = 0; i < datasets.getLength(); i++){
-			JGPPlotable ds;
+			PlottableItem ds;
 			Element n = (Element) datasets.item(i);
 			
 				if (n.getElementsByTagName(CLASS).getLength() != 0){
 					Class c = Class.forName(n.getElementsByTagName(CLASS).item(0).getTextContent());
-					ds = (JGPPlotable) c.newInstance();
+					ds = (PlottableItem) c.newInstance();
 					
 					if (n.getElementsByTagName(FILENAME).getLength() != 0)
 						ds.setFileName(n.getElementsByTagName(FILENAME).item(0).getTextContent());
@@ -326,10 +326,10 @@ public class JGPProjectManager extends JGPXMLManager {
 					if (n.getElementsByTagName(COLOR).getLength() != 0){
 						String sc = n.getElementsByTagName(COLOR).item(0).getTextContent();
 						if (sc.trim().equals("auto") ) ds.setColor(null);
-						else ds.setColor( JGPColor.parseHexString(sc) );
+						else ds.setColor( GnuplotColor.parseHexString(sc) );
 					}
 					if (n.getElementsByTagName(STYLE).getLength() != 0)
-						ds.setStyle(JGPStyle.valueOf( n.getElementsByTagName(STYLE).item(0).getTextContent() ) );
+						ds.setStyle(PlotStyle.valueOf( n.getElementsByTagName(STYLE).item(0).getTextContent() ) );
 					if (n.getElementsByTagName(ADD_STYLE_OPT).getLength() != 0)
 						ds.setAddStyleOpt( n.getElementsByTagName(ADD_STYLE_OPT).item(0).getTextContent()  );
 					if (n.getElementsByTagName(DO_PLOT).getLength() != 0)
@@ -351,7 +351,7 @@ public class JGPProjectManager extends JGPXMLManager {
 
 		for (int i = 0; i < labels.getLength(); i++){
 			Element n = (Element) labels.item(i);
-			JGPLabel l = new JGPLabel();
+			Label l = new Label();
 				if (n.getElementsByTagName(TEXT).getLength() != 0)
 					l.setText(n.getElementsByTagName(TEXT).item(0).getTextContent());
 				if (n.getElementsByTagName(X_POS).getLength() != 0)
@@ -359,7 +359,7 @@ public class JGPProjectManager extends JGPXMLManager {
 				if (n.getElementsByTagName(Y_POS).getLength() != 0)
 					l.setY(Double.parseDouble(n.getElementsByTagName(Y_POS).item(0).getTextContent() ) );
 				if (n.getElementsByTagName(RELATIVE_POS).getLength() != 0)
-					l.setRelativePos(JGPRelativePos.valueOf(n.getElementsByTagName(RELATIVE_POS).item(0).getTextContent() ) );
+					l.setRelativePos(RelativePos.valueOf(n.getElementsByTagName(RELATIVE_POS).item(0).getTextContent() ) );
 				if (n.getElementsByTagName(DO_PLOT).getLength() != 0)
 					l.setDoPlot(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()  ) );
 
@@ -379,7 +379,7 @@ public class JGPProjectManager extends JGPXMLManager {
 
 					if (n.getElementsByTagName(CLASS).getLength() != 0){
 					    Class c = Class.forName(n.getElementsByTagName(CLASS).item(0).getTextContent());
-					    JGPVariable v = (JGPVariable) c.newInstance();
+					    Variable v = (Variable) c.newInstance();
 					
 						if (n.getElementsByTagName(NAME).getLength() != 0)
 							v.setName(n.getElementsByTagName(NAME).item(0).getTextContent());
@@ -414,11 +414,11 @@ public class JGPProjectManager extends JGPXMLManager {
 			addTextNode(document, root, VERSION, JGP.getVersion());
 			addTextNode(document, root, TITLE, mainWindow.tfTitle.getText());
 
-			JGPgnuplot.PlotType plotType;
+			GnuplotExecutor.PlotType plotType;
 			if (mainWindow.rb2D.isSelected())
-				plotType = JGPgnuplot.PlotType.TWO_DIM;
+				plotType = GnuplotExecutor.PlotType.TWO_DIM;
 			else
-				plotType = JGPgnuplot.PlotType.THREE_DIM;
+				plotType = GnuplotExecutor.PlotType.THREE_DIM;
 			addTextNode(document, root, PLOT_TYPE, plotType.toString());
 
 			addTextNode(document, root, MAX_X, mainWindow.tfMaxX.getText());
@@ -442,7 +442,7 @@ public class JGPProjectManager extends JGPXMLManager {
 			      (Element) document.createElement(DATASET_ITEMS);
 
 			for (int i = 0; i < mainWindow.dsTableModel.data.size(); i++){
-				JGPPlotable ds = mainWindow.dsTableModel.data.get(i);
+				PlottableItem ds = mainWindow.dsTableModel.data.get(i);
 				Element dataset =
 				      (Element) document.createElement(DATASET);
 				dataset.setAttribute(ID, i + "");
@@ -470,7 +470,7 @@ public class JGPProjectManager extends JGPXMLManager {
 			      (Element) document.createElement(LABEL_ITEMS);
 
 			for (int i = 0; i < mainWindow.labelTableModel.data.size(); i++){
-				JGPLabel l = mainWindow.labelTableModel.data.get(i);
+				Label l = mainWindow.labelTableModel.data.get(i);
 				Element label =
 				      (Element) document.createElement(LABEL);
 				label.setAttribute(ID , i + "");
@@ -490,7 +490,7 @@ public class JGPProjectManager extends JGPXMLManager {
 			      (Element) document.createElement(VARIABLE_ITEMS);
 
 			for (int i = 0; i < mainWindow.variableTableModel.variables.size(); i++){
-				JGPVariable v = mainWindow.variableTableModel.variables.get(i);
+				Variable v = mainWindow.variableTableModel.variables.get(i);
 				Element variable =
 				      (Element) document.createElement(VARIABLE);
 				variable.setAttribute(ID , i + "");

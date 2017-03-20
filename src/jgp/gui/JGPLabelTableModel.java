@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import jgp.JGPLabel;
+import jgp.Label;
 
 public class JGPLabelTableModel  extends AbstractTableModel  {
 	
@@ -42,9 +42,9 @@ public class JGPLabelTableModel  extends AbstractTableModel  {
                "relative to",
                "do plot"};
 
-	public ArrayList<JGPLabel> data = new ArrayList<JGPLabel> ();
+	public ArrayList<Label> data = new ArrayList<Label> ();
 	
-	public void addRow(JGPLabel lbl){
+	public void addRow(Label lbl){
 		data.add(lbl);
 		fireTableDataChanged();
 	}

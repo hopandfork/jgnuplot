@@ -22,47 +22,40 @@
 package jgp;
 
 
-public interface JGPPlotable {
+/**
+ * A GPVariable renders a actual GNUplot variable. Befor plotting the
+ * variable will be set in GNUplot 
+ * 		VARIABLENAME = VALUE
+ * 
+ * @author mxhf
+ *
+ */
+public class GnuplotVariable extends Variable {
 	
-	public boolean getDoPlot();
-
-	public void setDoPlot(boolean doPLot);
+	public String getPlotString() {
+		return getName() + "=" + getValue();
+	}
 	
-	public String getDataString();
-	
-	public String getPlotString();
-	
-	public String getPreProcessProgram();
+	public Object[] getData() {
+		Object data[] = new Object[4];
+		data[0] = Variable.Type.GNUPLOT;
+		data[1] = getName();
+		data[2] = getValue();
+		data[3] = isActive();
+		
+		return data;
+	}
 
-	public String getTitle();
+	public void setData(int i, Object value) {
 
-	public JGPStyle getStyle();
+		if (i == 1)	setName( (String)value );
+		else if (i == 2)	setValue( (String)value );
+		else if (i == 3)	setActive( (Boolean)value );
+	}
 
-	public void  setStyle(JGPStyle s);
+	public Type getType() {
+		return Variable.Type.GNUPLOT;
+	}
 
-	public String getAddStyleOpt();
 
-	public void  setAddStyleOpt(String s);
-
-	public String getFileName();
-
-	public Object[] getData();
-	
-	public void setData(int i, Object value);
-	
-	public void setFileName(String s);
-	
-	public void setDataString(String function);
-
-	public void setTitle(String title);
-	
-	public JGPPlotable getClone();
-
-	public JGPColor getColor();
-
-	public void setColor(JGPColor color);
-
-	public void setPreProcessProgram(String textContent);
-
-	
 }

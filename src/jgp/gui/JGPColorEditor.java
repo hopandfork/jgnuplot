@@ -33,8 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
-public class JGPColorEditor extends AbstractCellEditor implements TableCellEditor,
-		ActionListener {
+public class JGPColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 	Color currentColor;
 
 	JButton button;
@@ -53,7 +52,7 @@ public class JGPColorEditor extends AbstractCellEditor implements TableCellEdito
 
 		// Set up the dialog that the button brings up.
 		colorChooser = new JColorChooser();
-		
+
 		dialog = JColorChooser.createDialog(button, "Pick a Color", true, // modal
 				colorChooser, this, // OK button handler
 				null); // no CANCEL button handler
@@ -80,8 +79,7 @@ public class JGPColorEditor extends AbstractCellEditor implements TableCellEdito
 	}
 
 	// Implement the one method defined by TableCellEditor.
-	public Component getTableCellEditorComponent(JTable table, Object value,
-			boolean isSelected, int row, int column) {
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		currentColor = (Color) value;
 		return button;
 	}

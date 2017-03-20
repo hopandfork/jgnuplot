@@ -21,7 +21,10 @@
 
 package jgp;
 
-public enum JGPFileFormat {
-	postscript,
-	svg
+public enum PlotStyle {
+	 lines, points, linespoints, impulses,
+	 dots, steps, fsteps, histeps, errorbars, xerrorbars,
+	 yerrorbars, xyerrorbars, errorlines, xerrorlines, yerrorlines,
+	 xyerrorlines, boxes, filledcurves, boxerrorbars,
+	 boxxyerrorbars, financebars, candlesticks, vectors
 }

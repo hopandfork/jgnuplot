@@ -19,12 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package jgp;
+package jgp.data;
 
 import java.awt.Color;
 
+import jgp.GnuplotColor;
+import jgp.PlotStyle;
 
-public class JGPFunction extends JGPPlotObject{
+
+public class Function extends PlottableItem{
 	private String function;
 
 
@@ -75,8 +78,8 @@ public class JGPFunction extends JGPPlotObject{
 	public void setData(int i, Object value) {
 		if (i == 1)	function = (String)value;
 		else if (i == 2)	title = (String) value;
-		else if (i == 3)	color = new JGPColor((Color) value );
-		else if (i == 4)	style = (JGPStyle) value;
+		else if (i == 3)	color = new GnuplotColor((Color) value );
+		else if (i == 4)	style = (PlotStyle) value;
 		else if (i == 5)	addStyleOpt = (String)value;
 		else if (i == 6)	doPlot = ((Boolean) value).booleanValue();
 	}
@@ -86,8 +89,8 @@ public class JGPFunction extends JGPPlotObject{
 		return "";
 	}
 
-	public JGPFunction getClone() {
-		JGPFunction f = new JGPFunction();
+	public Function getClone() {
+		Function f = new Function();
 		f.function = function ;
 		f.title = title;
 		f.style = style;

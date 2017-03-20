@@ -30,12 +30,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import jgp.data.DataSet;
+import jgp.data.PlottableItem;
+
 abstract class ProcessRunner  implements Runnable {
 
 	private JGPPrintWriter out = null;
 
 
-	protected JGPgnuplot owner;
+	protected GnuplotExecutor owner;
 	protected static Process p;
 
 
@@ -108,7 +111,7 @@ class GNUPlotRunner   extends ProcessRunner{
 			logWriter.close();
 
 			//System.out.println(GNUplot.GNUPLOT_CMD + PLOTFILENAME);
-			cmdExec(JGPgnuplot.GNUPLOT_CMD + PLOTFILENAME);
+			cmdExec(GnuplotExecutor.GNUPLOT_CMD + PLOTFILENAME);
 
 			System.out.println("GNUplot exited with value: " + p.exitValue()); 
 			System.out.println("GNUplot has finished.");
@@ -131,7 +134,7 @@ class GNUPlotRunner   extends ProcessRunner{
 
 
 
-public class JGPgnuplot{
+public class GnuplotExecutor{
 
 	public enum PlotType {
 		TWO_DIM, THREE_DIM
@@ -149,11 +152,11 @@ public class JGPgnuplot{
 
 	public String plotFileName = "work.gnuplot";
 
-	public ArrayList<JGPPlotable> dataSets;
+	public ArrayList<PlottableItem> dataSets;
 
-	public ArrayList<JGPLabel> labels;
+	public ArrayList<Label> labels;
 
-	public ArrayList<JGPVariable> variables;
+	public ArrayList<Variable> variables;
 
 	public String prePlotString;
 
@@ -193,11 +196,11 @@ public class JGPgnuplot{
 
 	public PlotType plotType;
 
-	public JGPgnuplot() {
+	public GnuplotExecutor() {
 		super();
-		dataSets = new ArrayList<JGPPlotable>();
-		labels = new ArrayList<JGPLabel>();
-		variables = new ArrayList<JGPVariable>();
+		dataSets = new ArrayList<PlottableItem>();
+		labels = new ArrayList<Label>();
+		variables = new ArrayList<Variable>();
 	}
 
 	public String getPlotString(){
@@ -207,9 +210,9 @@ public class JGPgnuplot{
 
 		//Add gnuplot variables to plot string
 		for (int i = 0; i < variables.size(); i++){
-			if (variables.get(i).getType().equals( JGPVariable.Type.GNUPLOT ) ){
+			if (variables.get(i).getType().equals( Variable.Type.GNUPLOT ) ){
 				if (variables.get(i).isActive())
-					s +=  ((JGPGnuplotVariable) variables.get(i)).getPlotString() + "\n" ;
+					s +=  ((GnuplotVariable) variables.get(i)).getPlotString() + "\n" ;
 			}
 		}
 
@@ -291,9 +294,9 @@ public class JGPgnuplot{
 
 		//Now replace all string variables with their value
 		for (int i = 0; i < variables.size(); i++){
-			if (variables.get(i).getType() == JGPVariable.Type.STRING){
+			if (variables.get(i).getType() == Variable.Type.STRING){
 				if (variables.get(i).isActive())
-					s = ((JGPStringVariable) variables.get(i)).apply(s);
+					s = ((StringVariable) variables.get(i)).apply(s);
 			}
 		}
 
@@ -353,12 +356,12 @@ public class JGPgnuplot{
 //	}
 
 
-	public void plotToFile(String psFileName, JGPFileFormat format) throws IOException, InterruptedException{
+	public void plotToFile(String psFileName, FileFormat format) throws IOException, InterruptedException{
 
 		String s = "";
 		s += "set output '" + psFileName + "' \n";
 
-		if (format == JGPFileFormat.postscript){
+		if (format == FileFormat.postscript){
 			s += "set terminal " + format;
 			s += " enhanced ";
 			if (psColor) s += " color ";
@@ -367,7 +370,7 @@ public class JGPgnuplot{
 			s += psFontSize + " ";
 			s += " \n"; 
 		}
-		else if (format == JGPFileFormat.svg){
+		else if (format == FileFormat.svg){
 			s += "set terminal " + format;
 			s += " \n"; 
 		}
@@ -414,13 +417,13 @@ public class JGPgnuplot{
 //	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		JGPgnuplot gp = new JGPgnuplot();
+		GnuplotExecutor gp = new GnuplotExecutor();
 
 		String inFileName = "/home/ccdserv/mxhf/astro/QE/data/diodeMode/diodeMode_minus140C_20051021_pre.dat";
 
-		JGPDataSet ds = new JGPDataSet(inFileName, "1", "($4 * 2)");
+		DataSet ds = new DataSet(inFileName, "1", "($4 * 2)");
 
-		ds.style = JGPStyle.lines;
+		ds.style = PlotStyle.lines;
 
 		ds.title = "QE";
 

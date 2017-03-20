@@ -26,7 +26,7 @@ package jgp.gui;
 
 import javax.swing.JComboBox;
 
-import jgp.JGPVariable;
+import jgp.Variable;
 
 public class JGPVariableTypeComboBox extends JComboBox {
 	/**
@@ -37,8 +37,8 @@ public class JGPVariableTypeComboBox extends JComboBox {
 	JGPVariableTypeComboBox(){
 		
        
-        	this.addItem(JGPVariable.Type.GNUPLOT);
-        	this.addItem(JGPVariable.Type.STRING);
+        	this.addItem(Variable.Type.GNUPLOT);
+        	this.addItem(Variable.Type.STRING);
             
 		
 	}

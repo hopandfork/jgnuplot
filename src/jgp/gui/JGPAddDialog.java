@@ -36,17 +36,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import jgp.JGPDataSet;
-import jgp.JGPFunction;
-import jgp.JGPPlotable;
-import jgp.JGPStyle;
+import jgp.PlotStyle;
+import jgp.data.DataSet;
+import jgp.data.Function;
+import jgp.data.PlottableItem;
 
 public class JGPAddDialog extends JGPDialog implements ActionListener{
 	
@@ -72,7 +71,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
     
     JButton bDataStringAssist;
 	
-    static JGPPlotable plotObject;
+    static PlottableItem plotObject;
 
 	public JGPAddDialog(java.awt.Frame owner) throws HeadlessException {
 		super(owner);
@@ -87,7 +86,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		this.pack();
 	}
 
-	JGPAddDialog(JGPPlotable plotObject, String title){
+	JGPAddDialog(PlottableItem plotObject, String title){
 		add(createMainPanel());
 		this.setTitle(title);
 		JGPAddDialog.plotObject = plotObject;
@@ -212,12 +211,12 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 	 * Initializes alls fields with the values from a iven plot object
 	 * @param plotObject
 	 */
-	private void initPlotObject(JGPPlotable plotObject){
+	private void initPlotObject(PlottableItem plotObject){
 		//should never happen....but does not hurt to check
 		if (null == plotObject)
 			return;
 
-		if (plotObject.getClass().equals(JGPFunction.class)){
+		if (plotObject.getClass().equals(Function.class)){
 			rbFile.setSelected(true);
 		}
 		else 
@@ -325,14 +324,14 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 	public void acApply(){
 		System.out.println("adding" );
 		
-		JGPPlotable p;
+		PlottableItem p;
 		if (rbFile.isSelected() ){
-			p = new JGPDataSet();
+			p = new DataSet();
 			p.setFileName(tfFileName.getText());
-			((JGPDataSet) p).setPreProcessProgram(tfPreProcess.getText()); 
+			((DataSet) p).setPreProcessProgram(tfPreProcess.getText()); 
 		}
 		else
-			p = new JGPFunction();
+			p = new Function();
 			
 		p.setDataString(tfDataString.getText());
 		p.setFileName(tfFileName.getText());
@@ -340,7 +339,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		p.setDoPlot(true);
 		
 		
-		if (cbStyle.getSelectedItem() != null) p.setStyle((JGPStyle) cbStyle.getSelectedItem());
+		if (cbStyle.getSelectedItem() != null) p.setStyle((PlotStyle) cbStyle.getSelectedItem());
 		
 		//((JGP) this.getOwner()).dsTableModel.addRow(p);
 		
@@ -428,7 +427,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 	}
 
 	
-	public static JGPPlotable showAddDialog(String title){
+	public static PlottableItem showAddDialog(String title){
 		JGPAddDialog ptm = new JGPAddDialog(title);
 		ptm.setModal(true);
       	ptm.show();
@@ -436,7 +435,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		return plotObject;
 	}
 	
-	public static JGPPlotable showAddDialog(JGPPlotable p , String title){
+	public static PlottableItem showAddDialog(PlottableItem p , String title){
 		JGPAddDialog ptm = new JGPAddDialog(p, title);
 		ptm.setModal(true);
       	ptm.show();

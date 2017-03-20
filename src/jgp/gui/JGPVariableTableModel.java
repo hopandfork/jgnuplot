@@ -26,9 +26,9 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import jgp.JGPGnuplotVariable;
-import jgp.JGPStringVariable;
-import jgp.JGPVariable;
+import jgp.GnuplotVariable;
+import jgp.StringVariable;
+import jgp.Variable;
 
 public class JGPVariableTableModel  extends AbstractTableModel  {
 	
@@ -43,9 +43,9 @@ public class JGPVariableTableModel  extends AbstractTableModel  {
                "value",
                "active"};
 
-	public ArrayList<JGPVariable> variables = new ArrayList<JGPVariable> ();
+	public ArrayList<Variable> variables = new ArrayList<Variable> ();
 	
-	public void addRow(JGPVariable lbl){
+	public void addRow(Variable lbl){
 		variables.add(lbl);
 		fireTableDataChanged();
 	}
@@ -83,11 +83,11 @@ public class JGPVariableTableModel  extends AbstractTableModel  {
 		if (col == 0){ 
 			//uh, now we have to replace the Variable with a variable of different
 			// class
-			JGPVariable v = null;
-			if (value.equals(JGPVariable.Type.STRING))
-				v = new JGPStringVariable();
+			Variable v = null;
+			if (value.equals(Variable.Type.STRING))
+				v = new StringVariable();
 			else 
-				v = new JGPGnuplotVariable();
+				v = new GnuplotVariable();
 			
 			for (int i = 0; i < 4; i++){
 				v.setData(i, variables.get(row).getData()[i]);

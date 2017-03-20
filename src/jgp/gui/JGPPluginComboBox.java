@@ -27,13 +27,13 @@ import java.util.ArrayList;
 
 import javax.swing.JComboBox;
 
-import jgp.JGPPreProcessPlugin;
+import jgp.PreProcessPlugin;
 
 public class JGPPluginComboBox extends JComboBox {
 	boolean DEBUG = true;
 	
 	
-	ArrayList<JGPPreProcessPlugin> plugins;
+	ArrayList<PreProcessPlugin> plugins;
 	
 	public void loadPlugins(){
 		if (DEBUG) System.out.println("Loading plugins...");
@@ -59,8 +59,8 @@ public class JGPPluginComboBox extends JComboBox {
 					if (DEBUG) System.out.println("Loading class " + className + " ...");
 					Class c = Class.forName(className);
 					if (DEBUG) System.out.println("Loaded class " + className + " ...");
-					JGPPreProcessPlugin plugin = 
-						(JGPPreProcessPlugin) c.newInstance();
+					PreProcessPlugin plugin = 
+						(PreProcessPlugin) c.newInstance();
 					//plugins.add(plugin);
 					this.addItem(plugin.getName());
 				} catch (ClassNotFoundException e) {

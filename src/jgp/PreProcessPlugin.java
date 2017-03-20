@@ -21,10 +21,11 @@
 
 package jgp;
 
-public enum JGPStyle {
-	 lines, points, linespoints, impulses,
-	 dots, steps, fsteps, histeps, errorbars, xerrorbars,
-	 yerrorbars, xyerrorbars, errorlines, xerrorlines, yerrorlines,
-	 xyerrorlines, boxes, filledcurves, boxerrorbars,
-	 boxxyerrorbars, financebars, candlesticks, vectors
+public interface PreProcessPlugin {
+	
+	public String getDescription();
+	
+	public String getName();
+	
+	public void PreProcess(String inFileName, String outFileName);
 }

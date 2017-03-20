@@ -24,7 +24,7 @@ package jgp.gui;
 
 import javax.swing.JComboBox;
 
-import jgp.JGPStyle;
+import jgp.PlotStyle;
 
 public class JGPStyleComboBox extends JComboBox{
 	/**
@@ -34,7 +34,7 @@ public class JGPStyleComboBox extends JComboBox{
 
 	JGPStyleComboBox(){
 		
-        for (JGPStyle s : JGPStyle.values())
+        for (PlotStyle s : PlotStyle.values())
         	this.addItem(s);
             
         this.setEditable(true);

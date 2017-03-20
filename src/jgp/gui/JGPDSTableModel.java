@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import jgp.JGPPlotable;
+import jgp.data.PlottableItem;
 
 
 
@@ -50,9 +50,9 @@ class JGPDSTableModel extends AbstractTableModel {
 	
 
     
-    public ArrayList<JGPPlotable> data = new ArrayList<JGPPlotable> ();
+    public ArrayList<PlottableItem> data = new ArrayList<PlottableItem> ();
 
-    public void addRow(JGPPlotable ds){
+    public void addRow(PlottableItem ds){
     	data.add(ds);
 		fireTableDataChanged();
 

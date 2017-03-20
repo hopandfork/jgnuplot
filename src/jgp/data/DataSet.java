@@ -20,12 +20,17 @@
  */
 
 
-package jgp;
+package jgp.data;
 
 import java.awt.Color;
 import java.io.IOException;
 
-public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
+import jgp.GnuplotColor;
+import jgp.PreProcessPlugin;
+import jgp.PlotStyle;
+import jgp.GnuplotExecutor;
+
+public class DataSet extends PlottableItem {
 	
 	private String dataString;
 	
@@ -33,7 +38,7 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 	
 	private long lastChanged = 0;
 	
-	private JGPPreProcessPlugin preProcessPlugin;
+	private PreProcessPlugin preProcessPlugin;
 	
 	private String preProcessProgram;
 	
@@ -63,21 +68,21 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 		if (i == 0)			fileName = (String) value ;
 		else if (i == 1)	dataString = (String) value;
 		else if (i == 2)	title = (String) value;
-		else if (i == 3)	color = new JGPColor((Color) value );
-		else if (i == 4)	style = (JGPStyle) value;
+		else if (i == 3)	color = new GnuplotColor((Color) value );
+		else if (i == 4)	style = (PlotStyle) value;
 		else if (i == 5)	addStyleOpt = (String) value;
 		else if (i == 6)	doPlot = ((Boolean) value).booleanValue();
 		else if (i == 7)	preProcessProgram = (String)value;
 	}
 
-	public JGPDataSet(String fileName, String dataString) {
+	public DataSet(String fileName, String dataString) {
 		super();
 		// TODO Auto-generated constructor stub
 		this.dataString = dataString;
 		this.fileName = fileName;
 	}
 
-	public JGPDataSet(String fileName, String dataString,  String title) {
+	public DataSet(String fileName, String dataString,  String title) {
 		super();
 		// TODO Auto-generated constructor stub
 		this.dataString = dataString;
@@ -85,7 +90,7 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 		this.title = title;
 	}
 
-	public JGPDataSet(String fileName, String dataString, String title, JGPStyle style) {
+	public DataSet(String fileName, String dataString, String title, PlotStyle style) {
 		super();
 		// TODO Auto-generated constructor stub
 		this.dataString = dataString;
@@ -94,7 +99,7 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 		this.style = style;
 	}
 	
-	public JGPDataSet() {
+	public DataSet() {
 	}
 
 	public String getPlotString(){
@@ -103,7 +108,7 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 		
 		if ( preProcessProgram != null && !preProcessProgram.trim().equals("") && !preProcessProgram.trim().equals("null")){
 			//call prepocess program
-			String tmpFileName = jgp.JGPgnuplot.getTempFileName();
+			String tmpFileName = jgp.GnuplotExecutor.getTempFileName();
 			callPreProcessProgram(preProcessProgram.trim(), fileName, tmpFileName);
 			//and plot the tmp output
 			s += "'" + tmpFileName  + "'";
@@ -167,11 +172,11 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 		this.dataString = function;
 	}
 
-	public JGPPreProcessPlugin getPreProcessPlugin() {
+	public PreProcessPlugin getPreProcessPlugin() {
 		return preProcessPlugin;
 	}
 
-	public void setPreProcessPlugin(JGPPreProcessPlugin preProcessPlugin) {
+	public void setPreProcessPlugin(PreProcessPlugin preProcessPlugin) {
 		this.preProcessPlugin = preProcessPlugin;
 	}
 
@@ -184,8 +189,8 @@ public class JGPDataSet extends JGPPlotObject implements JGPPlotable {
 		else this.preProcessProgram = preProcessProgram;
 	}
 
-	public JGPPlotable getClone() {
-		JGPDataSet ds = new JGPDataSet();
+	public PlottableItem getClone() {
+		DataSet ds = new DataSet();
 		ds.fileName = fileName ;
 		ds.dataString = dataString;
 		ds.title = title;

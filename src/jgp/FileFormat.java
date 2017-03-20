@@ -21,11 +21,7 @@
 
 package jgp;
 
-public interface JGPPreProcessPlugin {
-	
-	public String getDescription();
-	
-	public String getName();
-	
-	public void PreProcess(String inFileName, String outFileName);
+public enum FileFormat {
+	postscript,
+	svg
 }

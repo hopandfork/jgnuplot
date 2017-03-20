@@ -25,7 +25,7 @@ package jgp.gui;
 
 import javax.swing.JComboBox;
 
-import jgp.JGPFileFormat;
+import jgp.FileFormat;
 
 public class JGPFileFormatComboBox extends JComboBox {
 
@@ -38,7 +38,7 @@ public class JGPFileFormatComboBox extends JComboBox {
 		super();
 
 			
-	        for (JGPFileFormat ff : JGPFileFormat.values())
+	        for (FileFormat ff : FileFormat.values())
 	        	this.addItem(ff);
 	        this.setEditable(true);
 	            
