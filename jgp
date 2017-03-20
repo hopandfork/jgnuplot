@@ -1,2 +1,2 @@
 #!/bin/bash
-java -cp ./classes jgp.gui.JGP
+java -jar ./target/JGNUplot-0.2.1.jar
