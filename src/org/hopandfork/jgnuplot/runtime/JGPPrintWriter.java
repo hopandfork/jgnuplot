@@ -19,44 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.runtime;
 
 /**
- * A string variable is not a actual varaible. It is rather a constant which
- * is pasted into the plot string prior to issuing it to GNUplot.
- * 
- * All string variable start of with a "$".
- * Each encounter of $VARIABLE_NAME in the plotstring will be replaced with
- * the value.
- * 
- * @author mxhf
- *
+ * Simple interface for interacting with a console.
  */
-public class StringVariable extends Variable {
-	public String apply(String plotString){
-		
-		return plotString.replace("$" + getName(), getValue());
-	}
-
-	public Object[] getData() {
-		Object data[] = new Object[4];
-		data[0] = Variable.Type.STRING;
-		data[1] = getName();
-		data[2] = getValue();
-		data[3] = isActive();
-		
-		return data;
-	}
-
-	public void setData(int i, Object value) {
-		if (i == 1)	setName( (String)value );
-		else if (i == 2)	setValue( (String)value );
-		else if (i == 3)	setActive( (Boolean)value );
-	}
-
-	@Override
-	public Type getType() {
-		return Variable.Type.STRING;
-	}
-
+public interface JGPPrintWriter {
+	
+	public void println(String s);
+	
+	public void printerrln(String s);
+	
 }

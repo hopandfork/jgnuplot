@@ -72,12 +72,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.hopandfork.jgnuplot.GnuplotExecutor;
-import org.hopandfork.jgnuplot.GnuplotVariable;
-import org.hopandfork.jgnuplot.JGPPrintWriter;
-import org.hopandfork.jgnuplot.Label;
 import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.plot.GnuplotVariable;
+import org.hopandfork.jgnuplot.plot.Label;
+import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
+import org.hopandfork.jgnuplot.runtime.JGPPrintWriter;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

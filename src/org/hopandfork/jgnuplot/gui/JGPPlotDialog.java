@@ -40,8 +40,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.hopandfork.jgnuplot.FileFormat;
-import org.hopandfork.jgnuplot.GnuplotExecutor;
+import org.hopandfork.jgnuplot.plot.OutputFileFormat;
+import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 
 
 public class JGPPlotDialog extends JGPDialog implements ActionListener {
@@ -192,7 +192,7 @@ public class JGPPlotDialog extends JGPDialog implements ActionListener {
 		
 		try {
 			gp.setOut(owner);
-			gp.plotToFile(psFileName, (FileFormat) cbFileFormat.getSelectedItem() );
+			gp.plotToFile(psFileName, (OutputFileFormat) cbFileFormat.getSelectedItem() );
 		} catch (IOException e) {
 			owner.taShell.setText(e.getMessage());
 		} catch (InterruptedException e) {

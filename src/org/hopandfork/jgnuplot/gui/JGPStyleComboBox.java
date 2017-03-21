@@ -24,7 +24,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
 
 
 public class JGPStyleComboBox extends JComboBox{

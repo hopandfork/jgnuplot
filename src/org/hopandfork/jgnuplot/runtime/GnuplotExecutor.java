@@ -19,120 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.runtime;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
-
-abstract class ProcessRunner  implements Runnable {
-
-	private JGPPrintWriter out = null;
-
-
-	protected GnuplotExecutor owner;
-	protected static Process p;
-
-
-	public void cmdExec(String cmdline) {
-		try {
-			String line = null;
-			String errline = null;
-
-			//if there is an older process still running, destroy it.
-			if (p != null) p.destroy();
-
-			p = Runtime.getRuntime().exec(cmdline);
-			//InputStreamReader inputStreamReader;
-			BufferedReader input =
-				new BufferedReader
-				(new InputStreamReader(p.getInputStream() ));
-
-			//InputStreamReader errInputStreamReader;
-
-			BufferedReader err =
-				new BufferedReader
-				(new InputStreamReader(p.getErrorStream() ));
-
-			try {
-				while ( (line = input.readLine()) != null || (errline = err.readLine()) != null) {
-					if (line != null && !line.trim().equals("") && out != null) 
-						out.println(line);
-					if (errline != null &&  !errline.trim().equals("")  && out != null)  
-						out.printerrln(errline);
-				}
-			} catch (IOException e) {
-				System.out.println("readLine() failed");
-			}
-			p.waitFor();
-			input.close();
-			err.close();
-		}
-		catch (Exception err) {
-			err.printStackTrace();
-		}
-	}
-
-
-
-	public JGPPrintWriter getOut() {
-		return out;
-	}
-
-	public void setOut(JGPPrintWriter out) {
-		this.out = out;
-	}
-
-
-
-}
-
-class GNUPlotRunner   extends ProcessRunner{
-
-	private String gpPlotString;
-
-	private String PLOTFILENAME = "work.gnuplot";
-
-	public void run(){
-		try {
-			PrintWriter logWriter = new PrintWriter(new BufferedWriter(new FileWriter(PLOTFILENAME,
-					false)));
-
-			logWriter.write(gpPlotString);
-			logWriter.flush();
-			logWriter.close();
-
-			//System.out.println(GNUplot.GNUPLOT_CMD + PLOTFILENAME);
-			cmdExec(GnuplotExecutor.GNUPLOT_CMD + PLOTFILENAME);
-
-			System.out.println("GNUplot exited with value: " + p.exitValue()); 
-			System.out.println("GNUplot has finished.");
-			System.in.read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public String getGpPlotString() {
-		return gpPlotString;
-	}
-
-	public void setGpPlotString(String gpPlotString) {
-		this.gpPlotString = gpPlotString;
-	}
-
-}
-
-
+import org.hopandfork.jgnuplot.plot.GnuplotVariable;
+import org.hopandfork.jgnuplot.plot.Label;
+import org.hopandfork.jgnuplot.plot.OutputFileFormat;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
+import org.hopandfork.jgnuplot.plot.StringVariable;
+import org.hopandfork.jgnuplot.plot.Variable;
+import org.hopandfork.jgnuplot.plot.Variable.Type;
 
 public class GnuplotExecutor{
 
@@ -356,12 +257,12 @@ public class GnuplotExecutor{
 //	}
 
 
-	public void plotToFile(String psFileName, FileFormat format) throws IOException, InterruptedException{
+	public void plotToFile(String psFileName, OutputFileFormat format) throws IOException, InterruptedException{
 
 		String s = "";
 		s += "set output '" + psFileName + "' \n";
 
-		if (format == FileFormat.postscript){
+		if (format == OutputFileFormat.POSTSCRIPT){
 			s += "set terminal " + format;
 			s += " enhanced ";
 			if (psColor) s += " color ";
@@ -370,7 +271,7 @@ public class GnuplotExecutor{
 			s += psFontSize + " ";
 			s += " \n"; 
 		}
-		else if (format == FileFormat.svg){
+		else if (format == OutputFileFormat.SVG){
 			s += "set terminal " + format;
 			s += " \n"; 
 		}

@@ -19,57 +19,54 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.plot;
 
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 
+/**
+ * Just a Java Color with some extra utilities.
+ */
 public class GnuplotColor extends Color {
 
 	public GnuplotColor(ColorSpace cspace, float[] components, float alpha) {
 		super(cspace, components, alpha);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(float r, float g, float b, float a) {
 		super(r, g, b, a);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(float r, float g, float b) {
 		super(r, g, b);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(int rgba, boolean hasalpha) {
 		super(rgba, hasalpha);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(int r, int g, int b, int a) {
 		super(r, g, b, a);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(int r, int g, int b) {
 		super(r, g, b);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(int rgb) {
 		super(rgb);
-		// TODO Auto-generated constructor stub
 	}
 
 	public GnuplotColor(Color c) {
 		super(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
-		// TODO Auto-generated constructor stub
 	}
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Returns HEX representation of this color.
+	 * @return HEX representation of this color.
+	 */
 	public String getHexString(){
 		String s = "";
 		String r,g,b;
@@ -84,6 +81,11 @@ public class GnuplotColor extends Color {
 	}
 
 	
+	/**
+	 * Returns a GnuplotColor given its HEX representation.
+	 * @param hex HEX representation.
+	 * @return A GnuplotColor given its HEX representation.
+	 */
 	public static GnuplotColor parseHexString(String hex){
 		int r,g,b;
 		r = Integer.parseInt(hex.substring(0,2),16);

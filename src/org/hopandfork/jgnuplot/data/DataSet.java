@@ -19,29 +19,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 package org.hopandfork.jgnuplot.data;
 
 import java.awt.Color;
 import java.io.IOException;
 
-import org.hopandfork.jgnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.GnuplotExecutor;
-import org.hopandfork.jgnuplot.PlottingStyle;
-import org.hopandfork.jgnuplot.PreProcessPlugin;
+import org.hopandfork.jgnuplot.plot.GnuplotColor;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
+import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
+import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
 
 public class DataSet extends PlottableItem {
-	
-	private String dataString;
-	
+
+	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
+	private String dataSelectionString;
+
+	/** Dataset filename. */
 	private String fileName;
-	
-	private long lastChanged = 0;
-	
+
+	/** Last modified flag/timestamp (?) */
+	private long lastChanged = 0; // TODO check this field
+
+	/** Optional plugin for preprocessing. */
 	private PreProcessPlugin preProcessPlugin;
-	
+
+	/** Optional external command for preprocessing. */
 	private String preProcessProgram;
-	
+
 	public long getLastChanged() {
 		return lastChanged;
 	}
@@ -50,126 +54,145 @@ public class DataSet extends PlottableItem {
 		this.lastChanged = lastChanged;
 	}
 
-	public Object[] getData(){
+	@Deprecated
+	public Object[] getData() {
 		Object data[] = new Object[8];
 		data[0] = this.fileName;
-		data[1] = this.dataString;
+		data[1] = this.dataSelectionString;
 		data[2] = this.title;
 		data[3] = this.color;
 		data[4] = this.style;
-		if (this.addStyleOpt == null) addStyleOpt = "";
+		if (this.addStyleOpt == null)
+			addStyleOpt = "";
 		data[5] = this.addStyleOpt;
 		data[6] = this.enabled;
 		data[7] = this.preProcessProgram;
 		return data;
 	}
 
-	public void setData(int i, Object value){
-		if (i == 0)			fileName = (String) value ;
-		else if (i == 1)	dataString = (String) value;
-		else if (i == 2)	title = (String) value;
-		else if (i == 3)	color = new GnuplotColor((Color) value );
-		else if (i == 4)	style = (PlottingStyle) value;
-		else if (i == 5)	addStyleOpt = (String) value;
-		else if (i == 6)	enabled = ((Boolean) value).booleanValue();
-		else if (i == 7)	preProcessProgram = (String)value;
+	@Deprecated
+	public void setData(int i, Object value) {
+		if (i == 0)
+			fileName = (String) value;
+		else if (i == 1)
+			dataSelectionString = (String) value;
+		else if (i == 2)
+			title = (String) value;
+		else if (i == 3)
+			color = new GnuplotColor((Color) value);
+		else if (i == 4)
+			style = (PlottingStyle) value;
+		else if (i == 5)
+			addStyleOpt = (String) value;
+		else if (i == 6)
+			enabled = ((Boolean) value).booleanValue();
+		else if (i == 7)
+			preProcessProgram = (String) value;
 	}
 
 	public DataSet(String fileName, String dataString) {
 		super();
-		// TODO Auto-generated constructor stub
-		this.dataString = dataString;
+		this.dataSelectionString = dataString;
 		this.fileName = fileName;
 	}
 
-	public DataSet(String fileName, String dataString,  String title) {
+	public DataSet(String fileName, String dataString, String title) {
 		super();
-		// TODO Auto-generated constructor stub
-		this.dataString = dataString;
+		this.dataSelectionString = dataString;
 		this.fileName = fileName;
 		this.title = title;
 	}
 
 	public DataSet(String fileName, String dataString, String title, PlottingStyle style) {
 		super();
-		// TODO Auto-generated constructor stub
-		this.dataString = dataString;
+		this.dataSelectionString = dataString;
 		this.fileName = fileName;
 		this.title = title;
 		this.style = style;
 	}
-	
+
 	public DataSet() {
 	}
 
-	public String getPlotString(){
-		
+	@Override
+	public String getPlotString() {
+
 		String s = "";
-		
-		if ( preProcessProgram != null && !preProcessProgram.trim().equals("") && !preProcessProgram.trim().equals("null")){
-			//call prepocess program
+
+		if (preProcessProgram != null && !preProcessProgram.trim().equals("")
+				&& !preProcessProgram.trim().equals("null")) {
+			// call prepocess program
 			String tmpFileName = GnuplotExecutor.getTempFileName();
 			callPreProcessProgram(preProcessProgram.trim(), fileName, tmpFileName);
-			//and plot the tmp output
-			s += "'" + tmpFileName  + "'";
+			// and plot the tmp output
+			s += "'" + tmpFileName + "'";
 		} else {
 			s += "'" + fileName + "'";
 		}
-		
-		s += " using " + dataString + " ";
-		
-		if (style != null || addStyleOpt != null || color != null){
-			s += " with ";
-			if (style != null) s +=  style.name() + "  ";
-			if (addStyleOpt != null)s +=  addStyleOpt + "  ";
-			if (color != null){
 
-				s +=  "lc rgb '#"  + color.getHexString() + "'";
+		s += " using " + dataSelectionString + " ";
+
+		if (style != null || addStyleOpt != null || color != null) {
+			s += " with ";
+			if (style != null)
+				s += style.name() + "  ";
+			if (addStyleOpt != null)
+				s += addStyleOpt + "  ";
+			if (color != null) {
+
+				s += "lc rgb '#" + color.getHexString() + "'";
 			}
 		}
 
-
 		if (title != null && !title.trim().equals(""))
-			s += " title \""+ title + " \" ";
-			
+			s += " title \"" + title + " \" ";
+
 		return s;
 	}
-	
-	public void callPreProcessProgram(String program, String inputFileName, String outputFileName){
-		//poor implementation without feedback
+
+	public void callPreProcessProgram(String program, String inputFileName, String outputFileName) {
+		// TODO poor implementation without feedback (by M.H.F.)
 		String cmdline = "";
 		cmdline = program.replaceAll("\\$if", inputFileName);
 		cmdline = cmdline.replaceAll("\\$of", outputFileName);
-		
+
 		System.out.println("Calling preprocess program: " + cmdline);
-	    try {
-			Process  p = Runtime.getRuntime().exec(new String[] { "/bin/sh","-c",cmdline });
+		try {
+			Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", cmdline });
 			p.waitFor();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("done");
 
 	}
 
+	@Deprecated
 	public String getDataString() {
-		return dataString;
+		return dataSelectionString;
+	}
+
+	public String getDataSelectionString() {
+		return dataSelectionString;
+	}
+
+	public void setDataSelectionString(String dataSelectionString) {
+		this.dataSelectionString = dataSelectionString;
 	}
 
 	public String getFileName() {
 		return fileName;
 	}
 
-	public void setFileName(String s){
+	public void setFileName(String s) {
 		this.fileName = s;
 	};
-	
+
+	@Deprecated
 	public void setDataString(String function) {
-		this.dataString = function;
+		this.dataSelectionString = function;
 	}
 
 	public PreProcessPlugin getPreProcessPlugin() {
@@ -185,24 +208,24 @@ public class DataSet extends PlottableItem {
 	}
 
 	public void setPreProcessProgram(String preProcessProgram) {
-		if ( preProcessProgram.equals("null") ) preProcessProgram = null;
-		else this.preProcessProgram = preProcessProgram;
+		if (preProcessProgram.equals("null"))
+			preProcessProgram = null;
+		else
+			this.preProcessProgram = preProcessProgram;
 	}
 
+	@Override
 	public PlottableItem getClone() {
 		DataSet ds = new DataSet();
-		ds.fileName = fileName ;
-		ds.dataString = dataString;
+		ds.fileName = fileName;
+		ds.dataSelectionString = dataSelectionString;
 		ds.title = title;
 		ds.color = color;
 		ds.style = style;
 		ds.addStyleOpt = addStyleOpt;
 		ds.enabled = enabled;
 		ds.preProcessProgram = preProcessProgram;
-		// TODO Auto-generated method stub
 		return ds;
 	}
-	
-	
-	
+
 }

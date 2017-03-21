@@ -25,7 +25,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.FileFormat;
+import org.hopandfork.jgnuplot.plot.OutputFileFormat;
 
 
 public class JGPFileFormatComboBox extends JComboBox {
@@ -39,7 +39,7 @@ public class JGPFileFormatComboBox extends JComboBox {
 		super();
 
 			
-	        for (FileFormat ff : FileFormat.values())
+	        for (OutputFileFormat ff : OutputFileFormat.values())
 	        	this.addItem(ff);
 	        this.setEditable(true);
 	            

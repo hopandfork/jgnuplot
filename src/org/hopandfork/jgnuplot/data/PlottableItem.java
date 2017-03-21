@@ -21,8 +21,8 @@
 
 package org.hopandfork.jgnuplot.data;
 
-import org.hopandfork.jgnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.plot.GnuplotColor;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
 
 /**
  * Abstract item which can be added to a plot (e.g., a function, a dataset).
@@ -60,28 +60,32 @@ public abstract class PlottableItem {
 		this.enabled = enabled;
 	}
 
+	@Deprecated
 	public abstract String getDataString();
 
+	/**
+	 * Returns plot command string to be passed to gnuplot.
+	 * @return Command string to be passed to gnuplot.
+	 */
 	public abstract String getPlotString();
 
-	public abstract String getPreProcessProgram();
-
-	public abstract void setPreProcessProgram(String textContent);
-
+	/**
+	 * Returns a clone of this PlottableItem.
+	 * @return A clone of this PlottableItem.
+	 */
 	public abstract PlottableItem getClone();
 
 	public void setStyle(PlottingStyle s) {
 		this.style = s;
 	}
 
-	public abstract String getFileName();
-
+	@Deprecated
 	public abstract Object[] getData();
 
+	@Deprecated
 	public abstract void setData(int i, Object value);
 
-	public abstract void setFileName(String s);
-
+	@Deprecated
 	public abstract void setDataString(String function);
 
 	public void setTitle(String title) {

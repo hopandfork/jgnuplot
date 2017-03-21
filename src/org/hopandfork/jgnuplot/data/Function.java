@@ -23,88 +23,91 @@ package org.hopandfork.jgnuplot.data;
 
 import java.awt.Color;
 
-import org.hopandfork.jgnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.plot.GnuplotColor;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
 
+public class Function extends PlottableItem {
+	
+	/** Expression for the function. */
+	private String functionString;
 
+	public String getFunctionString() {
+		return functionString;
+	}
 
-public class Function extends PlottableItem{
-	private String function;
+	public void setFunctionString(String functionString) {
+		this.functionString = functionString;
+	}
 
-
+	@Override
 	public String getPlotString() {
-		String s = function;
-		if (style != null || addStyleOpt != null || color != null){
+		String s = functionString;
+		if (style != null || addStyleOpt != null || color != null) {
 			s += " with ";
-			if (style != null) s +=  style.name() + "  ";
-			if (addStyleOpt != null)s +=  addStyleOpt + "  ";
-			if (color != null){
+			if (style != null)
+				s += style.name() + "  ";
+			if (addStyleOpt != null)
+				s += addStyleOpt + "  ";
+			if (color != null) {
 
-				s +=  "lc rgb '#"  + color.getHexString() + "'";
+				s += "lc rgb '#" + color.getHexString() + "'";
 			}
-			if (title != null && !title.equals("")) s += "title '" + title + "'  ";
+			if (title != null && !title.equals(""))
+				s += "title '" + title + "'  ";
 		}
 		return s;
 	}
 
-	public String getFileName() {
-		return "FUNCTION";
-	}
-	
+	@Deprecated
 	public String getDataString() {
-		return function;
+		return functionString;
 	}
 
-	public void setFileName(String s){};
-	
+	@Deprecated
 	public void setDataString(String function) {
-		this.function = function;
+		this.functionString = function;
 	}
 
-
+	@Deprecated
 	public Object[] getData() {
 		Object data[] = new Object[8];
-		data[0] = getFileName();
-		data[1] = this.function;
+		data[0] = "";
+		data[1] = this.functionString;
 		data[2] = this.title;
 		data[3] = this.color;
 		data[4] = this.style;
 		data[5] = this.addStyleOpt;
 		data[6] = this.enabled;
 		data[7] = "";
-		return data;	}
-	
+		return data;
+	}
 
-
+	@Deprecated
 	public void setData(int i, Object value) {
-		if (i == 1)	function = (String)value;
-		else if (i == 2)	title = (String) value;
-		else if (i == 3)	color = new GnuplotColor((Color) value );
-		else if (i == 4)	style = (PlottingStyle) value;
-		else if (i == 5)	addStyleOpt = (String)value;
-		else if (i == 6)	enabled = ((Boolean) value).booleanValue();
+		if (i == 1)
+			functionString = (String) value;
+		else if (i == 2)
+			title = (String) value;
+		else if (i == 3)
+			color = new GnuplotColor((Color) value);
+		else if (i == 4)
+			style = (PlottingStyle) value;
+		else if (i == 5)
+			addStyleOpt = (String) value;
+		else if (i == 6)
+			enabled = ((Boolean) value).booleanValue();
 	}
 
-	public String getPreProcessProgram() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-
+	@Override
 	public Function getClone() {
 		Function f = new Function();
-		f.function = function ;
+		f.functionString = functionString;
 		f.title = title;
 		f.style = style;
 		f.color = color;
 		f.addStyleOpt = addStyleOpt;
 		f.enabled = enabled;
-		// TODO Auto-generated method stub
 		return f;
-	}
-
-	public void setPreProcessProgram(String textContent) {
-		//does nothing
-		
 	}
 
 }

@@ -24,7 +24,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.RelativePos;
+import org.hopandfork.jgnuplot.RelativePosition;
 
 
 public class JGPRelativePosComboBox extends JComboBox {
@@ -35,7 +35,7 @@ public class JGPRelativePosComboBox extends JComboBox {
 
 	JGPRelativePosComboBox(){
 		
-        for (RelativePos rp : RelativePos.values())
+        for (RelativePosition rp : RelativePosition.values())
         	this.addItem(rp);
             
 		

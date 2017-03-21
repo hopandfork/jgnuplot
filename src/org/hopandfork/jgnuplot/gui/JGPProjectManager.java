@@ -41,13 +41,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.hopandfork.jgnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.GnuplotExecutor;
-import org.hopandfork.jgnuplot.Label;
-import org.hopandfork.jgnuplot.PlottingStyle;
-import org.hopandfork.jgnuplot.RelativePos;
-import org.hopandfork.jgnuplot.Variable;
+import org.hopandfork.jgnuplot.RelativePosition;
+import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.plot.GnuplotColor;
+import org.hopandfork.jgnuplot.plot.Label;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
+import org.hopandfork.jgnuplot.plot.Variable;
+import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -308,12 +309,12 @@ public class JGPProjectManager extends JGPXMLManager {
 		NodeList datasets =
 		      document.getElementsByTagName(DATASET);
 		for (int i = 0; i < datasets.getLength(); i++){
-			PlottableItem ds;
+			DataSet ds;
 			Element n = (Element) datasets.item(i);
 			
 				if (n.getElementsByTagName(CLASS).getLength() != 0){
 					Class c = Class.forName(n.getElementsByTagName(CLASS).item(0).getTextContent());
-					ds = (PlottableItem) c.newInstance();
+					ds = (DataSet)c.newInstance();
 					
 					if (n.getElementsByTagName(FILENAME).getLength() != 0)
 						ds.setFileName(n.getElementsByTagName(FILENAME).item(0).getTextContent());
@@ -357,7 +358,7 @@ public class JGPProjectManager extends JGPXMLManager {
 				if (n.getElementsByTagName(Y_POS).getLength() != 0)
 					l.setY(Double.parseDouble(n.getElementsByTagName(Y_POS).item(0).getTextContent() ) );
 				if (n.getElementsByTagName(RELATIVE_POS).getLength() != 0)
-					l.setRelativePos(RelativePos.valueOf(n.getElementsByTagName(RELATIVE_POS).item(0).getTextContent() ) );
+					l.setRelativePos(RelativePosition.valueOf(n.getElementsByTagName(RELATIVE_POS).item(0).getTextContent() ) );
 				if (n.getElementsByTagName(DO_PLOT).getLength() != 0)
 					l.setDoPlot(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()  ) );
 
@@ -446,7 +447,13 @@ public class JGPProjectManager extends JGPXMLManager {
 				dataset.setAttribute(ID, i + "");
 
 				addTextNode(document, dataset, CLASS, ds.getClass().getName() + "");
-				addTextNode(document, dataset, FILENAME, ds.getFileName() + "");
+				String fname = "";
+				String preProcessProgram = "";
+				if (ds instanceof DataSet) {
+					fname = ((DataSet)ds).getFileName();
+					preProcessProgram = ((DataSet)ds).getPreProcessProgram();
+				}
+				addTextNode(document, dataset, FILENAME, fname + "");
 				addTextNode(document, dataset, DATASTRING, ds.getDataString() + "");
 				addTextNode(document, dataset, DATASET_TITLE, ds.getTitle() + "");
 				Color c = ds.getColor();
@@ -456,7 +463,7 @@ public class JGPProjectManager extends JGPXMLManager {
 				addTextNode(document, dataset, STYLE, ds.getStyle().name() + "");
 				addTextNode(document, dataset, ADD_STYLE_OPT, ds.getAddStyleOpt() + "");
 				addTextNode(document, dataset, DO_PLOT, ds.isEnabled() + "");
-				addTextNode(document, dataset, PRE_PROCESS_PROGRAM, ds.getPreProcessProgram()+ "");
+				addTextNode(document, dataset, PRE_PROCESS_PROGRAM, preProcessProgram + "");
 
 
 				datasets.appendChild(dataset);

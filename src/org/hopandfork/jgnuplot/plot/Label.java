@@ -19,8 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.plot;
 
+import org.hopandfork.jgnuplot.RelativePosition;
 
 public class Label {
 	private double x;
@@ -29,7 +30,7 @@ public class Label {
 	
 	private String text;
 	
-	private RelativePos relativePos = RelativePos.first;
+	private RelativePosition relativePos = RelativePosition.FIRST;
 	
 	private boolean doPlot = true;
 	
@@ -83,15 +84,15 @@ public class Label {
 		if (i == 0)			text = (String)value ;
 		else if (i == 1)	x = ((Double)value).doubleValue();
 		else if (i == 2)	y = ((Double)value).doubleValue();
-		else if (i == 3)	relativePos = (RelativePos)value;
+		else if (i == 3)	relativePos = (RelativePosition)value;
 		else if (i == 4)	doPlot = ((Boolean) value).booleanValue();
 	}
 
-	public RelativePos getRelativePos() {
+	public RelativePosition getRelativePos() {
 		return relativePos;
 	}
 
-	public void setRelativePos(RelativePos relativePos) {
+	public void setRelativePos(RelativePosition relativePos) {
 		this.relativePos = relativePos;
 	}
 }

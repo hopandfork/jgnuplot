@@ -26,7 +26,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.Variable;
+import org.hopandfork.jgnuplot.plot.Variable;
 
 
 public class JGPVariableTypeComboBox extends JComboBox {

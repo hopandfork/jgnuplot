@@ -42,10 +42,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.hopandfork.jgnuplot.PlottingStyle;
 import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.Function;
 import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.plot.PlottingStyle;
 
 
 public class JGPAddDialog extends JGPDialog implements ActionListener{
@@ -223,9 +223,12 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		else 
 			rbFile.setSelected(true);
 	    
-		tfFileName.setText(plotObject.getFileName());
+		if (plotObject instanceof DataSet) {
+			DataSet ds = (DataSet)plotObject;
+			tfFileName.setText(ds.getFileName());
+			tfPreProcess.setText(ds.getPreProcessProgram());
+		}
 
-		tfPreProcess.setText(plotObject.getPreProcessProgram());
 		
 	    tfDataString.setText(plotObject.getDataString());
 		
@@ -327,15 +330,15 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		
 		PlottableItem p;
 		if (rbFile.isSelected() ){
-			p = new DataSet();
-			p.setFileName(tfFileName.getText());
+			DataSet ds = new DataSet();
+			p = ds;
+			ds.setFileName(tfFileName.getText());
 			((DataSet) p).setPreProcessProgram(tfPreProcess.getText()); 
 		}
 		else
 			p = new Function();
 			
 		p.setDataString(tfDataString.getText());
-		p.setFileName(tfFileName.getText());
 		p.setTitle(tfTitle.getText());
 		p.setEnabled(true);
 		
@@ -344,7 +347,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		
 		//((JGP) this.getOwner()).dsTableModel.addRow(p);
 		
-		this.plotObject = p;
+		plotObject = p;
 		
 		this.setVisible(false);
 	}

@@ -21,10 +21,9 @@
 
 package org.hopandfork.jgnuplot;
 
-public interface JGPPrintWriter {
-	
-	public void println(String s);
-	
-	public void printerrln(String s);
-	
+public enum RelativePosition {
+		FIRST,
+		SECOND,
+		SCREEN,
+		GRAPH
 }
