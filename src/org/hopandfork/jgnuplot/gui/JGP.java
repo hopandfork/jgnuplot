@@ -108,7 +108,7 @@ class UpdateChecker implements Runnable {
 			// check wether one of the files has changed
 			for (int i = 0; i < owner.dsTableModel.data.size(); i++) {
 				if (owner.dsTableModel.data.get(i).getClass().equals(DataSet.class)
-						&& ((PlottableItem) owner.dsTableModel.data.get(i)).getDoPlot()) {
+						&& ((PlottableItem) owner.dsTableModel.data.get(i)).isEnabled()) {
 					DataSet ds = (DataSet) owner.dsTableModel.data.get(i);
 					// if dataset source file has chenged, replot
 					File f = new File(ds.getFileName());

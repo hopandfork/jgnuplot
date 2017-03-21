@@ -27,7 +27,7 @@ import java.io.IOException;
 
 import org.hopandfork.jgnuplot.GnuplotColor;
 import org.hopandfork.jgnuplot.GnuplotExecutor;
-import org.hopandfork.jgnuplot.PlotStyle;
+import org.hopandfork.jgnuplot.PlottingStyle;
 import org.hopandfork.jgnuplot.PreProcessPlugin;
 
 public class DataSet extends PlottableItem {
@@ -59,7 +59,7 @@ public class DataSet extends PlottableItem {
 		data[4] = this.style;
 		if (this.addStyleOpt == null) addStyleOpt = "";
 		data[5] = this.addStyleOpt;
-		data[6] = this.doPlot;
+		data[6] = this.enabled;
 		data[7] = this.preProcessProgram;
 		return data;
 	}
@@ -69,9 +69,9 @@ public class DataSet extends PlottableItem {
 		else if (i == 1)	dataString = (String) value;
 		else if (i == 2)	title = (String) value;
 		else if (i == 3)	color = new GnuplotColor((Color) value );
-		else if (i == 4)	style = (PlotStyle) value;
+		else if (i == 4)	style = (PlottingStyle) value;
 		else if (i == 5)	addStyleOpt = (String) value;
-		else if (i == 6)	doPlot = ((Boolean) value).booleanValue();
+		else if (i == 6)	enabled = ((Boolean) value).booleanValue();
 		else if (i == 7)	preProcessProgram = (String)value;
 	}
 
@@ -90,7 +90,7 @@ public class DataSet extends PlottableItem {
 		this.title = title;
 	}
 
-	public DataSet(String fileName, String dataString, String title, PlotStyle style) {
+	public DataSet(String fileName, String dataString, String title, PlottingStyle style) {
 		super();
 		// TODO Auto-generated constructor stub
 		this.dataString = dataString;
@@ -197,7 +197,7 @@ public class DataSet extends PlottableItem {
 		ds.color = color;
 		ds.style = style;
 		ds.addStyleOpt = addStyleOpt;
-		ds.doPlot = doPlot;
+		ds.enabled = enabled;
 		ds.preProcessProgram = preProcessProgram;
 		// TODO Auto-generated method stub
 		return ds;

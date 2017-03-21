@@ -44,7 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.hopandfork.jgnuplot.GnuplotColor;
 import org.hopandfork.jgnuplot.GnuplotExecutor;
 import org.hopandfork.jgnuplot.Label;
-import org.hopandfork.jgnuplot.PlotStyle;
+import org.hopandfork.jgnuplot.PlottingStyle;
 import org.hopandfork.jgnuplot.RelativePos;
 import org.hopandfork.jgnuplot.Variable;
 import org.hopandfork.jgnuplot.data.PlottableItem;
@@ -327,11 +327,11 @@ public class JGPProjectManager extends JGPXMLManager {
 						else ds.setColor( GnuplotColor.parseHexString(sc) );
 					}
 					if (n.getElementsByTagName(STYLE).getLength() != 0)
-						ds.setStyle(PlotStyle.valueOf( n.getElementsByTagName(STYLE).item(0).getTextContent() ) );
+						ds.setStyle(PlottingStyle.valueOf( n.getElementsByTagName(STYLE).item(0).getTextContent() ) );
 					if (n.getElementsByTagName(ADD_STYLE_OPT).getLength() != 0)
 						ds.setAddStyleOpt( n.getElementsByTagName(ADD_STYLE_OPT).item(0).getTextContent()  );
 					if (n.getElementsByTagName(DO_PLOT).getLength() != 0)
-						ds.setDoPlot(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()  ));
+						ds.setEnabled(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()  ));
 					
 					if (n.getElementsByTagName(PRE_PROCESS_PROGRAM).getLength() != 0)
 						ds.setPreProcessProgram(n.getElementsByTagName(PRE_PROCESS_PROGRAM).item(0).getTextContent());
@@ -455,7 +455,7 @@ public class JGPProjectManager extends JGPXMLManager {
 				addTextNode(document, dataset, COLOR,  sc + "");
 				addTextNode(document, dataset, STYLE, ds.getStyle().name() + "");
 				addTextNode(document, dataset, ADD_STYLE_OPT, ds.getAddStyleOpt() + "");
-				addTextNode(document, dataset, DO_PLOT, ds.getDoPlot() + "");
+				addTextNode(document, dataset, DO_PLOT, ds.isEnabled() + "");
 				addTextNode(document, dataset, PRE_PROCESS_PROGRAM, ds.getPreProcessProgram()+ "");
 
 

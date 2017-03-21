@@ -24,7 +24,7 @@ package org.hopandfork.jgnuplot.data;
 import java.awt.Color;
 
 import org.hopandfork.jgnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.PlotStyle;
+import org.hopandfork.jgnuplot.PlottingStyle;
 
 
 
@@ -70,7 +70,7 @@ public class Function extends PlottableItem{
 		data[3] = this.color;
 		data[4] = this.style;
 		data[5] = this.addStyleOpt;
-		data[6] = this.doPlot;
+		data[6] = this.enabled;
 		data[7] = "";
 		return data;	}
 	
@@ -80,9 +80,9 @@ public class Function extends PlottableItem{
 		if (i == 1)	function = (String)value;
 		else if (i == 2)	title = (String) value;
 		else if (i == 3)	color = new GnuplotColor((Color) value );
-		else if (i == 4)	style = (PlotStyle) value;
+		else if (i == 4)	style = (PlottingStyle) value;
 		else if (i == 5)	addStyleOpt = (String)value;
-		else if (i == 6)	doPlot = ((Boolean) value).booleanValue();
+		else if (i == 6)	enabled = ((Boolean) value).booleanValue();
 	}
 
 	public String getPreProcessProgram() {
@@ -97,7 +97,7 @@ public class Function extends PlottableItem{
 		f.style = style;
 		f.color = color;
 		f.addStyleOpt = addStyleOpt;
-		f.doPlot = doPlot;
+		f.enabled = enabled;
 		// TODO Auto-generated method stub
 		return f;
 	}

@@ -24,7 +24,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.PlotStyle;
+import org.hopandfork.jgnuplot.PlottingStyle;
 
 
 public class JGPStyleComboBox extends JComboBox{
@@ -35,7 +35,7 @@ public class JGPStyleComboBox extends JComboBox{
 
 	JGPStyleComboBox(){
 		
-        for (PlotStyle s : PlotStyle.values())
+        for (PlottingStyle s : PlottingStyle.values())
         	this.addItem(s);
             
         this.setEditable(true);

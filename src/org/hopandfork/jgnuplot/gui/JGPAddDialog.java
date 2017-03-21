@@ -42,7 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.hopandfork.jgnuplot.PlotStyle;
+import org.hopandfork.jgnuplot.PlottingStyle;
 import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.Function;
 import org.hopandfork.jgnuplot.data.PlottableItem;
@@ -337,10 +337,10 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		p.setDataString(tfDataString.getText());
 		p.setFileName(tfFileName.getText());
 		p.setTitle(tfTitle.getText());
-		p.setDoPlot(true);
+		p.setEnabled(true);
 		
 		
-		if (cbStyle.getSelectedItem() != null) p.setStyle((PlotStyle) cbStyle.getSelectedItem());
+		if (cbStyle.getSelectedItem() != null) p.setStyle((PlottingStyle) cbStyle.getSelectedItem());
 		
 		//((JGP) this.getOwner()).dsTableModel.addRow(p);
 		

@@ -21,7 +21,7 @@
 
 package org.hopandfork.jgnuplot;
 
-public enum PlotStyle {
+public enum PlottingStyle {
 	 lines, points, linespoints, impulses,
 	 dots, steps, fsteps, histeps, errorbars, xerrorbars,
 	 yerrorbars, xyerrorbars, errorlines, xerrorlines, yerrorlines,

@@ -279,7 +279,7 @@ public class GnuplotExecutor{
 		}
 
 		for (int i = 0; i < dataSets.size(); i++){
-			if (dataSets.get(i).getDoPlot()){
+			if (dataSets.get(i).isEnabled()){
 				s += ( dataSets.get(i).getPlotString() );
 				s += ( ", " );		
 			}
@@ -423,7 +423,7 @@ public class GnuplotExecutor{
 
 		DataSet ds = new DataSet(inFileName, "1", "($4 * 2)");
 
-		ds.style = PlotStyle.lines;
+		ds.style = PlottingStyle.lines;
 
 		ds.title = "QE";
 

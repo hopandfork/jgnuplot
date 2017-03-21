@@ -22,58 +22,69 @@
 package org.hopandfork.jgnuplot.data;
 
 import org.hopandfork.jgnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.PlotStyle;
+import org.hopandfork.jgnuplot.PlottingStyle;
 
+/**
+ * Abstract item which can be added to a plot (e.g., a function, a dataset).
+ */
 public abstract class PlottableItem {
 
+	/** Title of this item in the plot. */
 	public String title;
-	public boolean doPlot = true;
-	public PlotStyle style;
-	
-	public GnuplotColor color;
-	
-	//additional style options like linecolor, pointsize a.s.o.
-	public String addStyleOpt;
 
-	public boolean getDoPlot() {
-		return this.doPlot;
+	/** Enable flag for this item. */
+	public boolean enabled = true;
+
+	/** PlottingStyle to use. */
+	public PlottingStyle style;
+
+	/** Color to use. */
+	public GnuplotColor color;
+
+	/** Additional style options like linecolor, pointsize a.s.o. */
+	public String addStyleOpt; // TODO we should avoid a user-defined String...
+
+	public boolean isEnabled() {
+		return this.enabled;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public PlotStyle getStyle() {
+	public PlottingStyle getStyle() {
 		return this.style;
 	}
 
-	public void setDoPlot(boolean doPlot){
-		this.doPlot = doPlot;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
-	
-	public abstract String getDataString() ;
+
+	public abstract String getDataString();
 
 	public abstract String getPlotString();
+
 	public abstract String getPreProcessProgram();
+
 	public abstract void setPreProcessProgram(String textContent);
+
 	public abstract PlottableItem getClone();
-	
-	
-	public void setStyle(PlotStyle s) {
+
+	public void setStyle(PlottingStyle s) {
 		this.style = s;
 	}
 
 	public abstract String getFileName();
 
-	public abstract  Object[] getData();
+	public abstract Object[] getData();
 
-	public abstract  void setData(int i, Object value);
+	public abstract void setData(int i, Object value);
 
-	public abstract  void setFileName(String s);
+	public abstract void setFileName(String s);
 
-	public abstract  void setDataString(String function);
+	public abstract void setDataString(String function);
 
-	public void setTitle(String title){
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -92,6 +103,5 @@ public abstract class PlottableItem {
 	public void setColor(GnuplotColor color) {
 		this.color = color;
 	}
-
 
 }
