@@ -15,7 +15,7 @@ As he explains in the original project page (see <http://jgp.sourceforge.net>):
 > Sometimes one may want to quickly add or delete a certain dataset from the
 > plot. Or maybe pick a different color or linestyle.
 >
-> JGNUplot is a JAVA written interface which uses gnuplot as plotting engine.
+> jGNUplot is a JAVA written interface which uses gnuplot as plotting engine.
 
 jGNUPlot hasn't been actively mantained for several years; it was ported
 on GitHub in order to migrate the GUI from AWT to Swing, and to develop new
@@ -23,11 +23,11 @@ features that will be defined in time.
 
 ## Installation ##
 ### Prerequisites ###
-- You need to have [gnuplot](http://www.gnuplot.info) installed.
-- You need a Java Runtime Environment (5+)
+- A working installation of [gnuplot](http://www.gnuplot.info).
+- Java Runtime Environment (5+)
 
 ### Compiling from source  ###
-JGNUplot can be built using *Maven*. Enter the root directory and run:
+jGNUplot can be built using *Maven*. Enter the root directory and run:
 
 	mvn clean install package
 
@@ -40,9 +40,11 @@ backgrounded)*
 
 ## Usage ##
 ### Plotting a function ###
-- Start JGNUplot using the script
+- Start jGNUplot using the script
 
-    ./jgp
+```
+./jgp
+```
 
 - Click on **Add**.
 - Select **function**, replace **1:2** in the function field by a function like
@@ -69,7 +71,7 @@ with the commands in the plot string, i.e. reading the gnuplot manual or
 starting gnuplot using the help command.
 
 ## Credits ##
-jGNUPlot has been developed up to version 0.1.2 by Maximilian H. Fabricius, who
+jGNUplot has been developed up to version 0.1.2 by Maximilian H. Fabricius, who
 originally released the source code on
 [SourceForge](http://jgp.sourceforge.net).
 
