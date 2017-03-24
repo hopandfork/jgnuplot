@@ -35,8 +35,7 @@ jGNUplot can be built using *Maven*. Enter the root directory and run:
 1. Unzip the "tar.gz" or "zip" archive into a directory of your choice
 2. Make the file `jgp` executable: `chmod +x jgp`
 3. Execute `./jgp`. You may also start JGP with `java -cp <JARFILE.jar>
-jgp.gui.JGP` *(Do not background the process, JGP was found to crash if
-backgrounded)*
+jgp.gui.JGP`
 
 ## Usage ##
 ### Plotting a function ###
