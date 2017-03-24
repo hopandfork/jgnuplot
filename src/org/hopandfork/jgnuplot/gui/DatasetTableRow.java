@@ -21,24 +21,14 @@
 
 package org.hopandfork.jgnuplot.gui;
 
+public class DatasetTableRow {
 
-import javax.swing.JComboBox;
-
-import org.hopandfork.jgnuplot.RelativePosition;
-
-
-public class JGPRelativePosComboBox extends JComboBox {
 	/**
-	 * 
+	 * @param args
 	 */
-	private static final long serialVersionUID = -224645834810658343L;
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 
-	JGPRelativePosComboBox(){
-		
-        for (RelativePosition rp : RelativePosition.values())
-        	this.addItem(rp);
-            
-		
 	}
-}
 
+}

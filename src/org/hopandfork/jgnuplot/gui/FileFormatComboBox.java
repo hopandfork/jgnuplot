@@ -28,14 +28,14 @@ import javax.swing.JComboBox;
 import org.hopandfork.jgnuplot.plot.OutputFileFormat;
 
 
-public class JGPFileFormatComboBox extends JComboBox {
+public class FileFormatComboBox extends JComboBox {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public JGPFileFormatComboBox() {
+	public FileFormatComboBox() {
 		super();
 
 			
@@ -46,107 +46,3 @@ public class JGPFileFormatComboBox extends JComboBox {
 	}
 
 }
-//VWS
-//aed512
-//aed767
-//aifm
-//amiga
-//apollo
-//aqua
-//atari
-//be
-//bitgraph
-//cgi
-//cgm
-//corel
-//debug
-//dospc
-//dumb
-//dxf
-//dxy800a
-//eepic
-//egalib
-//egamono
-//emf
-//emtex
-//emxvesa
-//emxvga
-//epslatex
-//epson-180dpi
-//epson-60dpi
-//epson-lx800
-//excl
-//fig
-//ggi
-//gif
-//gnugraph
-//gpic
-//gpr
-//grass
-//hcgi
-//hercules
-//hp2623a
-//hp2648
-//hp500c
-//hpdj
-//hpgl
-//hpljii
-//hppj
-//imagen
-//iris4d
-//jpeg
-//kc-tek40xx
-//km-tek40xx
-//kyo
-//latex
-//linux
-//macintosh
-//mf
-//mgr
-//mif
-//mp
-//mtos
-//nec-cp6
-//next
-//okidata
-//openstep
-//pbm
-//pcl5
-//pdf
-//pm
-//png
-//postscript
-//prescribe
-//pslatex
-//pstex
-//pstricks
-//qms
-//regis
-//rgip
-//selanar
-//ssvgalib
-//starc
-//sun
-//svg
-//svga
-//svgalib
-//table
-//tandy-60dpi
-//tek40xx
-//tek410x
-//texdraw
-//tgif
-//tkcanvas
-//tpic
-//uniplex
-//unixpc
-//vdi
-//vgagl
-//vgal
-//vgalib
-//vgamono
-//vttek
-//vx384
-//windows
-//x11
-//xlib

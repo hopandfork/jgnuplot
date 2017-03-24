@@ -21,8 +21,24 @@
 
 package org.hopandfork.jgnuplot.gui;
 
-import javax.swing.JFrame;
 
-public class JGPFrame extends JFrame {
+import javax.swing.JComboBox;
 
+import org.hopandfork.jgnuplot.RelativePosition;
+
+
+public class RelativePosComboBox extends JComboBox {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -224645834810658343L;
+
+	public RelativePosComboBox(){
+		
+        for (RelativePosition rp : RelativePosition.values())
+        	this.addItem(rp);
+            
+		
+	}
 }
+

@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -45,6 +45,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -72,71 +73,33 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.gui.ColorEditor;
+import org.hopandfork.jgnuplot.gui.ColorRenderer;
+import org.hopandfork.jgnuplot.gui.DatasetTableModel;
+import org.hopandfork.jgnuplot.gui.HistoryElement;
+import org.hopandfork.jgnuplot.gui.JGPFileFilter;
+import org.hopandfork.jgnuplot.gui.LabelTableModel;
+import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
+import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
+import org.hopandfork.jgnuplot.gui.StyleComboBox;
+import org.hopandfork.jgnuplot.gui.VariableTableModel;
+import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
+import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
+import org.hopandfork.jgnuplot.gui.dialog.AddDialog;
+import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
+import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
 import org.hopandfork.jgnuplot.plot.GnuplotVariable;
 import org.hopandfork.jgnuplot.plot.Label;
+import org.hopandfork.jgnuplot.project.ProjectManager;
+import org.hopandfork.jgnuplot.project.ProjectManagerException;
 import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 import org.hopandfork.jgnuplot.runtime.JGPPrintWriter;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-class HistoryElement {
-	String description;
-	Document state;
-
-	HistoryElement(String description, Document state) {
-		this.description = description;
-		this.state = state;
-	}
-}
-
-class UpdateChecker implements Runnable {
-	JGP owner;
-
-	public boolean checkForUpdate;
-
-	UpdateChecker(JGP owner) {
-		this.owner = owner;
-	}
-
-	public void run() {
-		checkForUpdate = true;
-
-		while (checkForUpdate) {
-			// check wether one of the files has changed
-			for (int i = 0; i < owner.dsTableModel.data.size(); i++) {
-				if (owner.dsTableModel.data.get(i).getClass().equals(DataSet.class)
-						&& ((PlottableItem) owner.dsTableModel.data.get(i)).isEnabled()) {
-					DataSet ds = (DataSet) owner.dsTableModel.data.get(i);
-					// if dataset source file has chenged, replot
-					File f = new File(ds.getFileName());
-					if (f.lastModified() > ds.getLastChanged()) {
-						try {
-							owner.acPlot();
-							ds.setLastChanged(f.lastModified());
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-}
-
-public class JGP extends JGPFrame
+public class JGP extends JFrame
 		implements ActionListener, ChangeListener, JGPPrintWriter, DocumentListener, FocusListener {
 
 	private Stack<HistoryElement> history;
@@ -146,22 +109,22 @@ public class JGP extends JGPFrame
 
 	private UpdateChecker updateChecker;
 
-	private JGPConsoleDialog consoleDialog;
+	private ConsoleDialog consoleDialog;
 	// private JGPAddDialog addDialog;
 
-	private JGPPlotDialog plotDialog;
+	private PlotDialog plotDialog;
 
 	private JCheckBox cbUpdateCheck;
 
 	// public JTable dataSetTable;
 
-	public JGPDSTableModel dsTableModel;
+	public DatasetTableModel dsTableModel;
 	public JTable dataSetTable;
 
-	public JGPLabelTableModel labelTableModel;
+	public LabelTableModel labelTableModel;
 	public JTable labelTable;
 
-	public JGPVariableTableModel variableTableModel;
+	public VariableTableModel variableTableModel;
 	public JTable variableTable;
 
 	public JTextArea taShell;
@@ -236,7 +199,7 @@ public class JGP extends JGPFrame
 
 		this.setLocationByPlatform(true);
 
-		plotDialog = new JGPPlotDialog(this);
+		plotDialog = new PlotDialog(this);
 
 		// file = new File(".");
 
@@ -339,7 +302,7 @@ public class JGP extends JGPFrame
 
 		// recentProjects = new ArrayList<JGPRecentProjectMenuItem>();
 		for (int i = 0; i < nRecentProjects; i++) {
-			JGPRecentProjectMenuItem menu_item = new JGPRecentProjectMenuItem("-");
+			RecentProjectMenuItem menu_item = new RecentProjectMenuItem("-");
 			menu_item.addActionListener(this);
 			file_menu.add(menu_item);
 			// recentProjects.add((JGPRecentProjectMenuItem)
@@ -742,7 +705,7 @@ public class JGP extends JGPFrame
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		labelTableModel = new JGPLabelTableModel();
+		labelTableModel = new LabelTableModel();
 		labelTable = new JTable(labelTableModel);
 		labelTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		// Create the scroll pane and add the table to it.
@@ -750,7 +713,7 @@ public class JGP extends JGPFrame
 		// jp.setPreferredSize(new Dimension(400, 400));
 
 		TableColumn styleColumn = labelTable.getColumnModel().getColumn(3);
-		styleColumn.setCellEditor(new DefaultCellEditor(new JGPRelativePosComboBox()));
+		styleColumn.setCellEditor(new DefaultCellEditor(new RelativePosComboBox()));
 
 		// TableColumn doPlotColumn =
 		// dataSetTable.getColumnModel().getColumn(4);
@@ -801,7 +764,7 @@ public class JGP extends JGPFrame
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		dsTableModel = new JGPDSTableModel();
+		dsTableModel = new DatasetTableModel();
 		dataSetTable = new JTable(dsTableModel);
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -813,11 +776,11 @@ public class JGP extends JGPFrame
 
 		// jp.setPreferredSize(new Dimension(400, 400));
 		TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
-		styleColumn.setCellEditor(new DefaultCellEditor(new JGPStyleComboBox()));
+		styleColumn.setCellEditor(new DefaultCellEditor(new StyleComboBox()));
 
 		// Set up renderer and editor for the Favorite Color column.
-		dataSetTable.setDefaultRenderer(Color.class, new JGPColorRenderer(true));
-		dataSetTable.setDefaultEditor(Color.class, new JGPColorEditor());
+		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
+		dataSetTable.setDefaultEditor(Color.class, new ColorEditor());
 
 		// TableColumn doPlotColumn =
 		// dataSetTable.getColumnModel().getColumn(4);
@@ -883,7 +846,7 @@ public class JGP extends JGPFrame
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		variableTableModel = new JGPVariableTableModel();
+		variableTableModel = new VariableTableModel();
 		variableTable = new JTable(variableTableModel);
 		variableTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		// Create the scroll pane and add the table to it.
@@ -891,7 +854,7 @@ public class JGP extends JGPFrame
 		// jp.setPreferredSize(new Dimension(400, 400));
 
 		TableColumn typeColumn = variableTable.getColumnModel().getColumn(0);
-		typeColumn.setCellEditor(new DefaultCellEditor(new JGPVariableTypeComboBox()));
+		typeColumn.setCellEditor(new DefaultCellEditor(new VariableTypeComboBox()));
 
 		// TableColumn doPlotColumn =
 		// dataSetTable.getColumnModel().getColumn(4);
@@ -910,17 +873,6 @@ public class JGP extends JGPFrame
 	}
 
 	public static void main(String[] args) throws MalformedURLException {
-		// invoke splash window
-		// URL in = JGNUplot.class.getResource("./images/splash.png");
-		// SplashWindow.splash(in);
-		JGPSplashWindow.splash("./images/splash.png");
-		JGPSplashWindow.invoke("org.hopandfork.jgnuplot.gui.JGP", "start", args);
-		JGPSplashWindow.disposeSplash();
-		// invoke start directly to get rid of splash
-		// start(args);
-	}
-
-	public static void start(String[] args) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -997,7 +949,7 @@ public class JGP extends JGPFrame
 			saveHistoryState(e.getActionCommand());
 			acNew();
 		} else if (e.getActionCommand().equals("about"))
-			JGPAboutDialog.showAboutDialog();
+			AboutDialog.showAboutDialog();
 		else if (e.getActionCommand().equals("clone")) {
 			saveHistoryState(e.getActionCommand());
 			acClone();
@@ -1037,7 +989,7 @@ public class JGP extends JGPFrame
 	}
 
 	public void acAdd() {
-		PlottableItem p = JGPAddDialog.showAddDialog("Add dataset...");
+		PlottableItem p = AddDialog.showAddDialog("Add dataset...");
 		if (null != p)
 			dsTableModel.addRow(p);
 		System.out.println("added..");
@@ -1128,7 +1080,7 @@ public class JGP extends JGPFrame
 
 	public void acSaveStandardProject() {
 
-		new JGPProjectManager(this).writeProjectFile(STANDARD_PROJECT_FILE);
+		new ProjectManager(this).writeProjectFile(STANDARD_PROJECT_FILE);
 
 	}
 
@@ -1148,7 +1100,7 @@ public class JGP extends JGPFrame
 
 	public void loadStandardProject() {
 		try {
-			new JGPProjectManager(this).loadProjectFile(STANDARD_PROJECT_FILE);
+			new ProjectManager(this).loadProjectFile(STANDARD_PROJECT_FILE);
 		} catch (RuntimeException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		} catch (ClassNotFoundException e) {
@@ -1163,7 +1115,7 @@ public class JGP extends JGPFrame
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		} catch (IllegalAccessException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (JGPProjectManagerException e) {
+		} catch (ProjectManagerException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		}
 
@@ -1185,7 +1137,7 @@ public class JGP extends JGPFrame
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
-			PlottableItem p = JGPAddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...");
+			PlottableItem p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...");
 			if (null != p)
 				dsTableModel.data.set(r[0], p);
 			dsTableModel.fireTableDataChanged();
@@ -1492,7 +1444,7 @@ public class JGP extends JGPFrame
 		gp.plotThreaded();
 	}
 
-	GnuplotExecutor getGNUplot() {
+	public GnuplotExecutor getGNUplot() {
 		GnuplotExecutor gp = new GnuplotExecutor();
 		for (int i = 0; i < dsTableModel.data.size(); i++) {
 			gp.dataSets.add(dsTableModel.data.get(i));
@@ -1584,10 +1536,10 @@ public class JGP extends JGPFrame
 	 *            Tells whether the console should be made visibile if not
 	 *            visible already.
 	 */
-	void showConsole(String text, boolean append, boolean makeVisible) {
+	public void showConsole(String text, boolean append, boolean makeVisible) {
 
 		if (consoleDialog == null)
-			consoleDialog = new JGPConsoleDialog();
+			consoleDialog = new ConsoleDialog();
 		if (makeVisible)
 			consoleDialog.setVisible(true);
 
@@ -1724,7 +1676,7 @@ public class JGP extends JGPFrame
 
 		// parseFile(inFile);
 		try {
-			new JGPProjectManager(this).loadProjectFile(fileName);
+			new ProjectManager(this).loadProjectFile(fileName);
 		} catch (DOMException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		} catch (ClassNotFoundException e) {
@@ -1739,7 +1691,7 @@ public class JGP extends JGPFrame
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		} catch (IllegalAccessException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (JGPProjectManagerException e) {
+		} catch (ProjectManagerException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		}
 
@@ -1794,7 +1746,7 @@ public class JGP extends JGPFrame
 
 			// dumpSettings(outFile);
 
-			new JGPProjectManager(this).writeProjectFile(file.getPath());
+			new ProjectManager(this).writeProjectFile(file.getPath());
 			addRecentProject(file.getPath());
 
 			return;
@@ -1820,7 +1772,7 @@ public class JGP extends JGPFrame
 			return;
 		}
 
-		new JGPProjectManager(this).writeProjectFile(projectFileName);
+		new ProjectManager(this).writeProjectFile(projectFileName);
 		showStatus("Project saved to: " + projectFileName);
 		addRecentProject(projectFileName);
 
@@ -1834,7 +1786,7 @@ public class JGP extends JGPFrame
 	public void saveSettingst() {
 		if (debug)
 			System.out.println("Saving settings to: " + SETTINGS_FILE);
-		JGPSettingsManager sm = new JGPSettingsManager(this);
+		SettingsManager sm = new SettingsManager(this);
 
 		// check whether project already exist in the list,
 		// if yes, move it to the first position
@@ -1849,7 +1801,7 @@ public class JGP extends JGPFrame
 	}
 
 	public void loadSettings() {
-		JGPSettingsManager sm = new JGPSettingsManager(this);
+		SettingsManager sm = new SettingsManager(this);
 
 		try {
 			sm.readSettingsXML(SETTINGS_FILE);
@@ -1906,7 +1858,7 @@ public class JGP extends JGPFrame
 
 		// move existing entries down
 		// put added recent project on top of the list
-		JGPRecentProjectMenuItem menu_item = new JGPRecentProjectMenuItem(textContent);
+		RecentProjectMenuItem menu_item = new RecentProjectMenuItem(textContent);
 		menu_item.setActionCommand("load_recent_project: " + textContent);
 		menu_item.addActionListener(this);
 		file_menu.add(menu_item, startRecentProjects);
@@ -1915,7 +1867,7 @@ public class JGP extends JGPFrame
 	}
 
 	public void saveHistoryState(String desc) {
-		HistoryElement h = new HistoryElement(desc, new JGPProjectManager(this).saveProjectXML());
+		HistoryElement h = new HistoryElement(desc, new ProjectManager(this).saveProjectXML());
 		history.push(h);
 		undo_menu_item.setText("Undo " + desc);
 		undo_menu_item.setEnabled(true);
@@ -1942,11 +1894,11 @@ public class JGP extends JGPFrame
 			clearVariableTable();
 
 			// now restore previous state
-			new JGPProjectManager(this).loadProjectXML(h.state);
+			new ProjectManager(this).loadProjectXML(h.state);
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JGPProjectManagerException e) {
+		} catch (ProjectManagerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -1980,7 +1932,7 @@ public class JGP extends JGPFrame
 		valueChanged = false;
 		// save history since user might attempt to change the
 		// components value
-		tmpHistory = new HistoryElement("textfield change", new JGPProjectManager(this).saveProjectXML());
+		tmpHistory = new HistoryElement("textfield change", new ProjectManager(this).saveProjectXML());
 	}
 
 	public void focusLost(FocusEvent e) {

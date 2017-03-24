@@ -23,9 +23,9 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-public class JGPFontComboBox extends JComboBox {
+public class FontComboBox extends JComboBox {
 
-	public JGPFontComboBox() {
+	public FontComboBox() {
 		super();
 		this.addItem("Helvetica");
 		this.setEditable(true);

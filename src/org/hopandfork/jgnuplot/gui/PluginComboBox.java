@@ -30,7 +30,7 @@ import javax.swing.JComboBox;
 import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
 
 
-public class JGPPluginComboBox extends JComboBox {
+public class PluginComboBox extends JComboBox {
 	boolean DEBUG = true;
 	
 	
@@ -80,7 +80,7 @@ public class JGPPluginComboBox extends JComboBox {
 
 	}
 	
-	public JGPPluginComboBox() {
+	public PluginComboBox() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

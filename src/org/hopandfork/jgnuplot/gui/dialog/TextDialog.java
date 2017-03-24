@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.dialog;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -12,11 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public abstract class JGPTextDialog  extends JGPDialog  implements ActionListener{
+import org.hopandfork.jgnuplot.gui.JGPPanel;
+
+public abstract class TextDialog  extends JGPDialog  implements ActionListener{
 
 	protected JTextArea textArea;
 
-	public JGPTextDialog() throws HeadlessException {
+	public TextDialog() throws HeadlessException {
 		setPreferredSize(new Dimension(480, 360));
 		this.setResizable(false);
 		add(createMainPanel());

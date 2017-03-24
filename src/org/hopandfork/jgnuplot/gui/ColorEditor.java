@@ -33,7 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
-public class JGPColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+public class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 	Color currentColor;
 
 	JButton button;
@@ -44,7 +44,7 @@ public class JGPColorEditor extends AbstractCellEditor implements TableCellEdito
 
 	protected static final String EDIT = "edit";
 
-	public JGPColorEditor() {
+	public ColorEditor() {
 		button = new JButton();
 		button.setActionCommand(EDIT);
 		button.addActionListener(this);

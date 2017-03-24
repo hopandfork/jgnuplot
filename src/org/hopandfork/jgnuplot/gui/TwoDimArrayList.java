@@ -23,7 +23,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import java.util.ArrayList;
 
-public class JGPTwoDimArrayList<DataType> {
+public class TwoDimArrayList<DataType> {
 	
 	private ArrayList<ArrayList<DataType>> rows;
 	
@@ -32,7 +32,7 @@ public class JGPTwoDimArrayList<DataType> {
 	private int nrows = 0;
 	
 	
-	public JGPTwoDimArrayList() {
+	public TwoDimArrayList() {
 		rows = new ArrayList<ArrayList<DataType>>();
 	}
 
@@ -63,7 +63,7 @@ public class JGPTwoDimArrayList<DataType> {
 	
 	
     public static void main(String[] args) {
-    	JGPTwoDimArrayList<String> a = new JGPTwoDimArrayList<String>();
+    	TwoDimArrayList<String> a = new TwoDimArrayList<String>();
     	a.set(0, 0, "zero,zero");
     	a.set(0, 1, "zero,one");
     	a.set(1, 0, "one,zero");

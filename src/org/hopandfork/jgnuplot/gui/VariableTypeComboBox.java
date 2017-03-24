@@ -21,6 +21,27 @@
 
 package org.hopandfork.jgnuplot.gui;
 
-public class JGPOutputPanel extends JGPPanel {
 
+
+
+import javax.swing.JComboBox;
+
+import org.hopandfork.jgnuplot.plot.Variable;
+
+
+public class VariableTypeComboBox extends JComboBox {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -224645834810658343L;
+
+	public VariableTypeComboBox(){
+		
+       
+        	this.addItem(Variable.Type.GNUPLOT);
+        	this.addItem(Variable.Type.STRING);
+            
+		
+	}
 }
+

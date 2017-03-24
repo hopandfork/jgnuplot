@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.hopandfork.jgnuplot.project.XMLManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,7 +19,7 @@ import org.xml.sax.SAXException;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
-public class JGPSettingsManager extends JGPXMLManager {
+public class SettingsManager extends XMLManager {
 	
 	public static final String RECENT_PROJECTS = "recent_projects";
 
@@ -34,7 +35,7 @@ public class JGPSettingsManager extends JGPXMLManager {
 	
 	private  JGP jgnuplot;
 
-	public JGPSettingsManager(JGP jgnuplot) {
+	public SettingsManager(JGP jgnuplot) {
 		this.jgnuplot = jgnuplot;
 		projectFiles = new ArrayList<String>();
 	}

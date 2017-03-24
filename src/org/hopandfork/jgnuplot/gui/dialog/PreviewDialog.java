@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.dialog;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
@@ -66,14 +66,17 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.PreviewTableModel;
+
 import sun.awt.AppContext;
 import sun.awt.PeerEvent;
 
-public class JGPPreviewDialog  extends JGPDialog implements ActionListener, FocusListener{
+public class PreviewDialog  extends JGPDialog implements ActionListener, FocusListener{
 
 	private String fileName;
 	
-	public JGPPreviewTableModel pvTableModel;
+	public PreviewTableModel pvTableModel;
 	
 	public JTable previewTable;
 	
@@ -86,7 +89,7 @@ public class JGPPreviewDialog  extends JGPDialog implements ActionListener, Focu
 	
 
 
-	public JGPPreviewDialog(String fileName, String dataString) throws HeadlessException {
+	public PreviewDialog(String fileName, String dataString) throws HeadlessException {
 		super();
 		init(fileName, dataString);
 	}
@@ -148,7 +151,7 @@ public class JGPPreviewDialog  extends JGPDialog implements ActionListener, Focu
 		jp.setLayout(gbl);
 		
 		try {
-			pvTableModel = new JGPPreviewTableModel(fileName);
+			pvTableModel = new PreviewTableModel(fileName);
 		} catch (IOException e) {
 			 JOptionPane.showMessageDialog(null, "Error", "Could not read the datafile: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
 			 dataString = null;
@@ -416,7 +419,7 @@ public class JGPPreviewDialog  extends JGPDialog implements ActionListener, Focu
 	}
 	
     public static void main(String[] args) throws IOException {
-    	System.out.println("datastring: " +  JGPPreviewDialog.showDataStringAssist("test.dat","1:2"));
+    	System.out.println("datastring: " +  PreviewDialog.showDataStringAssist("test.dat","1:2"));
     }
 
 	public void focusGained(FocusEvent e) {
@@ -435,7 +438,7 @@ public class JGPPreviewDialog  extends JGPDialog implements ActionListener, Focu
 	}
    
 	public static String showDataStringAssist(String dataFile, String dataString){
-		JGPPreviewDialog ptm = new JGPPreviewDialog(dataFile, dataString);
+		PreviewDialog ptm = new PreviewDialog(dataFile, dataString);
 		ptm.setModal(true);
       	ptm.setVisible(true);
 		dataString = ptm.getDataString();
@@ -448,7 +451,7 @@ public class JGPPreviewDialog  extends JGPDialog implements ActionListener, Focu
 	}
 
 	public static void setDataString(String dataString) {
-		JGPPreviewDialog.dataString = dataString;
+		PreviewDialog.dataString = dataString;
 	}
 
 }

@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.project;
 
 /*
  * Created on Aug 11, 2005
@@ -41,6 +41,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.hopandfork.jgnuplot.JGP;
 import org.hopandfork.jgnuplot.RelativePosition;
 import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
@@ -66,7 +67,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * TODO To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class JGPProjectManager extends JGPXMLManager {
+public class ProjectManager extends XMLManager {
 
 	private JGP mainWindow;
 
@@ -153,7 +154,7 @@ public class JGPProjectManager extends JGPXMLManager {
 	 * Default Constructor.
 	 * ****************************************************************************
 	 */
-	public JGPProjectManager(JGP mainWindow) {
+	public ProjectManager(JGP mainWindow) {
 		this.mainWindow = mainWindow;
 		file = new File(".");
 	}
@@ -195,9 +196,9 @@ public class JGPProjectManager extends JGPXMLManager {
 	 * This is a routing to patch old project files.
 	 * @param document
 	 * @param old_version
-	 * @throws JGPProjectManagerException 
+	 * @throws ProjectManagerException 
 	 */
-	public void patch(Document document, String old_version) throws JGPProjectManagerException{
+	public void patch(Document document, String old_version) throws ProjectManagerException{
 		if ( old_version.equals("0.0") ){
 			this.mainWindow.showConsole("Project file was created with version 0.0. Patch will be applied. File will not be touched!", false, false);
 			//version 0.0 needs same patching as version 0.1
@@ -209,13 +210,13 @@ public class JGPProjectManager extends JGPXMLManager {
 			this.mainWindow.showConsole("Project file was created with version 0.1.1. Patch will be applied. File will not be touched!", false, false);
 			patch_0_1(document);
 		} else {
-			throw new JGPProjectManagerException("Could not patch project file of version " + old_version + 
+			throw new ProjectManagerException("Could not patch project file of version " + old_version + 
 					" there is no aviable patch." );
 		}
 			
 	}
 	
-	public void loadProjectFile(String xmlFile) throws DOMException, ClassNotFoundException, ParserConfigurationException, SAXException, IOException, InstantiationException, IllegalAccessException, JGPProjectManagerException{
+	public void loadProjectFile(String xmlFile) throws DOMException, ClassNotFoundException, ParserConfigurationException, SAXException, IOException, InstantiationException, IllegalAccessException, ProjectManagerException{
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document document = null;
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -223,7 +224,7 @@ public class JGPProjectManager extends JGPXMLManager {
 			loadProjectXML(document);
 	}
 	
-	public void loadProjectXML(Document document) throws JGPProjectManagerException, DOMException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+	public void loadProjectXML(Document document) throws ProjectManagerException, DOMException, ClassNotFoundException, InstantiationException, IllegalAccessException{
 		//patch project file so that this version of jgp can deal with it.
 		if (document.getElementsByTagName(VERSION) != null){
 			Node n = document.getElementsByTagName(VERSION).item(0);

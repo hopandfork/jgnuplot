@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.dialog;
 
 
 import java.awt.Color;
@@ -40,27 +40,31 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.hopandfork.jgnuplot.JGP;
+import org.hopandfork.jgnuplot.gui.FileFormatComboBox;
+import org.hopandfork.jgnuplot.gui.FontComboBox;
+import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.plot.OutputFileFormat;
 import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 
 
-public class JGPPlotDialog extends JGPDialog implements ActionListener {
+public class PlotDialog extends JGPDialog implements ActionListener {
 	
 	JGP owner;
 	
 	JTextField tfFileName;
 	
-	JGPFontComboBox cbFontName;
+	FontComboBox cbFontName;
 	
 	JTextField tfFontSize;
 	
 	JCheckBox cbColor;
 	
-	JGPFileFormatComboBox cbFileFormat;
+	FileFormatComboBox cbFileFormat;
 	
 	
 
-	public JGPPlotDialog(JGP owner) {
+	public PlotDialog(JGP owner) {
 		super(owner);
 		this.owner = owner;
 		add(createMainPanel());
@@ -68,7 +72,7 @@ public class JGPPlotDialog extends JGPDialog implements ActionListener {
 		// TODO Auto-generated constructor stub
 	}
 
-	JGPPlotDialog(){
+	PlotDialog(){
 		add(createMainPanel());
 		this.pack();
 	}
@@ -108,7 +112,7 @@ public class JGPPlotDialog extends JGPDialog implements ActionListener {
 		tfFileName= new JTextField("",20);
 		bFileChose.setPreferredSize(new Dimension(100, 20));
 		
-		cbFontName = new JGPFontComboBox();
+		cbFontName = new FontComboBox();
 		
 		tfFontSize = new JTextField("18",2);
 		bFileChose.setPreferredSize(new Dimension(20, 20));
@@ -118,7 +122,7 @@ public class JGPPlotDialog extends JGPDialog implements ActionListener {
 		cbColor.setSelected(true);
 		//tfUpDown.setFont(new Font("Courier", Font.PLAIN, 32));
 		
-		cbFileFormat = new JGPFileFormatComboBox();
+		cbFileFormat = new FileFormatComboBox();
 
 		int row = 0;
 		jp.add(new JLabel("Filename"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);

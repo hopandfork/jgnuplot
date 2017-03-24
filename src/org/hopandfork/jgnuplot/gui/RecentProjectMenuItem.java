@@ -4,38 +4,38 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 
-public class JGPRecentProjectMenuItem extends JMenuItem {
+public class RecentProjectMenuItem extends JMenuItem {
 	
 	private String recentProject;
 
-	public JGPRecentProjectMenuItem() {
+	public RecentProjectMenuItem() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPRecentProjectMenuItem(Action a) {
+	public RecentProjectMenuItem(Action a) {
 		super(a);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPRecentProjectMenuItem(Icon icon) {
+	public RecentProjectMenuItem(Icon icon) {
 		super(icon);
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPRecentProjectMenuItem(String text, Icon icon) {
+	public RecentProjectMenuItem(String text, Icon icon) {
 		super(text, icon);
 		recentProject = text;
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPRecentProjectMenuItem(String text, int mnemonic) {
+	public RecentProjectMenuItem(String text, int mnemonic) {
 		super(text, mnemonic);
 		recentProject = text;
 		// TODO Auto-generated constructor stub
 	}
 
-	public JGPRecentProjectMenuItem(String text) {
+	public RecentProjectMenuItem(String text) {
 		super(text);
 		// TODO Auto-generated constructor stub
 	}

@@ -27,13 +27,13 @@ import javax.swing.JComboBox;
 import org.hopandfork.jgnuplot.plot.PlottingStyle;
 
 
-public class JGPStyleComboBox extends JComboBox{
+public class StyleComboBox extends JComboBox{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4300054880948406415L;
 
-	JGPStyleComboBox(){
+	public StyleComboBox(){
 		
         for (PlottingStyle s : PlottingStyle.values())
         	this.addItem(s);

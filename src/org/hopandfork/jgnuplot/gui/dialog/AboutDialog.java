@@ -1,16 +1,18 @@
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.dialog;
 
 import java.awt.HeadlessException;
 import java.awt.event.ActionListener;
 
-public class JGPAboutDialog extends JGPTextDialog implements ActionListener {
+import org.hopandfork.jgnuplot.JGP;
+
+public class AboutDialog extends TextDialog implements ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public JGPAboutDialog() throws HeadlessException {
+	public AboutDialog() throws HeadlessException {
 		super();
 
 		setTitle("About JGNUplot");
@@ -45,7 +47,7 @@ public class JGPAboutDialog extends JGPTextDialog implements ActionListener {
 	}
 
 	public static void showAboutDialog() {
-		JGPTextDialog ad = new JGPAboutDialog();
+		TextDialog ad = new AboutDialog();
 		ad.setModal(true);
 		ad.setVisible(true);
 		ad.dispose();

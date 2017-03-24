@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.dialog;
 
 
 import java.awt.Color;
@@ -45,10 +45,12 @@ import javax.swing.border.TitledBorder;
 import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.Function;
 import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.plot.PlottingStyle;
 
 
-public class JGPAddDialog extends JGPDialog implements ActionListener{
+public class AddDialog extends JGPDialog implements ActionListener{
 	
 	JTextField tfFileName;
 	
@@ -74,23 +76,23 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 	
     static PlottableItem plotObject;
 
-	public JGPAddDialog(java.awt.Frame owner) throws HeadlessException {
+	public AddDialog(java.awt.Frame owner) throws HeadlessException {
 		super(owner);
 		add(createMainPanel());
 		pack();
 		// TODO Auto-generated constructor stub
 	}
 
-	JGPAddDialog(String title){
+	AddDialog(String title){
 		add(createMainPanel());
 		this.setTitle(title);
 		this.pack();
 	}
 
-	JGPAddDialog(PlottableItem plotObject, String title){
+	AddDialog(PlottableItem plotObject, String title){
 		add(createMainPanel());
 		this.setTitle(title);
-		JGPAddDialog.plotObject = plotObject;
+		AddDialog.plotObject = plotObject;
 		initPlotObject(plotObject);
 		
 		this.pack();
@@ -173,7 +175,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 		tfTitle = new JTextField("",6);
 		tfTitle.setToolTipText("The title will be passed vie the 'title' option of the plot command to gnuplot.");
 
-		cbStyle = new JGPStyleComboBox();
+		cbStyle = new StyleComboBox();
 		//tfLeftRight.setFont(new Font("Courier", Font.PLAIN, 32));
 
 		int row = 0;
@@ -320,7 +322,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 //	    }
 //	    ((JGNUplot) this.getOwner()).taShell.setText(contents.toString());
 	
-	    String dataString = JGPPreviewDialog.showDataStringAssist(tfFileName.getText(), tfDataString.getText());
+	    String dataString = PreviewDialog.showDataStringAssist(tfFileName.getText(), tfDataString.getText());
 	    if (dataString != null)
 	    	this.tfDataString.setText(dataString);
 	}
@@ -432,7 +434,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 
 	
 	public static PlottableItem showAddDialog(String title){
-		JGPAddDialog ptm = new JGPAddDialog(title);
+		AddDialog ptm = new AddDialog(title);
 		ptm.setModal(true);
       	ptm.show();
         ptm.dispose();
@@ -440,7 +442,7 @@ public class JGPAddDialog extends JGPDialog implements ActionListener{
 	}
 	
 	public static PlottableItem showAddDialog(PlottableItem p , String title){
-		JGPAddDialog ptm = new JGPAddDialog(p, title);
+		AddDialog ptm = new AddDialog(p, title);
 		ptm.setModal(true);
       	ptm.show();
         ptm.dispose();

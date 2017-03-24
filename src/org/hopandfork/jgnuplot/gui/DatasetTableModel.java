@@ -31,7 +31,7 @@ import org.hopandfork.jgnuplot.data.PlottableItem;
 
 
 
-class JGPDSTableModel extends AbstractTableModel {
+public class DatasetTableModel extends AbstractTableModel {
 
 
 	/**

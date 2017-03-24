@@ -27,13 +27,13 @@ import java.util.StringTokenizer;
 
 import javax.swing.table.AbstractTableModel;
 
-public class JGPPreviewTableModel extends AbstractTableModel {
+public class PreviewTableModel extends AbstractTableModel {
 
-	private JGPTwoDimArrayList<String> data;
+	private TwoDimArrayList<String> data;
 	
 	private String[] columnNames;
 	
-	public JGPPreviewTableModel(String fileName) throws IOException {
+	public PreviewTableModel(String fileName) throws IOException {
 			parse(fileName);
 			
 			columnNames = new String[data.getNcols()];
@@ -50,7 +50,7 @@ public class JGPPreviewTableModel extends AbstractTableModel {
 	    
 	    
 	private void parse(String fileName) throws IOException{
-		data = new JGPTwoDimArrayList<String>();
+		data = new TwoDimArrayList<String>();
 		
 		RandomAccessFile inFile;
 
@@ -73,7 +73,7 @@ public class JGPPreviewTableModel extends AbstractTableModel {
 		}
 	}
 	
-	public JGPTwoDimArrayList<String> getData() {
+	public TwoDimArrayList<String> getData() {
 		return data;
 	}
 
@@ -110,7 +110,7 @@ public class JGPPreviewTableModel extends AbstractTableModel {
 	}
 	
     public static void main(String[] args) throws IOException {
-    	JGPPreviewTableModel ptm = new JGPPreviewTableModel("test.dat");
+    	PreviewTableModel ptm = new PreviewTableModel("test.dat");
       	System.out.println(ptm.getData().toString());
     }
 }
