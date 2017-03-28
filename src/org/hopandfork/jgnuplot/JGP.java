@@ -38,6 +38,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Stack;
 
 import javax.swing.ButtonGroup;
@@ -70,7 +72,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.data.PlottableItem;
@@ -79,8 +80,8 @@ import org.hopandfork.jgnuplot.gui.ColorRenderer;
 import org.hopandfork.jgnuplot.gui.DatasetTableModel;
 import org.hopandfork.jgnuplot.gui.HistoryElement;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
-import org.hopandfork.jgnuplot.gui.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
@@ -810,7 +811,7 @@ public class JGP extends JFrame
 	// margin pixels are added to the left and right
 	// (resulting in an additional width of 2*margin pixels).
 	public void packColumn(JTable table, int vColIndex, int margin) {
-		TableModel model = table.getModel();
+		//TableModel model = table.getModel();
 		DefaultTableColumnModel colModel = (DefaultTableColumnModel) table.getColumnModel();
 		TableColumn col = colModel.getColumn(vColIndex);
 		int width = 0;
@@ -1099,26 +1100,28 @@ public class JGP extends JFrame
 	}
 
 	public void loadStandardProject() {
-		try {
-			new ProjectManager(this).loadProjectFile(STANDARD_PROJECT_FILE);
-		} catch (RuntimeException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (ClassNotFoundException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (ParserConfigurationException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (SAXException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (IOException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (InstantiationException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (IllegalAccessException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
-		} catch (ProjectManagerException e) {
-			showConsole("No standard project loaded:" + e.getMessage(), false);
+		/* Checks if a project already exists before load it */
+		if (Files.exists(Paths.get(STANDARD_PROJECT_FILE))) {
+			try {
+				new ProjectManager(this).loadProjectFile(STANDARD_PROJECT_FILE);
+			} catch (RuntimeException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (ClassNotFoundException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (ParserConfigurationException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (SAXException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (IOException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (InstantiationException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (IllegalAccessException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			} catch (ProjectManagerException e) {
+				showConsole("No standard project loaded:" + e.getMessage(), false);
+			}
 		}
-
 	}
 
 	public void acEdit() {
