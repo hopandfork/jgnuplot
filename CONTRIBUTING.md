@@ -27,6 +27,10 @@ the last thing we want!
   * To quickly create a topic branch based on master; `git checkout -b
     fix/master/my_contribution master`. Please avoid working directly on the
     `master` branch.
+  * The topic branch should be named after the number of the issue it fixes.
+    The format is `jgp-n` where `n` is the issue number.  For minor changes
+    (typically documentation-related) that have not an associated issue,
+    following the format is not required: just keep the branch name significant.
 * Make commits of logical units.
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Make sure your commit messages are in third person, and describe clearly the
@@ -52,7 +56,7 @@ time after its discovery, the commit(s) responsible _may_ be reverted, at the
 discretion of the committer and jGNUplot  maintainers. This action would be
 taken to help maintain passing states in our testing pipelines.
 
-# Additional Resources
+## Additional Resources
 
 * [General GitHub documentation](https://help.github.com/)
 * [GitHub pull request documentation](https://help.github.com/articles/creating-a-pull-request/)
