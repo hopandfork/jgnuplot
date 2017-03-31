@@ -25,31 +25,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
 import org.hopandfork.jgnuplot.plot.GnuplotVariable;
 import org.hopandfork.jgnuplot.plot.Label;
 import org.hopandfork.jgnuplot.plot.OutputFileFormat;
-import org.hopandfork.jgnuplot.plot.PlottingStyle;
 import org.hopandfork.jgnuplot.plot.StringVariable;
 import org.hopandfork.jgnuplot.plot.Variable;
-import org.hopandfork.jgnuplot.plot.Variable.Type;
 
-public class GnuplotExecutor{
+public class GnuplotExecutor {
 
 	public enum PlotType {
 		TWO_DIM, THREE_DIM
 	}
 
-
 	private JGPPrintWriter out = null;
 
-	public static final String GNUPLOT_CMD = "gnuplot ";
-
-	public static final String PRINT_CMD = "kprinter ";
-
-	public static final String TEMP_DIR = "/tmp";
-
+	private static final String TEMP_DIR = "/tmp";
 
 	public String plotFileName = "work.gnuplot";
 
@@ -104,32 +95,38 @@ public class GnuplotExecutor{
 		variables = new ArrayList<Variable>();
 	}
 
-	public String getPlotString(){
+	public String getPlotString() {
 		String s = "";
 
 		s += prePlotString;
 
-		//Add gnuplot variables to plot string
-		for (int i = 0; i < variables.size(); i++){
-			if (variables.get(i).getType().equals( Variable.Type.GNUPLOT ) ){
+		// Add gnuplot variables to plot string
+		for (int i = 0; i < variables.size(); i++) {
+			if (variables.get(i).getType().equals(Variable.Type.GNUPLOT)) {
 				if (variables.get(i).isActive())
-					s +=  ((GnuplotVariable) variables.get(i)).getPlotString() + "\n" ;
+					s += ((GnuplotVariable) variables.get(i)).getPlotString() + "\n";
 			}
 		}
 
-		//logWriter.write("set title \"" + title + "\" at 500, 0.4  \n");
-		if (title == null) s += "unset title \n";
-		else  s += ("set title \"" + title + "\" \n");
+		if (title == null)
+			s += "unset title \n";
+		else
+			s += ("set title \"" + title + "\" \n");
 
+		if (xlabel == null)
+			s += ("unset xlabel \n");
+		else
+			s += ("set xlabel \"" + xlabel + "\" \n");
 
-		if (xlabel == null)  s += ("unset xlabel \n");
-		else  s += ("set xlabel \"" + xlabel + "\" \n");
+		if (ylabel == null)
+			s += ("unset ylabel \n");
+		else
+			s += ("set ylabel \"" + ylabel + "\" \n");
 
-		if (ylabel == null) s += ("unset ylabel \n");
-		else s += ("set ylabel \"" + ylabel + "\" \n");
-
-		if (zlabel == null) s += ("unset zlabel \n");
-		else s += ("set zlabel \"" + zlabel + "\" \n");
+		if (zlabel == null)
+			s += ("unset zlabel \n");
+		else
+			s += ("set zlabel \"" + zlabel + "\" \n");
 
 		if (logScaleX)
 			s += ("set logscale x \n");
@@ -146,10 +143,10 @@ public class GnuplotExecutor{
 		else
 			s += ("unset logscale z \n");
 
-		for (int i = 0; i < labels.size(); i++){
-			if (labels.get(i).getDoPlot()){
-				s += ( labels.get(i).getPlotString() );
-				s += ( "\n" );		
+		for (int i = 0; i < labels.size(); i++) {
+			if (labels.get(i).getDoPlot()) {
+				s += (labels.get(i).getPlotString());
+				s += ("\n");
 			}
 
 		}
@@ -160,69 +157,71 @@ public class GnuplotExecutor{
 			s += ("splot ");
 
 		s += "[";
-		if (xmin != null) s += xmin;
+		if (xmin != null)
+			s += xmin;
 		s += ":";
-		if (xmax != null) s += xmax;
+		if (xmax != null)
+			s += xmax;
 		s += "] ";
 
 		s += "[";
-		if (ymin != null) s += ymin;
+		if (ymin != null)
+			s += ymin;
 		s += ":";
-		if (ymax != null) s += ymax;
+		if (ymax != null)
+			s += ymax;
 		s += "] ";
 
-		if (plotType == PlotType.TWO_DIM){
+		if (plotType == PlotType.TWO_DIM) {
 			s += "[";
-			if (zmin != null) s += zmin;
+			if (zmin != null)
+				s += zmin;
 			s += ":";
-			if (zmax != null) s += zmax;
+			if (zmax != null)
+				s += zmax;
 			s += "] ";
 		}
 
-		for (int i = 0; i < dataSets.size(); i++){
-			if (dataSets.get(i).isEnabled()){
-				s += ( dataSets.get(i).getPlotString() );
-				s += ( ", " );		
+		for (int i = 0; i < dataSets.size(); i++) {
+			if (dataSets.get(i).isEnabled()) {
+				s += (dataSets.get(i).getPlotString());
+				s += (", ");
 			}
 
 		}
 
 		s = s.trim();
-		//is the a ',' to much at the end?
-		if ( s.lastIndexOf(",") == s.length() - 1)
-			s = s.substring(0,s.length() - 1);
+		// is the a ',' to much at the end?
+		if (s.lastIndexOf(",") == s.length() - 1)
+			s = s.substring(0, s.length() - 1);
 		s += (" \n");
 
-		//Now replace all string variables with their value
-		for (int i = 0; i < variables.size(); i++){
-			if (variables.get(i).getType() == Variable.Type.STRING){
+		// Now replace all string variables with their value
+		for (int i = 0; i < variables.size(); i++) {
+			if (variables.get(i).getType() == Variable.Type.STRING) {
 				if (variables.get(i).isActive())
 					s = ((StringVariable) variables.get(i)).apply(s);
 			}
 		}
 
-
 		return s;
 	}
 
-	public void plotThreaded() throws IOException, InterruptedException{
+	public void plotThreaded() throws IOException, InterruptedException {
 		String s = "";
 		s += "set terminal X11 \n";
 		s += getPlotString();
-		//this we have to add to keep the plot window open
-		//s += ("pause -1 'plotting done' \n");
+		// this we have to add to keep the plot window open
+		// s += ("pause -1 'plotting done' \n");
 		s += ("pause -1\n");
 
 		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner();
-		pr.setGpPlotString(s);
-		pr.setOut(out);
-		Thread t = new Thread(pr);
-		t.start();
+		GNUPlotRunner pr = new GNUPlotRunner(s,out);
+		new Thread(pr).start();
 
 	}
 
-	public void printThreaded(String printCmd, String printFile) throws IOException, InterruptedException{
+	public void printThreaded(String printCmd, String printFile) throws IOException, InterruptedException {
 		String s = "";
 
 		s += "set output '" + printFile + ".ps' \n";
@@ -235,47 +234,28 @@ public class GnuplotExecutor{
 		s += ("pause -1 'Press ENTER to continue...' \n");
 
 		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner();
-		pr.setGpPlotString(s);
-		pr.setOut(out);
-		Thread t = new Thread(pr);
-		t.start();
+		GNUPlotRunner pr = new GNUPlotRunner(s,out);
+		new Thread(pr).start();
 	}
 
-
-//	public void genPlotFile(String plotFileName) throws IOException{
-//	PrintWriter logWriter = new PrintWriter(new BufferedWriter(new FileWriter(plotFileName,
-//	false)));
-
-//	String s = getPlotString();
-
-//	s += ("pause -1 'plotting done' \n");
-
-//	logWriter.write(s);
-//	logWriter.flush();
-//	logWriter.close();
-//	}
-
-
-	public void plotToFile(String psFileName, OutputFileFormat format) throws IOException, InterruptedException{
+	public void plotToFile(String psFileName, OutputFileFormat format) throws IOException, InterruptedException {
 
 		String s = "";
 		s += "set output '" + psFileName + "' \n";
 
-		if (format == OutputFileFormat.POSTSCRIPT){
+		if (format == OutputFileFormat.POSTSCRIPT) {
 			s += "set terminal " + format;
 			s += " enhanced ";
-			if (psColor) s += " color ";
-			s += "solid defaultplex "; 
+			if (psColor)
+				s += " color ";
+			s += "solid defaultplex ";
 			s += "'" + psFontName + "' ";
 			s += psFontSize + " ";
-			s += " \n"; 
-		}
-		else if (format == OutputFileFormat.SVG){
+			s += " \n";
+		} else if (format == OutputFileFormat.SVG) {
 			s += "set terminal " + format;
-			s += " \n"; 
-		}
-		else{
+			s += " \n";
+		} else {
 			s += "set terminal " + format;
 			s += " \n";
 		}
@@ -284,76 +264,21 @@ public class GnuplotExecutor{
 		s += "set terminal X11 \n";
 
 		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner();
-		pr.setGpPlotString(s);
-		pr.setOut(out);
-		Thread t = new Thread(pr);
-		t.start();
-
+		GNUPlotRunner pr = new GNUPlotRunner(s,out);
+		new Thread(pr).start();
 	}
-
-//	public void genPrintFile(String printCmd, String printFile) throws IOException, InterruptedException{
-
-//	PrintWriter logWriter = new PrintWriter(new BufferedWriter(new FileWriter(printFile,
-//	false)));
-
-//	String s = "";
-
-//	s += "set output '" + printFile + ".ps' \n";
-//	s += "set terminal postscript \n";
-
-//	s += getPlotString();
-
-//	s += "set output '|" + printCmd + " " + printFile + "' \n";
-
-//	s += ("pause -1 'Press ENTER to continue...' \n");
-
-//	logWriter.write(s);
-//	logWriter.flush();
-//	logWriter.close();
-
-//	Process p = Runtime.getRuntime().exec("gnuplot " + plotFileName);
-//	p.waitFor();
-
-//	}
-
-	public static void main(String[] args) throws IOException, InterruptedException {
-		GnuplotExecutor gp = new GnuplotExecutor();
-
-		String inFileName = "/home/ccdserv/mxhf/astro/QE/data/diodeMode/diodeMode_minus140C_20051021_pre.dat";
-
-		DataSet ds = new DataSet(inFileName, "1", "($4 * 2)");
-
-		ds.style = PlottingStyle.lines;
-
-		ds.title = "QE";
-
-		gp.setTitle("Quantum efficincy in pdmode");
-
-		gp.xlabel = "x axis";
-
-		gp.ylabel = "y axis";
-
-		gp.dataSets.add( ds );
-
-
-
-
-		gp.plotThreaded();
-	}
-
 
 	/**
-	 * Generates a filename that can be use for temporary files.
-	 * The file will be located in the TEMP_DIR directory.
+	 * Generates a filename that can be use for temporary files. The file will
+	 * be located in the TEMP_DIR directory.
 	 * 
 	 * @return
 	 */
-	public static String getTempFileName(){
+	public static String getTempFileName() {
 		String s = TEMP_DIR + "/jGNUplot";
-		String fn = s + tmpFilnameCounter + ".tmp"; 
+		String fn = s + tmpFilnameCounter + ".tmp";
 
-		while( new File(fn).exists() ){
+		while (new File(fn).exists()) {
 			tmpFilnameCounter++;
 			fn = s + tmpFilnameCounter + ".tmp";
 		}
@@ -480,6 +405,5 @@ public class GnuplotExecutor{
 	public void setZmin(Double zmin) {
 		this.zmin = zmin;
 	}
-
 
 }
