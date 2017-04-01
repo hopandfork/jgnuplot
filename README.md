@@ -1,4 +1,5 @@
 # jGNUplot #
+[![Build Status](https://travis-ci.org/hopandfork/jgnuplot.svg?branch=master)](https://travis-ci.org/hopandfork/jgnuplot)
 
 JGNUplot is a graphical user interface for gnuplot. So why would somebody
 want to have a user interface for something which is so great because it has
