@@ -51,9 +51,11 @@ import org.hopandfork.jgnuplot.data.DataSet;
 import org.hopandfork.jgnuplot.data.PlottableItem;
 import org.hopandfork.jgnuplot.plot.GnuplotColor;
 import org.hopandfork.jgnuplot.plot.Label;
+import org.hopandfork.jgnuplot.plot.Plot;
+import org.hopandfork.jgnuplot.plot.Plot2D;
+import org.hopandfork.jgnuplot.plot.Plot3D;
 import org.hopandfork.jgnuplot.plot.PlottingStyle;
 import org.hopandfork.jgnuplot.plot.Variable;
-import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -250,7 +252,7 @@ public class ProjectManager extends XMLManager {
 		if (document.getElementsByTagName(PLOT_TYPE).item(0) != null) {
 			String splotType;
 			splotType = document.getElementsByTagName(PLOT_TYPE).item(0).getTextContent();
-			if (splotType.equals(GnuplotExecutor.PlotType.TWO_DIM.toString()))
+			if (splotType.equals(Plot2D.class.getName()))
 				mainWindow.rb2D.setSelected(true);
 			else
 				mainWindow.rb3D.setSelected(true);
@@ -409,11 +411,11 @@ public class ProjectManager extends XMLManager {
 			addTextNode(document, root, VERSION, JGP.getVersion());
 			addTextNode(document, root, TITLE, mainWindow.tfTitle.getText());
 
-			GnuplotExecutor.PlotType plotType;
+			String plotType;
 			if (mainWindow.rb2D.isSelected())
-				plotType = GnuplotExecutor.PlotType.TWO_DIM;
+				plotType = Plot2D.class.getName();
 			else
-				plotType = GnuplotExecutor.PlotType.THREE_DIM;
+				plotType = Plot3D.class.getName();
 			addTextNode(document, root, PLOT_TYPE, plotType.toString());
 
 			addTextNode(document, root, MAX_X, mainWindow.tfMaxX.getText());

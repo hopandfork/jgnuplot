@@ -93,9 +93,11 @@ import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
 import org.hopandfork.jgnuplot.plot.GnuplotVariable;
 import org.hopandfork.jgnuplot.plot.Label;
+import org.hopandfork.jgnuplot.plot.Plot;
+import org.hopandfork.jgnuplot.plot.Plot2D;
+import org.hopandfork.jgnuplot.plot.Plot3D;
 import org.hopandfork.jgnuplot.project.ProjectManager;
 import org.hopandfork.jgnuplot.project.ProjectManagerException;
-import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 import org.hopandfork.jgnuplot.runtime.JGPPrintWriter;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
@@ -1003,7 +1005,7 @@ public class JGP extends JFrame
 	}
 
 	public void acPrint() {
-		GnuplotExecutor gp = getGNUplot();
+		Plot gp = getGNUplot();
 		gp.setOut((JGPPrintWriter) this);
 		try {
 
@@ -1442,13 +1444,19 @@ public class JGP extends JFrame
 	public void acPlot() throws IOException, InterruptedException {
 		clearShell();
 		println("calling GNUplot...");
-		GnuplotExecutor gp = getGNUplot();
+		Plot gp = getGNUplot();
 		gp.setOut((JGPPrintWriter) this);
 		gp.plotThreaded();
 	}
 
-	public GnuplotExecutor getGNUplot() {
-		GnuplotExecutor gp = new GnuplotExecutor();
+	public Plot getGNUplot() {
+		Plot gp;
+		
+		if (rb2D.isSelected())
+			gp = new Plot2D();
+		else
+			gp = new Plot3D();
+
 		for (int i = 0; i < dsTableModel.data.size(); i++) {
 			gp.dataSets.add(dsTableModel.data.get(i));
 		}
@@ -1511,11 +1519,6 @@ public class JGP extends JFrame
 
 		gp.setPrePlotString(prePlotString.getText() + "\n");
 
-		if (rb2D.isSelected())
-			gp.setPlotType(GnuplotExecutor.PlotType.TWO_DIM);
-		if (rb3D.isSelected())
-			gp.setPlotType(GnuplotExecutor.PlotType.THREE_DIM);
-
 		return gp;
 	}
 
@@ -1553,7 +1556,7 @@ public class JGP extends JFrame
 	}
 
 	public void acGenPlotCmds() {
-		GnuplotExecutor gp = getGNUplot();
+		Plot gp = getGNUplot();
 		String plotString = gp.getPlotString();
 		// taShell.setText( plotString );
 

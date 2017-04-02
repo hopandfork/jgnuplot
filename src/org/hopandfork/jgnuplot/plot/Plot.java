@@ -19,30 +19,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.runtime;
+package org.hopandfork.jgnuplot.plot;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.hopandfork.jgnuplot.data.PlottableItem;
-import org.hopandfork.jgnuplot.plot.GnuplotVariable;
-import org.hopandfork.jgnuplot.plot.Label;
-import org.hopandfork.jgnuplot.plot.OutputFileFormat;
-import org.hopandfork.jgnuplot.plot.StringVariable;
-import org.hopandfork.jgnuplot.plot.Variable;
+import org.hopandfork.jgnuplot.runtime.GNUPlotRunner;
+import org.hopandfork.jgnuplot.runtime.JGPPrintWriter;
 
-public class GnuplotExecutor {
-
-	public enum PlotType {
-		TWO_DIM, THREE_DIM
-	}
+public abstract class Plot {
 
 	private JGPPrintWriter out = null;
-
-	private static final String TEMP_DIR = "/tmp";
-
-	public String plotFileName = "work.gnuplot";
 
 	public ArrayList<PlottableItem> dataSets;
 
@@ -84,15 +72,24 @@ public class GnuplotExecutor {
 
 	public String psFontName = "";
 
-	public static int tmpFilnameCounter = 0;
+	protected String plotCommand = "plot";
 
-	public PlotType plotType;
-
-	public GnuplotExecutor() {
+	public Plot() {
 		super();
 		dataSets = new ArrayList<PlottableItem>();
 		labels = new ArrayList<Label>();
 		variables = new ArrayList<Variable>();
+	}
+
+	protected String getVariablesPlotString() {
+		String s = "";
+		for (int i = 0; i < variables.size(); i++) {
+			if (variables.get(i).getType().equals(Variable.Type.GNUPLOT)) {
+				if (variables.get(i).isActive())
+					s += ((GnuplotVariable) variables.get(i)).getPlotString() + "\n";
+			}
+		}
+		return s;
 	}
 
 	public String getPlotString() {
@@ -101,12 +98,7 @@ public class GnuplotExecutor {
 		s += prePlotString;
 
 		// Add gnuplot variables to plot string
-		for (int i = 0; i < variables.size(); i++) {
-			if (variables.get(i).getType().equals(Variable.Type.GNUPLOT)) {
-				if (variables.get(i).isActive())
-					s += ((GnuplotVariable) variables.get(i)).getPlotString() + "\n";
-			}
-		}
+		s += getVariablesPlotString();
 
 		if (title == null)
 			s += "unset title \n";
@@ -151,36 +143,9 @@ public class GnuplotExecutor {
 
 		}
 
-		if (plotType == PlotType.TWO_DIM)
-			s += ("plot ");
-		else
-			s += ("splot ");
+		s += (plotCommand + " ");
 
-		s += "[";
-		if (xmin != null)
-			s += xmin;
-		s += ":";
-		if (xmax != null)
-			s += xmax;
-		s += "] ";
-
-		s += "[";
-		if (ymin != null)
-			s += ymin;
-		s += ":";
-		if (ymax != null)
-			s += ymax;
-		s += "] ";
-
-		if (plotType == PlotType.TWO_DIM) {
-			s += "[";
-			if (zmin != null)
-				s += zmin;
-			s += ":";
-			if (zmax != null)
-				s += zmax;
-			s += "] ";
-		}
+		s += getRangePlotString();
 
 		for (int i = 0; i < dataSets.size(); i++) {
 			if (dataSets.get(i).isEnabled()) {
@@ -207,6 +172,28 @@ public class GnuplotExecutor {
 		return s;
 	}
 
+	protected String getRangePlotString() {
+		String s = "";
+
+		s += "[";
+		if (xmin != null)
+			s += xmin;
+		s += ":";
+		if (xmax != null)
+			s += xmax;
+		s += "] ";
+
+		s += "[";
+		if (ymin != null)
+			s += ymin;
+		s += ":";
+		if (ymax != null)
+			s += ymax;
+		s += "] ";
+
+		return s;
+	}
+
 	public void plotThreaded() throws IOException, InterruptedException {
 		String s = "";
 		s += "set terminal X11 \n";
@@ -216,7 +203,7 @@ public class GnuplotExecutor {
 		s += ("pause -1\n");
 
 		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner(s,out);
+		GNUPlotRunner pr = new GNUPlotRunner(s, out);
 		new Thread(pr).start();
 
 	}
@@ -234,7 +221,7 @@ public class GnuplotExecutor {
 		s += ("pause -1 'Press ENTER to continue...' \n");
 
 		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner(s,out);
+		GNUPlotRunner pr = new GNUPlotRunner(s, out);
 		new Thread(pr).start();
 	}
 
@@ -264,34 +251,8 @@ public class GnuplotExecutor {
 		s += "set terminal X11 \n";
 
 		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner(s,out);
+		GNUPlotRunner pr = new GNUPlotRunner(s, out);
 		new Thread(pr).start();
-	}
-
-	/**
-	 * Generates a filename that can be use for temporary files. The file will
-	 * be located in the TEMP_DIR directory.
-	 * 
-	 * @return
-	 */
-	public static String getTempFileName() {
-		String s = TEMP_DIR + "/jGNUplot";
-		String fn = s + tmpFilnameCounter + ".tmp";
-
-		while (new File(fn).exists()) {
-			tmpFilnameCounter++;
-			fn = s + tmpFilnameCounter + ".tmp";
-		}
-
-		return fn;
-	}
-
-	public String getPlotFileName() {
-		return plotFileName;
-	}
-
-	public void setPlotFileName(String plotFileName) {
-		this.plotFileName = plotFileName;
 	}
 
 	public String getTitle() {
@@ -380,14 +341,6 @@ public class GnuplotExecutor {
 
 	public void setPrePlotString(String perPlotString) {
 		this.prePlotString = perPlotString;
-	}
-
-	public PlotType getPlotType() {
-		return plotType;
-	}
-
-	public void setPlotType(PlotType plotType) {
-		this.plotType = plotType;
 	}
 
 	public void setLogScaleZ(boolean logScaleZ) {
