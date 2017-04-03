@@ -21,11 +21,27 @@
 
 package org.hopandfork.jgnuplot.runtime;
 
+/**
+ * Interface for plugins which can pre-process data files.
+ */
 public interface PreProcessPlugin {
 	
+	/**
+	 * Returns the description of the plugin.
+	 * @return Description of the plugin.
+	 */
 	public String getDescription();
 	
+	/**
+	 * Returns the name of the plugin.
+	 * @return Name of the plugin.
+	 */
 	public String getName();
 	
-	public void PreProcess(String inFileName, String outFileName);
+	/**
+	 * Pre-process specified file.
+	 * @param inFileName Name of the file to pre-process.
+	 * @param outFileName Output file name.
+	 */
+	public void preProcess(String inFileName, String outFileName);
 }

@@ -45,7 +45,7 @@ import org.hopandfork.jgnuplot.gui.FileFormatComboBox;
 import org.hopandfork.jgnuplot.gui.FontComboBox;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.plot.OutputFileFormat;
-import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
+import org.hopandfork.jgnuplot.plot.Plot;
 
 
 public class PlotDialog extends JGPDialog implements ActionListener {
@@ -181,7 +181,7 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 
 		owner.println("calling GNUplot...");
 
-		GnuplotExecutor gp = owner.getGNUplot();
+		Plot gp = owner.getGNUplot();
 		
 		gp.psColor = this.cbColor.isSelected();
 		

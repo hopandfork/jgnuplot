@@ -26,8 +26,8 @@ import java.io.IOException;
 
 import org.hopandfork.jgnuplot.plot.GnuplotColor;
 import org.hopandfork.jgnuplot.plot.PlottingStyle;
-import org.hopandfork.jgnuplot.runtime.GnuplotExecutor;
 import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
+import org.hopandfork.jgnuplot.runtime.TempFile;
 
 public class DataSet extends PlottableItem {
 
@@ -122,7 +122,7 @@ public class DataSet extends PlottableItem {
 		if (preProcessProgram != null && !preProcessProgram.trim().equals("")
 				&& !preProcessProgram.trim().equals("null")) {
 			// call prepocess program
-			String tmpFileName = GnuplotExecutor.getTempFileName();
+			String tmpFileName = TempFile.getTempFileName();
 			callPreProcessProgram(preProcessProgram.trim(), fileName, tmpFileName);
 			// and plot the tmp output
 			s += "'" + tmpFileName + "'";
