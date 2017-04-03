@@ -43,7 +43,7 @@ public class Label {
 	}
 
 	public String getPlotString(){
-		return "set label \"" + text + "\" at " + relativePos.name() + " " + x + "," + y;
+		return "set label \"" + text + "\" at " + relativePos.name().toLowerCase() + " " + x + "," + y;
 	}
 
 	public String getText() {
