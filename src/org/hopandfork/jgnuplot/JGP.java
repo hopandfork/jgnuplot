@@ -918,6 +918,8 @@ public class JGP extends JFrame
 			}
 		} else if (e.getActionCommand().equals("undo")) {
 			acUndo();
+		} else if (e.getActionCommand().equals("Exit")) {
+			exit();
 		} else if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
 		} else if (e.getActionCommand().equals("edit")) {
@@ -978,7 +980,7 @@ public class JGP extends JFrame
 
 	}
 
-	public void exit() {
+	private void exit() {
 		saveSettingst();
 		System.exit(0);
 	}
