@@ -36,6 +36,7 @@ public class GNUPlotRunner extends ProcessRunner {
 			logWriter.flush();
 			logWriter.close();
 	}
+	
 
 	/**
 	 * Entry point for GNUPlotRunner.

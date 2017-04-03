@@ -194,12 +194,11 @@ public abstract class Plot {
 		return s;
 	}
 
-	public void plotThreaded() throws IOException, InterruptedException {
+	public void plotAndPreview() throws IOException, InterruptedException {
 		String s = "";
 		s += "set terminal X11 \n";
 		s += getPlotString();
 		// this we have to add to keep the plot window open
-		// s += ("pause -1 'plotting done' \n");
 		s += ("pause -1\n");
 
 		System.out.println("Calling GNUPlotRunner...");
@@ -208,7 +207,7 @@ public abstract class Plot {
 
 	}
 
-	public void printThreaded(String printCmd, String printFile) throws IOException, InterruptedException {
+	public void generatePostscriptFile(String printCmd, String printFile) throws IOException, InterruptedException {
 		String s = "";
 
 		s += "set output '" + printFile + ".ps' \n";

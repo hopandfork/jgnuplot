@@ -1009,7 +1009,7 @@ public class JGP extends JFrame
 		gp.setOut((JGPPrintWriter) this);
 		try {
 
-			gp.printThreaded("", "");
+			gp.generatePostscriptFile("", "");
 		} catch (IOException e) {
 			showConsole("Error printing: " + e.getMessage(), false, true);
 		} catch (InterruptedException e) {
@@ -1446,7 +1446,7 @@ public class JGP extends JFrame
 		println("calling GNUplot...");
 		Plot gp = getGNUplot();
 		gp.setOut((JGPPrintWriter) this);
-		gp.plotThreaded();
+		gp.plotAndPreview();
 	}
 
 	public Plot getGNUplot() {
