@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.project;
+package org.hopandfork.jgnuplot.management.project;
 
 public class ProjectManagerException extends Exception {
 

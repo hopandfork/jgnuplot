@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.model.PlottableItem;
 
 
 

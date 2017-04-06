@@ -19,11 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.management.gnuplot;
 
-public enum RelativePosition {
-		FIRST,
-		SECOND,
-		SCREEN,
-		GRAPH
+/**
+ * Simple interface for interacting with a console.
+ */
+public interface JGPPrintWriter {
+	
+	public void println(String s);
+	
+	public void printerrln(String s);
+	
 }

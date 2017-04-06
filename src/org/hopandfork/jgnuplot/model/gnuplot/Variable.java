@@ -19,12 +19,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.plot;
+package org.hopandfork.jgnuplot.model.gnuplot;
 
-public enum PlottingStyle {
-	 lines, points, linespoints, impulses,
-	 dots, steps, fsteps, histeps, errorbars, xerrorbars,
-	 yerrorbars, xyerrorbars, errorlines, xerrorlines, yerrorlines,
-	 xyerrorlines, boxes, filledcurves, boxerrorbars,
-	 boxxyerrorbars, financebars, candlesticks, vectors
+public abstract class Variable {
+	public enum Type{GNUPLOT, STRING};
+	
+	private String name;
+	
+	private String value;
+	
+	private boolean active = true;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
+	public abstract Type getType();
+	
+	public abstract Object[] getData();
+
+	public abstract void setData(int i, Object value);
 }

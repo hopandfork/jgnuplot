@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.runtime;
+package org.hopandfork.jgnuplot.management.gnuplot;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.project;
+package org.hopandfork.jgnuplot.management.project;
 
 /*
  * Created on Aug 11, 2005
@@ -34,28 +34,22 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
-import org.hopandfork.jgnuplot.RelativePosition;
-import org.hopandfork.jgnuplot.data.DataSet;
-import org.hopandfork.jgnuplot.data.PlottableItem;
-import org.hopandfork.jgnuplot.plot.GnuplotColor;
-import org.hopandfork.jgnuplot.plot.Label;
-import org.hopandfork.jgnuplot.plot.Plot;
-import org.hopandfork.jgnuplot.plot.Plot2D;
-import org.hopandfork.jgnuplot.plot.Plot3D;
-import org.hopandfork.jgnuplot.plot.PlottingStyle;
-import org.hopandfork.jgnuplot.plot.Variable;
+import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
+import org.hopandfork.jgnuplot.model.gnuplot.Label;
+import org.hopandfork.jgnuplot.model.gnuplot.Plot2D;
+import org.hopandfork.jgnuplot.model.gnuplot.Plot3D;
+import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.gnuplot.RelativePosition;
+import org.hopandfork.jgnuplot.model.gnuplot.Variable;
+import org.hopandfork.jgnuplot.utility.XMLManager;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

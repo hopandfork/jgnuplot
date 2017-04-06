@@ -19,12 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.data;
+package org.hopandfork.jgnuplot.model;
 
 import java.awt.Color;
 
-import org.hopandfork.jgnuplot.plot.GnuplotColor;
-import org.hopandfork.jgnuplot.plot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
+import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
 
 public class Function extends PlottableItem {
 	

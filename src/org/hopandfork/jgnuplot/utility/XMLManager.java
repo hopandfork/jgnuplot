@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.project;
+package org.hopandfork.jgnuplot.utility;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

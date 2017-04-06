@@ -19,15 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.data;
+package org.hopandfork.jgnuplot.model;
 
 import java.awt.Color;
 import java.io.IOException;
 
-import org.hopandfork.jgnuplot.plot.GnuplotColor;
-import org.hopandfork.jgnuplot.plot.PlottingStyle;
-import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
-import org.hopandfork.jgnuplot.runtime.TempFile;
+import org.hopandfork.jgnuplot.management.gnuplot.PreProcessPlugin;
+import org.hopandfork.jgnuplot.management.gnuplot.TempFile;
+import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
+import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
 
 public class DataSet extends PlottableItem {
 

@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.control;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.hopandfork.jgnuplot.project.XMLManager;
+import org.hopandfork.jgnuplot.JGP;
+import org.hopandfork.jgnuplot.utility.XMLManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

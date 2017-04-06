@@ -19,9 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.plot;
-
-import org.hopandfork.jgnuplot.RelativePosition;
+package org.hopandfork.jgnuplot.model.gnuplot;
 
 public class Label {
 	private double x;

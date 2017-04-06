@@ -1,10 +1,11 @@
-package org.hopandfork.jgnuplot;
+package org.hopandfork.jgnuplot.utility;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.hopandfork.jgnuplot.data.DataSet;
-import org.hopandfork.jgnuplot.data.PlottableItem;
+import org.hopandfork.jgnuplot.JGP;
+import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.PlottableItem;
 
 public class UpdateChecker implements Runnable {
 	JGP owner;

@@ -19,14 +19,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.plot;
+package org.hopandfork.jgnuplot.model.gnuplot;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.hopandfork.jgnuplot.data.PlottableItem;
-import org.hopandfork.jgnuplot.runtime.GNUPlotRunner;
-import org.hopandfork.jgnuplot.runtime.JGPPrintWriter;
+import org.hopandfork.jgnuplot.management.gnuplot.GNUPlotRunner;
+import org.hopandfork.jgnuplot.management.gnuplot.JGPPrintWriter;
+import org.hopandfork.jgnuplot.model.PlottableItem;
 
 public abstract class Plot {
 
