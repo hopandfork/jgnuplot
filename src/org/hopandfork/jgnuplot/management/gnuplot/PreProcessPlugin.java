@@ -19,30 +19,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+package org.hopandfork.jgnuplot.management.gnuplot;
 
-package org.hopandfork.jgnuplot.gui;
-
-
-import javax.swing.JComboBox;
-
-import org.hopandfork.jgnuplot.model.gnuplot.OutputFileFormat;
-
-
-public class FileFormatComboBox extends JComboBox {
-
+/**
+ * Interface for plugins which can pre-process data files.
+ */
+public interface PreProcessPlugin {
+	
 	/**
-	 * 
+	 * Returns the description of the plugin.
+	 * @return Description of the plugin.
 	 */
-	private static final long serialVersionUID = 1L;
-
-	public FileFormatComboBox() {
-		super();
-
-			
-	        for (OutputFileFormat ff : OutputFileFormat.values())
-	        	this.addItem(ff);
-	        this.setEditable(true);
-	            
-	}
-
+	public String getDescription();
+	
+	/**
+	 * Returns the name of the plugin.
+	 * @return Name of the plugin.
+	 */
+	public String getName();
+	
+	/**
+	 * Pre-process specified file.
+	 * @param inFileName Name of the file to pre-process.
+	 * @param outFileName Output file name.
+	 */
+	public void preProcess(String inFileName, String outFileName);
 }

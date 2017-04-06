@@ -19,30 +19,42 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+package org.hopandfork.jgnuplot.model.gnuplot;
 
-package org.hopandfork.jgnuplot.gui;
-
-
-import javax.swing.JComboBox;
-
-import org.hopandfork.jgnuplot.model.gnuplot.OutputFileFormat;
-
-
-public class FileFormatComboBox extends JComboBox {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public FileFormatComboBox() {
-		super();
-
-			
-	        for (OutputFileFormat ff : OutputFileFormat.values())
-	        	this.addItem(ff);
-	        this.setEditable(true);
-	            
+/**
+ * A GPVariable renders a actual GNUplot variable. Befor plotting the
+ * variable will be set in GNUplot 
+ * 		VARIABLENAME = VALUE
+ * 
+ * @author mxhf
+ *
+ */
+public class GnuplotVariable extends Variable {
+	
+	public String getPlotString() {
+		return getName() + "=" + getValue();
 	}
+	
+	public Object[] getData() {
+		Object data[] = new Object[4];
+		data[0] = Variable.Type.GNUPLOT;
+		data[1] = getName();
+		data[2] = getValue();
+		data[3] = isActive();
+		
+		return data;
+	}
+
+	public void setData(int i, Object value) {
+
+		if (i == 1)	setName( (String)value );
+		else if (i == 2)	setValue( (String)value );
+		else if (i == 3)	setActive( (Boolean)value );
+	}
+
+	public Type getType() {
+		return Variable.Type.GNUPLOT;
+	}
+
 
 }

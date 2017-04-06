@@ -42,12 +42,12 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.hopandfork.jgnuplot.data.DataSet;
-import org.hopandfork.jgnuplot.data.Function;
-import org.hopandfork.jgnuplot.data.PlottableItem;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
-import org.hopandfork.jgnuplot.plot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.Function;
+import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
 
 
 public class AddDialog extends JGPDialog implements ActionListener{
