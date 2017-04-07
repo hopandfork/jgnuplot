@@ -21,7 +21,7 @@
 
 package org.hopandfork.jgnuplot.model;
 
-public class Label {
+public class Label implements Plottable {
 	private double x;
 	
 	private double y;
@@ -30,18 +30,18 @@ public class Label {
 	
 	private RelativePosition relativePos = RelativePosition.FIRST;
 	
-	private boolean doPlot = true;
+	private boolean enabled = true;
 	
-	public boolean getDoPlot() {
-		return doPlot;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setDoPlot(boolean doPlot) {
-		this.doPlot = doPlot;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
-	public String getPlotString(){
-		return "set label \"" + text + "\" at " + relativePos.name().toLowerCase() + " " + x + "," + y;
+	public String toPlotString(){
+		return "set label \"" + text + "\" at " + relativePos.name().toLowerCase() + " " + x + "," + y + "\n";
 	}
 
 	public String getText() {
@@ -74,7 +74,7 @@ public class Label {
 		data[1] = this.x;
 		data[2] = this.y;
 		data[3] = this.relativePos;
-		data[4] = this.doPlot;
+		data[4] = this.enabled;
 		return data;
 	}
 
@@ -83,7 +83,7 @@ public class Label {
 		else if (i == 1)	x = ((Double)value).doubleValue();
 		else if (i == 2)	y = ((Double)value).doubleValue();
 		else if (i == 3)	relativePos = (RelativePosition)value;
-		else if (i == 4)	doPlot = ((Boolean) value).booleanValue();
+		else if (i == 4)	enabled = ((Boolean) value).booleanValue();
 	}
 
 	public RelativePosition getRelativePos() {

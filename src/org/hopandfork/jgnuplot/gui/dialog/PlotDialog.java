@@ -183,13 +183,13 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 
 		Plot gp = owner.getGNUplot();
 		
-		gp.psColor = this.cbColor.isSelected();
+		gp.setPsColor(this.cbColor.isSelected());
 		
-		gp.psFontName = this.cbFontName.getSelectedItem().toString();
+		gp.setPsFontName(this.cbFontName.getSelectedItem().toString());
 		
 		if (!this.tfFontSize.equals(""))
 			try {
-				gp.psFontSize = Integer.parseInt(tfFontSize.getText());
+				gp.setPsFontSize(Integer.parseInt(tfFontSize.getText()));
 			} catch (NumberFormatException e1) {
 				owner.taShell.setText("Invalid font size: " + tfFontSize.getText());
 			}

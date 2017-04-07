@@ -27,50 +27,37 @@ import java.util.ArrayList;
 import org.hopandfork.jgnuplot.runtime.GNUPlotRunner;
 import org.hopandfork.jgnuplot.utility.JGPPrintWriter;
 
-public abstract class Plot {
+public abstract class Plot implements Plottable {
 
 	private JGPPrintWriter out = null;
 
-	public ArrayList<PlottableData> plottableData;
+	private ArrayList<PlottableData> plottableData;
+	private ArrayList<Label> labels;
+	private ArrayList<Variable> variables;
 
-	public ArrayList<Label> labels;
+	private String prePlotString;
 
-	public ArrayList<Variable> variables;
+	private String title;
 
-	public String prePlotString;
+	private String xlabel;
+	private String ylabel;
+	private String zlabel;
 
-	public String title;
+	private Double xmin;
+	private Double xmax;
+	private Double ymin;
+	private Double ymax;
+	protected Double zmin;
+	protected Double zmax;
 
-	public String xlabel;
+	private boolean logScaleX = false;
+	private boolean logScaleY = false;
+	private boolean logScaleZ = false;
 
-	public String ylabel;
+	private boolean psColor = false;
+	private int psFontSize = 18;
 
-	public String zlabel;
-
-	public Double xmin;
-
-	public Double xmax;
-
-	public Double ymin;
-
-	public Double ymax;
-
-	public Double zmin;
-
-	public Double zmax;
-
-	public boolean logScaleX = false;
-
-	public boolean logScaleY = false;
-
-	public boolean logScaleZ = false;
-
-	public boolean psColor = false;
-
-	public int psFontSize = 18;
-
-	public String psFontName = "";
-
+	private String psFontName = "";
 	protected String plotCommand = "plot";
 
 	public Plot() {
@@ -82,87 +69,88 @@ public abstract class Plot {
 
 	protected String getVariablesPlotString() {
 		String s = "";
-		for (int i = 0; i < variables.size(); i++) {
-			if (variables.get(i).getType().equals(Variable.Type.GNUPLOT)) {
-				if (variables.get(i).isActive())
-					s += ((GnuplotVariable) variables.get(i)).getPlotString() + "\n";
+		for (Variable var : variables) {
+			if (var.getType().equals(Variable.Type.GNUPLOT)) {
+				if (var.isActive())
+					s += ((GnuplotVariable) var).getPlotString() + "\n";
 			}
 		}
 		return s;
 	}
 
-	public String getPlotString() {
-		String s = "";
+	public String toPlotString() {
+		StringBuilder sb = new StringBuilder();
 
-		s += prePlotString;
+		/* Adds pre-plot commands. */
+		sb.append(prePlotString);
 
-		// Add gnuplot variables to plot string
-		s += getVariablesPlotString();
+		/* Adds variables. */
+		sb.append(getVariablesPlotString());
 
+		/* Adds various settings. */
 		if (title == null)
-			s += "unset title \n";
+			sb.append("unset title \n");
 		else
-			s += ("set title \"" + title + "\" \n");
+			sb.append("set title \"" + title + "\" \n");
 
 		if (xlabel == null)
-			s += ("unset xlabel \n");
+			sb.append("unset xlabel \n");
 		else
-			s += ("set xlabel \"" + xlabel + "\" \n");
+			sb.append("set xlabel \"" + xlabel + "\" \n");
 
 		if (ylabel == null)
-			s += ("unset ylabel \n");
+			sb.append("unset ylabel \n");
 		else
-			s += ("set ylabel \"" + ylabel + "\" \n");
+			sb.append("set ylabel \"" + ylabel + "\" \n");
 
 		if (zlabel == null)
-			s += ("unset zlabel \n");
+			sb.append("unset zlabel \n");
 		else
-			s += ("set zlabel \"" + zlabel + "\" \n");
+			sb.append("set zlabel \"" + zlabel + "\" \n");
 
 		if (logScaleX)
-			s += ("set logscale x \n");
+			sb.append("set logscale x \n");
 		else
-			s += ("unset logscale x \n");
+			sb.append("unset logscale x \n");
 
 		if (logScaleY)
-			s += ("set logscale y \n");
+			sb.append("set logscale y \n");
 		else
-			s += ("unset logscale y \n");
+			sb.append("unset logscale y \n");
 
 		if (logScaleZ)
-			s += ("set logscale z \n");
+			sb.append("set logscale z \n");
 		else
-			s += ("unset logscale z \n");
+			sb.append("unset logscale z \n");
 
-		for (int i = 0; i < labels.size(); i++) {
-			if (labels.get(i).getDoPlot()) {
-				s += (labels.get(i).getPlotString());
-				s += ("\n");
-			}
-
-		}
-
-		s += (plotCommand + " ");
-
-		s += getRangePlotString();
-
-		for (PlottableData pd : plottableData) {
-			if (pd.isEnabled()) {
-				s += (pd.toPlotString() + ", ");
+		/* Adds labels */
+		for (Label l : labels) {
+			if (l.isEnabled()) {
+				sb.append(l.toPlotString());
 			}
 		}
 
-		s = s.trim();
-		// is the a ',' to much at the end?
-		if (s.lastIndexOf(",") == s.length() - 1)
-			s = s.substring(0, s.length() - 1);
-		s += (" \n");
+		/* Adds the plot command. */
+		if (plottableData.size() > 0) {
+			sb.append(plotCommand + " ");
+			sb.append(getRangePlotString());
 
-		// Now replace all string variables with their value
-		for (int i = 0; i < variables.size(); i++) {
-			if (variables.get(i).getType() == Variable.Type.STRING) {
-				if (variables.get(i).isActive())
-					s = ((StringVariable) variables.get(i)).apply(s);
+			for (PlottableData pd : plottableData) {
+				if (pd.isEnabled()) {
+					sb.append(pd.toPlotString() + ", ");
+				}
+			}
+			/* Strips last comma */
+			sb.deleteCharAt(sb.length() - 2);
+			sb.append(" \n");
+		}
+
+		/* Now replaces all string variables with their value. */
+		String s = sb.toString();
+		for (Variable var : variables) {
+			if (var.getType() == Variable.Type.STRING) {
+				if (var.isActive())
+					s = ((StringVariable) var).apply(s);
 			}
 		}
 
@@ -194,8 +182,8 @@ public abstract class Plot {
 	public void plotAndPreview() throws IOException, InterruptedException {
 		String s = "";
 		s += "set terminal X11 \n";
-		s += getPlotString();
-		// this we have to add to keep the plot window open
+		s += toPlotString();
+		// we have to add this to keep the plot window open
 		s += ("pause -1\n");
 
 		System.out.println("Calling GNUPlotRunner...");
@@ -210,7 +198,7 @@ public abstract class Plot {
 		s += "set output '" + printFile + ".ps' \n";
 		s += "set terminal postscript \n";
 
-		s += getPlotString();
+		s += toPlotString();
 
 		s += "set output '|" + printCmd + " " + printFile + "' \n";
 
@@ -243,7 +231,7 @@ public abstract class Plot {
 			s += " \n";
 		}
 
-		s += getPlotString();
+		s += toPlotString();
 		s += "set terminal X11 \n";
 
 		System.out.println("Calling GNUPlotRunner...");
@@ -281,6 +269,30 @@ public abstract class Plot {
 
 	public void setXmin(double xmin) {
 		this.xmin = xmin;
+	}
+
+	public boolean isPsColor() {
+		return psColor;
+	}
+
+	public void setPsColor(boolean psColor) {
+		this.psColor = psColor;
+	}
+
+	public String getPsFontName() {
+		return psFontName;
+	}
+
+	public void setPsFontName(String psFontName) {
+		this.psFontName = psFontName;
+	}
+
+	public void setPsFontSize(int psFontSize) {
+		this.psFontSize = psFontSize;
+	}
+
+	public int getPsFontSize() {
+		return psFontSize;
 	}
 
 	public String getYlabel() {
@@ -353,6 +365,18 @@ public abstract class Plot {
 
 	public void setZmin(Double zmin) {
 		this.zmin = zmin;
+	}
+
+	public void addPlottableData(PlottableData data) {
+		plottableData.add(data);
+	}
+
+	public void addVariable(Variable variable) {
+		variables.add(variable);
+	}
+
+	public void addLabel(Label label) {
+		labels.add(label);
 	}
 
 }

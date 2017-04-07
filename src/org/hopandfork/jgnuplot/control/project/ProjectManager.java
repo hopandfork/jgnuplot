@@ -355,7 +355,7 @@ public class ProjectManager extends XMLManager {
 				l.setRelativePos(
 						RelativePosition.valueOf(n.getElementsByTagName(RELATIVE_POS).item(0).getTextContent()));
 			if (n.getElementsByTagName(DO_PLOT).getLength() != 0)
-				l.setDoPlot(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()));
+				l.setEnabled(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()));
 
 			mainWindow.labelTableModel.data.add(l);
 
@@ -473,7 +473,7 @@ public class ProjectManager extends XMLManager {
 				addTextNode(document, label, X_POS, l.getX() + "");
 				addTextNode(document, label, Y_POS, l.getY() + "");
 				addTextNode(document, label, RELATIVE_POS, l.getRelativePos() + "");
-				addTextNode(document, label, DO_PLOT, l.getDoPlot() + "");
+				addTextNode(document, label, DO_PLOT, l.isEnabled() + "");
 
 				labels.appendChild(label);
 			}

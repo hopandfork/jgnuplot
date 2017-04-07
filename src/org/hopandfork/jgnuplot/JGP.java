@@ -1462,13 +1462,13 @@ public class JGP extends JFrame
 			gp = new Plot3D();
 
 		for (int i = 0; i < dsTableModel.data.size(); i++) {
-			gp.plottableData.add(dsTableModel.data.get(i));
+			gp.addPlottableData(dsTableModel.data.get(i));
 		}
 		for (int i = 0; i < labelTableModel.data.size(); i++) {
-			gp.labels.add(labelTableModel.data.get(i));
+			gp.addLabel(labelTableModel.data.get(i));
 		}
 		for (int i = 0; i < variableTableModel.variables.size(); i++) {
-			gp.variables.add(variableTableModel.variables.get(i));
+			gp.addVariable(variableTableModel.variables.get(i));
 		}
 		gp.setTitle(tfTitle.getText());
 		try {
@@ -1561,7 +1561,7 @@ public class JGP extends JFrame
 
 	public void acGenPlotCmds() {
 		Plot gp = getGNUplot();
-		String plotString = gp.getPlotString();
+		String plotString = gp.toPlotString();
 		// taShell.setText( plotString );
 
 		showConsole(plotString, false);
