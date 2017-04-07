@@ -29,12 +29,12 @@ import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
 import org.hopandfork.jgnuplot.utility.TempFile;
 
-public class DataSet extends PlottableData {
+public class DataFile extends PlottableData {
 
 	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
 	private String dataSelectionString;
 
-	/** Dataset filename. */
+	/** DataFile filename. */
 	private String fileName;
 
 	/** Last modified flag/timestamp (?) */
@@ -90,20 +90,20 @@ public class DataSet extends PlottableData {
 			preProcessProgram = (String) value;
 	}
 
-	public DataSet(String fileName, String dataString) {
+	public DataFile(String fileName, String dataString) {
 		super();
 		this.dataSelectionString = dataString;
 		this.fileName = fileName;
 	}
 
-	public DataSet(String fileName, String dataString, String title) {
+	public DataFile(String fileName, String dataString, String title) {
 		super();
 		this.dataSelectionString = dataString;
 		this.fileName = fileName;
 		this.title = title;
 	}
 
-	public DataSet(String fileName, String dataString, String title, PlottingStyle style) {
+	public DataFile(String fileName, String dataString, String title, PlottingStyle style) {
 		super();
 		this.dataSelectionString = dataString;
 		this.fileName = fileName;
@@ -111,7 +111,7 @@ public class DataSet extends PlottableData {
 		this.style = style;
 	}
 
-	public DataSet() {
+	public DataFile() {
 	}
 
 	public String toPlotString() {
@@ -215,7 +215,7 @@ public class DataSet extends PlottableData {
 
 	@Override
 	public PlottableData getClone() {
-		DataSet ds = new DataSet();
+		DataFile ds = new DataFile();
 		ds.fileName = fileName;
 		ds.dataSelectionString = dataSelectionString;
 		ds.title = title;

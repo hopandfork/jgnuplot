@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.hopandfork.jgnuplot.JGP;
-import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.PlottableData;
 
 public class UpdateChecker implements Runnable {
@@ -22,9 +22,9 @@ public class UpdateChecker implements Runnable {
 		while (checkForUpdate) {
 			// check wether one of the files has changed
 			for (int i = 0; i < owner.dsTableModel.data.size(); i++) {
-				if (owner.dsTableModel.data.get(i).getClass().equals(DataSet.class)
+				if (owner.dsTableModel.data.get(i).getClass().equals(DataFile.class)
 						&& ((PlottableData) owner.dsTableModel.data.get(i)).isEnabled()) {
-					DataSet ds = (DataSet) owner.dsTableModel.data.get(i);
+					DataFile ds = (DataFile) owner.dsTableModel.data.get(i);
 					// if dataset source file has chenged, replot
 					File f = new File(ds.getFileName());
 					if (f.lastModified() > ds.getLastChanged()) {

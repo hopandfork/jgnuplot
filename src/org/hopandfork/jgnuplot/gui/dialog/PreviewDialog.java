@@ -180,7 +180,7 @@ public class PreviewDialog  extends JGPDialog implements ActionListener, FocusLi
 		//previewTable.add
 		packColumns(previewTable);
 		
-        //dsTableModel.addRow(new DataSet("foo", "1:2", "foo", Style.dots));
+        //dsTableModel.addRow(new DataFile("foo", "1:2", "foo", Style.dots));
         //Create the scroll pane and add the table to it.
         JScrollPane scrollPane = new JScrollPane(previewTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         

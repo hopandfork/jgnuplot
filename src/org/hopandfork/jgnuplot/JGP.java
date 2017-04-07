@@ -774,7 +774,7 @@ public class JGP extends JFrame
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-		// dsTableModel.addRow(new DataSet("foo", "1:2", "foo", Style.dots));
+		// dsTableModel.addRow(new DataFile("foo", "1:2", "foo", Style.dots));
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

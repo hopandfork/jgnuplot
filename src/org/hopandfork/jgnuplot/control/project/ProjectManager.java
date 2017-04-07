@@ -40,7 +40,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
-import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot2D;
 import org.hopandfork.jgnuplot.model.Plot3D;
@@ -304,12 +304,12 @@ public class ProjectManager extends XMLManager {
 		// NodeList datasets = document.getElementsByTagName(DATASET_ITEMS);
 		NodeList datasets = document.getElementsByTagName(DATASET);
 		for (int i = 0; i < datasets.getLength(); i++) {
-			DataSet ds;
+			DataFile ds;
 			Element n = (Element) datasets.item(i);
 
 			if (n.getElementsByTagName(CLASS).getLength() != 0) {
 				Class c = Class.forName(n.getElementsByTagName(CLASS).item(0).getTextContent());
-				ds = (DataSet) c.newInstance();
+				ds = (DataFile) c.newInstance();
 
 				if (n.getElementsByTagName(FILENAME).getLength() != 0)
 					ds.setFileName(n.getElementsByTagName(FILENAME).item(0).getTextContent());
@@ -440,9 +440,9 @@ public class ProjectManager extends XMLManager {
 				addTextNode(document, dataset, CLASS, ds.getClass().getName() + "");
 				String fname = "";
 				String preProcessProgram = "";
-				if (ds instanceof DataSet) {
-					fname = ((DataSet) ds).getFileName();
-					preProcessProgram = ((DataSet) ds).getPreProcessProgram();
+				if (ds instanceof DataFile) {
+					fname = ((DataFile) ds).getFileName();
+					preProcessProgram = ((DataFile) ds).getPreProcessProgram();
 				}
 				addTextNode(document, dataset, FILENAME, fname + "");
 				addTextNode(document, dataset, DATASTRING, ds.getDataString() + "");

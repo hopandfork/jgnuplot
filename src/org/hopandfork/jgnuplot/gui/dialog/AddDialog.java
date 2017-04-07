@@ -44,7 +44,7 @@ import javax.swing.border.TitledBorder;
 
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
-import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
@@ -225,8 +225,8 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		else 
 			rbFile.setSelected(true);
 	    
-		if (plotObject instanceof DataSet) {
-			DataSet ds = (DataSet)plotObject;
+		if (plotObject instanceof DataFile) {
+			DataFile ds = (DataFile)plotObject;
 			tfFileName.setText(ds.getFileName());
 			tfPreProcess.setText(ds.getPreProcessProgram());
 		}
@@ -332,10 +332,10 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		
 		PlottableData p;
 		if (rbFile.isSelected() ){
-			DataSet ds = new DataSet();
+			DataFile ds = new DataFile();
 			p = ds;
 			ds.setFileName(tfFileName.getText());
-			((DataSet) p).setPreProcessProgram(tfPreProcess.getText()); 
+			((DataFile) p).setPreProcessProgram(tfPreProcess.getText()); 
 		}
 		else
 			p = new Function();
