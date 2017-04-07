@@ -98,7 +98,7 @@ import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.Plot2D;
 import org.hopandfork.jgnuplot.model.Plot3D;
-import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.utility.JGPPrintWriter;
 import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
@@ -996,7 +996,7 @@ public class JGP extends JFrame
 	}
 
 	public void acAdd() {
-		PlottableItem p = AddDialog.showAddDialog("Add dataset...");
+		PlottableData p = AddDialog.showAddDialog("Add dataset...");
 		if (null != p)
 			dsTableModel.addRow(p);
 		System.out.println("added..");
@@ -1146,7 +1146,7 @@ public class JGP extends JFrame
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
-			PlottableItem p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...");
+			PlottableData p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...");
 			if (null != p)
 				dsTableModel.data.set(r[0], p);
 			dsTableModel.fireTableDataChanged();
@@ -1213,8 +1213,8 @@ public class JGP extends JFrame
 			// move all selected datasets one position further up
 			for (int j = 0; j < r.length; j++) {
 				// get selected and prevoius datasets
-				PlottableItem pCur = dsTableModel.data.get(r[j]);
-				PlottableItem pPre = dsTableModel.data.get(r[j] - 1);
+				PlottableData pCur = dsTableModel.data.get(r[j]);
+				PlottableData pPre = dsTableModel.data.get(r[j] - 1);
 
 				// and swap them
 				dsTableModel.data.set(r[j], pPre);
@@ -1270,8 +1270,8 @@ public class JGP extends JFrame
 			// move all selected datasets one position further up
 			for (int j = 0; j < r.length; j++) {
 				// get selected and prevoius datasets
-				PlottableItem pCur = dsTableModel.data.get(r[j]);
-				PlottableItem pNext = dsTableModel.data.get(r[j] + 1);
+				PlottableData pCur = dsTableModel.data.get(r[j]);
+				PlottableData pNext = dsTableModel.data.get(r[j] + 1);
 
 				// and swap them
 				dsTableModel.data.set(r[j], pNext);
@@ -1325,7 +1325,7 @@ public class JGP extends JFrame
 			}
 
 			// get selected and prevoius datasets
-			PlottableItem pCur = dsTableModel.data.get(r[0]);
+			PlottableData pCur = dsTableModel.data.get(r[0]);
 			dsTableModel.data.add(r[0] + 1, pCur.getClone());
 
 			// notify renderer that there were changes
@@ -1462,7 +1462,7 @@ public class JGP extends JFrame
 			gp = new Plot3D();
 
 		for (int i = 0; i < dsTableModel.data.size(); i++) {
-			gp.dataSets.add(dsTableModel.data.get(i));
+			gp.plottableData.add(dsTableModel.data.get(i));
 		}
 		for (int i = 0; i < labelTableModel.data.size(); i++) {
 			gp.labels.add(labelTableModel.data.get(i));

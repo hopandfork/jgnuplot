@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.hopandfork.jgnuplot.JGP;
 import org.hopandfork.jgnuplot.model.DataSet;
-import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.PlottableData;
 
 public class UpdateChecker implements Runnable {
 	JGP owner;
@@ -23,7 +23,7 @@ public class UpdateChecker implements Runnable {
 			// check wether one of the files has changed
 			for (int i = 0; i < owner.dsTableModel.data.size(); i++) {
 				if (owner.dsTableModel.data.get(i).getClass().equals(DataSet.class)
-						&& ((PlottableItem) owner.dsTableModel.data.get(i)).isEnabled()) {
+						&& ((PlottableData) owner.dsTableModel.data.get(i)).isEnabled()) {
 					DataSet ds = (DataSet) owner.dsTableModel.data.get(i);
 					// if dataset source file has chenged, replot
 					File f = new File(ds.getFileName());

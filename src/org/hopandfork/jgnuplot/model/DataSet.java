@@ -29,7 +29,7 @@ import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
 import org.hopandfork.jgnuplot.utility.TempFile;
 
-public class DataSet extends PlottableItem {
+public class DataSet extends PlottableData {
 
 	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
 	private String dataSelectionString;
@@ -114,8 +114,7 @@ public class DataSet extends PlottableItem {
 	public DataSet() {
 	}
 
-	@Override
-	public String getPlotString() {
+	public String toPlotString() {
 
 		String s = "";
 
@@ -215,7 +214,7 @@ public class DataSet extends PlottableItem {
 	}
 
 	@Override
-	public PlottableItem getClone() {
+	public PlottableData getClone() {
 		DataSet ds = new DataSet();
 		ds.fileName = fileName;
 		ds.dataSelectionString = dataSelectionString;

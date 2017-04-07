@@ -31,7 +31,7 @@ public abstract class Plot {
 
 	private JGPPrintWriter out = null;
 
-	public ArrayList<PlottableItem> dataSets;
+	public ArrayList<PlottableData> plottableData;
 
 	public ArrayList<Label> labels;
 
@@ -75,7 +75,7 @@ public abstract class Plot {
 
 	public Plot() {
 		super();
-		dataSets = new ArrayList<PlottableItem>();
+		plottableData = new ArrayList<PlottableData>();
 		labels = new ArrayList<Label>();
 		variables = new ArrayList<Variable>();
 	}
@@ -146,12 +146,10 @@ public abstract class Plot {
 
 		s += getRangePlotString();
 
-		for (int i = 0; i < dataSets.size(); i++) {
-			if (dataSets.get(i).isEnabled()) {
-				s += (dataSets.get(i).getPlotString());
-				s += (", ");
+		for (PlottableData pd : plottableData) {
+			if (pd.isEnabled()) {
+				s += (pd.toPlotString() + ", ");
 			}
-
 		}
 
 		s = s.trim();

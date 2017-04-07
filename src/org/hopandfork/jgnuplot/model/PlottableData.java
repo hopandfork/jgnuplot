@@ -25,9 +25,9 @@ import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 /**
- * Abstract item which can be added to a plot (e.g., a function, a dataset).
+ * Abstract data item which can be added to a plot (e.g., a function, a dataset).
  */
-public abstract class PlottableItem {
+public abstract class PlottableData implements Plottable {
 
 	/** Title of this item in the plot. */
 	public String title;
@@ -64,16 +64,10 @@ public abstract class PlottableItem {
 	public abstract String getDataString();
 
 	/**
-	 * Returns plot command string to be passed to gnuplot.
-	 * @return Command string to be passed to gnuplot.
-	 */
-	public abstract String getPlotString();
-
-	/**
 	 * Returns a clone of this PlottableItem.
 	 * @return A clone of this PlottableItem.
 	 */
-	public abstract PlottableItem getClone();
+	public abstract PlottableData getClone();
 
 	public void setStyle(PlottingStyle s) {
 		this.style = s;

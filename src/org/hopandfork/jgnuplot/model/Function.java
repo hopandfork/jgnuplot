@@ -26,7 +26,7 @@ import java.awt.Color;
 import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
-public class Function extends PlottableItem {
+public class Function extends PlottableData {
 	
 	/** Expression for the function. */
 	private String functionString;
@@ -39,8 +39,7 @@ public class Function extends PlottableItem {
 		this.functionString = functionString;
 	}
 
-	@Override
-	public String getPlotString() {
+	public String toPlotString() {
 		String s = functionString;
 		if (style != null || addStyleOpt != null || color != null) {
 			s += " with ";

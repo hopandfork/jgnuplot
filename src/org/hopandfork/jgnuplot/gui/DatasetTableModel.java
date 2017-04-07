@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.PlottableData;
 
 
 
@@ -50,9 +50,9 @@ public class DatasetTableModel extends AbstractTableModel {
 	
 
     
-    public ArrayList<PlottableItem> data = new ArrayList<PlottableItem> ();
+    public ArrayList<PlottableData> data = new ArrayList<PlottableData> ();
 
-    public void addRow(PlottableItem ds){
+    public void addRow(PlottableData ds){
     	data.add(ds);
 		fireTableDataChanged();
 

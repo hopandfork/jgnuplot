@@ -44,7 +44,7 @@ import org.hopandfork.jgnuplot.model.DataSet;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot2D;
 import org.hopandfork.jgnuplot.model.Plot3D;
-import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.model.RelativePosition;
 import org.hopandfork.jgnuplot.model.Variable;
 import org.hopandfork.jgnuplot.model.style.GnuplotColor;
@@ -433,7 +433,7 @@ public class ProjectManager extends XMLManager {
 			Element datasets = (Element) document.createElement(DATASET_ITEMS);
 
 			for (int i = 0; i < mainWindow.dsTableModel.data.size(); i++) {
-				PlottableItem ds = mainWindow.dsTableModel.data.get(i);
+				PlottableData ds = mainWindow.dsTableModel.data.get(i);
 				Element dataset = (Element) document.createElement(DATASET);
 				dataset.setAttribute(ID, i + "");
 

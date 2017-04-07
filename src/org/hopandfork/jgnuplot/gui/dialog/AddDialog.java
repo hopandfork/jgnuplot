@@ -46,7 +46,7 @@ import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.model.DataSet;
 import org.hopandfork.jgnuplot.model.Function;
-import org.hopandfork.jgnuplot.model.PlottableItem;
+import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 
@@ -74,7 +74,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
     
     JButton bDataStringAssist;
 	
-    static PlottableItem plotObject;
+    static PlottableData plotObject;
 
 	public AddDialog(java.awt.Frame owner) throws HeadlessException {
 		super(owner);
@@ -89,7 +89,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		this.pack();
 	}
 
-	AddDialog(PlottableItem plotObject, String title){
+	AddDialog(PlottableData plotObject, String title){
 		add(createMainPanel());
 		this.setTitle(title);
 		AddDialog.plotObject = plotObject;
@@ -214,7 +214,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 	 * Initializes alls fields with the values from a iven plot object
 	 * @param plotObject
 	 */
-	private void initPlotObject(PlottableItem plotObject){
+	private void initPlotObject(PlottableData plotObject){
 		//should never happen....but does not hurt to check
 		if (null == plotObject)
 			return;
@@ -330,7 +330,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 	public void acApply(){
 		System.out.println("adding" );
 		
-		PlottableItem p;
+		PlottableData p;
 		if (rbFile.isSelected() ){
 			DataSet ds = new DataSet();
 			p = ds;
@@ -433,7 +433,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 	}
 
 	
-	public static PlottableItem showAddDialog(String title){
+	public static PlottableData showAddDialog(String title){
 		AddDialog ptm = new AddDialog(title);
 		ptm.setModal(true);
       	ptm.show();
@@ -441,7 +441,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		return plotObject;
 	}
 	
-	public static PlottableItem showAddDialog(PlottableItem p , String title){
+	public static PlottableData showAddDialog(PlottableData p , String title){
 		AddDialog ptm = new AddDialog(p, title);
 		ptm.setModal(true);
       	ptm.show();
