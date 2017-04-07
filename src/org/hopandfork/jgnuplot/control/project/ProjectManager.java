@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.management.project;
+package org.hopandfork.jgnuplot.control.project;
 
 /*
  * Created on Aug 11, 2005
@@ -41,14 +41,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
 import org.hopandfork.jgnuplot.model.DataSet;
+import org.hopandfork.jgnuplot.model.Label;
+import org.hopandfork.jgnuplot.model.Plot2D;
+import org.hopandfork.jgnuplot.model.Plot3D;
 import org.hopandfork.jgnuplot.model.PlottableItem;
-import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.model.gnuplot.Label;
-import org.hopandfork.jgnuplot.model.gnuplot.Plot2D;
-import org.hopandfork.jgnuplot.model.gnuplot.Plot3D;
-import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
-import org.hopandfork.jgnuplot.model.gnuplot.RelativePosition;
-import org.hopandfork.jgnuplot.model.gnuplot.Variable;
+import org.hopandfork.jgnuplot.model.RelativePosition;
+import org.hopandfork.jgnuplot.model.Variable;
+import org.hopandfork.jgnuplot.model.style.GnuplotColor;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 import org.hopandfork.jgnuplot.utility.XMLManager;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;

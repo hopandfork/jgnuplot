@@ -24,7 +24,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.model.gnuplot.RelativePosition;
+import org.hopandfork.jgnuplot.model.RelativePosition;
 
 
 public class RelativePosComboBox extends JComboBox {

@@ -19,12 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.model.gnuplot;
+package org.hopandfork.jgnuplot.utility;
 
-public enum PlottingStyle {
-	 lines, points, linespoints, impulses,
-	 dots, steps, fsteps, histeps, errorbars, xerrorbars,
-	 yerrorbars, xyerrorbars, errorlines, xerrorlines, yerrorlines,
-	 xyerrorlines, boxes, filledcurves, boxerrorbars,
-	 boxxyerrorbars, financebars, candlesticks, vectors
+/**
+ * Simple interface for interacting with a console.
+ */
+public interface JGPPrintWriter {
+	
+	public void println(String s);
+	
+	public void printerrln(String s);
+	
 }

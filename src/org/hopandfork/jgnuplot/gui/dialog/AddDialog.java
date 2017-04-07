@@ -47,7 +47,7 @@ import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.model.DataSet;
 import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.PlottableItem;
-import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 
 public class AddDialog extends JGPDialog implements ActionListener{

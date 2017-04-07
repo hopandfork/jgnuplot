@@ -26,9 +26,9 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.hopandfork.jgnuplot.model.gnuplot.GnuplotVariable;
-import org.hopandfork.jgnuplot.model.gnuplot.StringVariable;
-import org.hopandfork.jgnuplot.model.gnuplot.Variable;
+import org.hopandfork.jgnuplot.model.GnuplotVariable;
+import org.hopandfork.jgnuplot.model.StringVariable;
+import org.hopandfork.jgnuplot.model.Variable;
 
 
 public class VariableTableModel  extends AbstractTableModel  {

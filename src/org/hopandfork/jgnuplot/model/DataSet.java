@@ -24,10 +24,10 @@ package org.hopandfork.jgnuplot.model;
 import java.awt.Color;
 import java.io.IOException;
 
-import org.hopandfork.jgnuplot.management.gnuplot.PreProcessPlugin;
-import org.hopandfork.jgnuplot.management.gnuplot.TempFile;
-import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.style.GnuplotColor;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
+import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
+import org.hopandfork.jgnuplot.utility.TempFile;
 
 public class DataSet extends PlottableItem {
 

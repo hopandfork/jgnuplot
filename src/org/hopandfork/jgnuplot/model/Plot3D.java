@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.model.gnuplot;
+package org.hopandfork.jgnuplot.model;
 
 public class Plot3D extends Plot {
 

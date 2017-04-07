@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.hopandfork.jgnuplot.model.gnuplot.Label;
+import org.hopandfork.jgnuplot.model.Label;
 
 
 public class LabelTableModel  extends AbstractTableModel  {

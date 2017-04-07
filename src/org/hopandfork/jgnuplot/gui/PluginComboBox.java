@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.management.gnuplot.PreProcessPlugin;
+import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
 
 
 public class PluginComboBox extends JComboBox {

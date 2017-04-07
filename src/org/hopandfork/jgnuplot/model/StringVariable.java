@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.model.gnuplot;
+package org.hopandfork.jgnuplot.model;
 
 /**
  * A string variable is not a actual varaible. It is rather a constant which

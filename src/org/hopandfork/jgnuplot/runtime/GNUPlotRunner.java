@@ -1,9 +1,11 @@
-package org.hopandfork.jgnuplot.management.gnuplot;
+package org.hopandfork.jgnuplot.runtime;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import org.hopandfork.jgnuplot.utility.JGPPrintWriter;
 
 /**
  * Runnable used to asynchronously run GNUplot.

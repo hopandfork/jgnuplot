@@ -1,4 +1,4 @@
-package org.hopandfork.jgnuplot.management.gnuplot;
+package org.hopandfork.jgnuplot.utility;
 
 import java.io.File;
 

@@ -25,7 +25,7 @@ package org.hopandfork.jgnuplot.gui;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.model.gnuplot.OutputFileFormat;
+import org.hopandfork.jgnuplot.model.OutputFileFormat;
 
 
 public class FileFormatComboBox extends JComboBox {

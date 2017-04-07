@@ -44,8 +44,8 @@ import org.hopandfork.jgnuplot.JGP;
 import org.hopandfork.jgnuplot.gui.FileFormatComboBox;
 import org.hopandfork.jgnuplot.gui.FontComboBox;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.model.gnuplot.OutputFileFormat;
-import org.hopandfork.jgnuplot.model.gnuplot.Plot;
+import org.hopandfork.jgnuplot.model.OutputFileFormat;
+import org.hopandfork.jgnuplot.model.Plot;
 
 
 public class PlotDialog extends JGPDialog implements ActionListener {

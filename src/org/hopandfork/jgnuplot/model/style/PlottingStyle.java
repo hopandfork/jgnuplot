@@ -19,11 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.model.gnuplot;
+package org.hopandfork.jgnuplot.model.style;
 
-public enum RelativePosition {
-		FIRST,
-		SECOND,
-		SCREEN,
-		GRAPH
+public enum PlottingStyle {
+	 lines, points, linespoints, impulses,
+	 dots, steps, fsteps, histeps, errorbars, xerrorbars,
+	 yerrorbars, xyerrorbars, errorlines, xerrorlines, yerrorlines,
+	 xyerrorlines, boxes, filledcurves, boxerrorbars,
+	 boxxyerrorbars, financebars, candlesticks, vectors
 }

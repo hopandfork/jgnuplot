@@ -23,8 +23,8 @@ package org.hopandfork.jgnuplot.model;
 
 import java.awt.Color;
 
-import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.style.GnuplotColor;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 public class Function extends PlottableItem {
 	

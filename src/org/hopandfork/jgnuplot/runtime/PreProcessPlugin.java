@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.management.gnuplot;
+package org.hopandfork.jgnuplot.runtime;
 
 /**
  * Interface for plugins which can pre-process data files.

@@ -21,8 +21,8 @@
 
 package org.hopandfork.jgnuplot.model;
 
-import org.hopandfork.jgnuplot.model.gnuplot.GnuplotColor;
-import org.hopandfork.jgnuplot.model.gnuplot.PlottingStyle;
+import org.hopandfork.jgnuplot.model.style.GnuplotColor;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 /**
  * Abstract item which can be added to a plot (e.g., a function, a dataset).
