@@ -16,3 +16,5 @@ work.gnuplot
 .classpath
 .settings
 /bin/
+.idea/
+JGNUplot.iml
