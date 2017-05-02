@@ -32,6 +32,7 @@ import org.hopandfork.jgnuplot.utility.TempFile;
 public class DataFile extends PlottableData {
 
 	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
+	@Deprecated
 	private String dataSelectionString;
 	
 	/** DataFile filename. */
