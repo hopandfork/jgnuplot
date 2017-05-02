@@ -1,13 +1,15 @@
 package org.hopandfork.jgnuplot.model;
 
 /**
- * This class represents a data selection for 3D graph.
+ * This class represents a data selection for 3D plot.
  * 
  * @author luca
  *
  */
 public class DataSelection3D extends DataSelection {
 	private int z = 0;
+	private double shiftZ = 0.0;
+	private double scaleZ = 1.0;
 
 	/**
 	 * This Constructor allows to create a DataSelection of twoD graph with
@@ -33,7 +35,23 @@ public class DataSelection3D extends DataSelection {
 		this.z = z;
 	}
 
+	public double getShiftZ() {
+		return shiftZ;
+	}
+
+	public void setShiftZ(double shiftZ) {
+		this.shiftZ = shiftZ;
+	}
+
+	public double getScaleZ() {
+		return scaleZ;
+	}
+
+	public void setScaleZ(double scaleZ) {
+		this.scaleZ = scaleZ;
+	}
+
 	public String toPlotString() {
-		return x + ":" + y + ":" + z;
+		return String.format("($%d*%f+%f):($%d*%f+%f):($%d*%f+%f)", x, scaleX, shiftX, y, scaleY, shiftY, z, scaleZ, shiftZ);
 	}
 }

@@ -1,7 +1,7 @@
 package org.hopandfork.jgnuplot.model;
 
 /**
- * This class represents a data selection for 2D graph with or without labels.
+ * This class represents a data selection for 2D plot with or without labels.
  * 
  * @author luca
  *
@@ -57,10 +57,10 @@ public class DataSelection2D extends DataSelection {
 	}
 
 	public String toPlotString() {
+		String s = String.format("($%d*%f+%f):($%d*%f+%f)", x, scaleX, shiftX, y, scaleY, shiftY);
 		if (labelled) {
-			return x + ":" + y + ":" + labels;
-		} else {
-			return x + ":" + y;
+			s = s + ":" + labels;
 		}
+		return s;
 	}
 }
