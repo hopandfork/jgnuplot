@@ -30,8 +30,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -40,7 +38,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Stack;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
@@ -67,8 +64,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -80,7 +75,6 @@ import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
 import org.hopandfork.jgnuplot.gui.ColorEditor;
 import org.hopandfork.jgnuplot.gui.ColorRenderer;
 import org.hopandfork.jgnuplot.gui.DatasetTableModel;
-import org.hopandfork.jgnuplot.gui.HistoryElement;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.LabelTableModel;
@@ -105,23 +99,17 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 public class JGP extends JFrame
-		implements ActionListener, ChangeListener, JGPPrintWriter, DocumentListener, FocusListener {
-
-	private Stack<HistoryElement> history;
-	private Stack<HistoryElement> redo;
+		implements ActionListener, ChangeListener, JGPPrintWriter {
 
 	public static final boolean debug = true;
 
 	private UpdateChecker updateChecker;
 
 	private ConsoleDialog consoleDialog;
-	// private JGPAddDialog addDialog;
 
 	private PlotDialog plotDialog;
 
 	private JCheckBox cbUpdateCheck;
-
-	// public JTable dataSetTable;
 
 	public DatasetTableModel dsTableModel;
 	public JTable dataSetTable;
@@ -137,10 +125,8 @@ public class JGP extends JFrame
 
 	public JTextField tfTitle;
 	public JTextField tfMaxX;
-	// tfUpDown.setFont(new Font("Courier", Font.PLAIN, 32));
 
 	public JTextField tfMaxY;
-	// tfLeftRight.setFont(new Font("Courier", Font.PLAIN, 32));
 	public JTextField tfMinX;
 	public JTextField tfMinY;
 
@@ -173,8 +159,6 @@ public class JGP extends JFrame
 	public JMenuItem clone_menu_item;
 	public JMenuItem moveup_menu_item;
 	public JMenuItem movedown_menu_item;
-	public JMenuItem undo_menu_item;
-	public JMenuItem redo_menu_item;
 
 	public JTextField statusBar;
 
@@ -196,17 +180,12 @@ public class JGP extends JFrame
 
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
 
-	// private ArrayList<JGPRecentProjectMenuItem> recentProjects;
-
 	public JGP() {
-		// super((Frame) null, "JGNUplot");
 		this.setTitle("JGNUplot");
 
 		this.setLocationByPlatform(true);
 
 		plotDialog = new PlotDialog(this);
-
-		// file = new File(".");
 
 		// Set the dialog box size.
 		setSize(550, 750);
@@ -241,13 +220,10 @@ public class JGP extends JFrame
 
 		loadStandardProject();
 
-		history = new Stack<HistoryElement>();
-		redo = new Stack<HistoryElement>();
-
 	}
 
 	public static String getVersion() {
-		return "0.1.2";
+		return "0.1.2"; // TODO
 	}
 
 	/**
@@ -305,13 +281,10 @@ public class JGP extends JFrame
 
 		file_menu.addSeparator();
 
-		// recentProjects = new ArrayList<JGPRecentProjectMenuItem>();
 		for (int i = 0; i < nRecentProjects; i++) {
 			RecentProjectMenuItem menu_item = new RecentProjectMenuItem("-");
 			menu_item.addActionListener(this);
 			file_menu.add(menu_item);
-			// recentProjects.add((JGPRecentProjectMenuItem)
-			// file_menu.add(menu_item));
 		}
 
 		file_menu.addSeparator();
@@ -325,20 +298,6 @@ public class JGP extends JFrame
 		JMenu edit_menu = new JMenu("Edit");
 		edit_menu.setBorderPainted(false);
 		menu_bar.add(edit_menu);
-
-		undo_menu_item = new JMenuItem("Undo");
-		undo_menu_item.addActionListener(this);
-		undo_menu_item.setActionCommand("undo");
-		edit_menu.add(undo_menu_item);
-		// Not supported yet
-		undo_menu_item.setEnabled(false);
-
-		redo_menu_item = new JMenuItem("Redo");
-		redo_menu_item.addActionListener(this);
-		redo_menu_item.setActionCommand("Redo");
-		edit_menu.add(redo_menu_item);
-		// Not supported yet
-		redo_menu_item.setEnabled(false);
 
 		edit_menu.addSeparator();
 
@@ -378,15 +337,6 @@ public class JGP extends JFrame
 		movedown_menu_item.addActionListener(this);
 		movedown_menu_item.setActionCommand("movedown");
 		edit_menu.add(movedown_menu_item);
-
-		edit_menu.addSeparator();
-
-		JMenuItem settings_menu_item = new JMenuItem("Settings...");
-		settings_menu_item.addActionListener(this);
-		settings_menu_item.setActionCommand("settings");
-		edit_menu.add(settings_menu_item);
-		// Not supported yet
-		settings_menu_item.setEnabled(false);
 
 		// Add the view menu the menu bar.
 		JMenu view_menu = new JMenu("View");
@@ -547,50 +497,30 @@ public class JGP extends JFrame
 		group.add(rb3D);
 
 		tfTitle = new JTextField("", 16);
-		tfTitle.addFocusListener(this);
-		tfTitle.getDocument().addDocumentListener(this);
 
 		tfMaxX = new JTextField("", 8);
-		tfMaxX.addFocusListener(this);
-		tfMaxX.getDocument().addDocumentListener(this);
 
 		tfMaxY = new JTextField("", 8);
-		tfMaxY.addFocusListener(this);
-		tfMaxY.getDocument().addDocumentListener(this);
 
 		tfXLabel = new JTextField("", 10);
-		tfXLabel.addFocusListener(this);
-		tfXLabel.getDocument().addDocumentListener(this);
 
 		tfMinX = new JTextField("", 8);
-		tfMinX.addFocusListener(this);
-		tfMinX.getDocument().addDocumentListener(this);
 
 		tfMinY = new JTextField("", 8);
-		tfMinY.addFocusListener(this);
-		tfMinY.getDocument().addDocumentListener(this);
 
 		tfYLabel = new JTextField("", 10);
-		tfYLabel.addFocusListener(this);
-		tfYLabel.getDocument().addDocumentListener(this);
 
 		tfMaxZ = new JTextField("", 8);
-		tfMaxZ.addFocusListener(this);
-		tfMaxZ.getDocument().addDocumentListener(this);
 
 		tfMinZ = new JTextField("", 8);
-		tfMinZ.addFocusListener(this);
-		tfMinZ.getDocument().addDocumentListener(this);
 
 		tfZLabel = new JTextField("", 10);
-		tfZLabel.addFocusListener(this);
-		tfZLabel.getDocument().addDocumentListener(this);
 
 		cbLogScaleX = new JCheckBox();
 		cbLogScaleY = new JCheckBox();
 		cbLogScaleZ = new JCheckBox();
 
-		// disable 3d until user selets 3d plot
+		// disable 3d until user selects 3d plot
 		tfMaxZ.setEnabled(false);
 		tfMinZ.setEnabled(false);
 		tfZLabel.setEnabled(false);
@@ -601,8 +531,6 @@ public class JGP extends JFrame
 		statusBar.setEditable(false);
 		statusBar.setFocusable(false);
 		int row = 0;
-		// jp.add(new JLabel("Datasets"), 0, row, 1, 1,
-		// GridBagConstraints.HORIZONTAL);
 		GridBagConstraints gbc2 = new GridBagConstraints();
 
 		gbc2.gridx = 0;
@@ -614,7 +542,6 @@ public class JGP extends JFrame
 
 		// this works, the other version does not...don't know why
 		jp.add(create_tabbed_pane(), gbc2);
-		// jp.add(create_tabbed_pane(), 0, row, 4, 3, GridBagConstraints.BOTH);
 		row += 3;
 		jp.add(bMoveUp, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bMoveDown, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
@@ -626,8 +553,6 @@ public class JGP extends JFrame
 		jp.add(bDelete, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bClear, 4, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
-		// jp.add(createShellPanel(), 0, row, 5, 3,
-		// GridBagConstraints.HORIZONTAL);
 		row += 3;
 		jp.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.WEST);
 		jp.add(tfTitle, 1, row, 4, 1, GridBagConstraints.BOTH);
@@ -673,35 +598,6 @@ public class JGP extends JFrame
 		return jp;
 	}
 
-	private JPanel createShellPanel() {
-		// Create the panel.
-		JGPPanel jp = new JGPPanel();
-		// Set the default panel layout.
-		GridBagLayout gbl = new GridBagLayout();
-		jp.setLayout(gbl);
-
-		taShell = new JTextArea(100, 20);
-		taShell.setWrapStyleWord(true);
-		taShell.setLineWrap(true);
-
-		JScrollPane scrollPane = new JScrollPane(taShell);
-		scrollPane.setPreferredSize(new Dimension(500, 200));
-
-		GridBagConstraints gbc2 = new GridBagConstraints();
-		gbc2.gridx = 0;
-		gbc2.gridy = 0;
-		gbc2.gridwidth = 4;
-		gbc2.weightx = 1.0;
-		gbc2.weighty = 1.0;
-		gbc2.fill = GridBagConstraints.BOTH;
-
-		// this works, the other version does not...don't know why
-		jp.add(scrollPane, gbc2);
-
-		return jp;
-
-	}
-
 	private JPanel createLabelSetPanel() {
 
 		// Create the panel.
@@ -715,14 +611,9 @@ public class JGP extends JFrame
 		labelTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(labelTable);
-		// jp.setPreferredSize(new Dimension(400, 400));
 
 		TableColumn styleColumn = labelTable.getColumnModel().getColumn(3);
 		styleColumn.setCellEditor(new DefaultCellEditor(new RelativePosComboBox()));
-
-		// TableColumn doPlotColumn =
-		// dataSetTable.getColumnModel().getColumn(4);
-		// doPlotColumn.setCellEditor(new DefaultCellEditor(new JCheckBox()));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -774,22 +665,16 @@ public class JGP extends JFrame
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-		// dsTableModel.addRow(new DataFile("foo", "1:2", "foo", Style.dots));
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		// jp.setPreferredSize(new Dimension(400, 400));
 		TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
 		styleColumn.setCellEditor(new DefaultCellEditor(new StyleComboBox()));
 
 		// Set up renderer and editor for the Favorite Color column.
 		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
 		dataSetTable.setDefaultEditor(Color.class, new ColorEditor());
-
-		// TableColumn doPlotColumn =
-		// dataSetTable.getColumnModel().getColumn(4);
-		// doPlotColumn.setCellEditor(new DefaultCellEditor(new JCheckBox()));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -815,7 +700,7 @@ public class JGP extends JFrame
 	// margin pixels are added to the left and right
 	// (resulting in an additional width of 2*margin pixels).
 	public void packColumn(JTable table, int vColIndex, int margin) {
-		//TableModel model = table.getModel();
+		// TableModel model = table.getModel();
 		DefaultTableColumnModel colModel = (DefaultTableColumnModel) table.getColumnModel();
 		TableColumn col = colModel.getColumn(vColIndex);
 		int width = 0;
@@ -856,14 +741,9 @@ public class JGP extends JFrame
 		variableTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(variableTable);
-		// jp.setPreferredSize(new Dimension(400, 400));
 
 		TableColumn typeColumn = variableTable.getColumnModel().getColumn(0);
 		typeColumn.setCellEditor(new DefaultCellEditor(new VariableTypeComboBox()));
-
-		// TableColumn doPlotColumn =
-		// dataSetTable.getColumnModel().getColumn(4);
-		// doPlotColumn.setCellEditor(new DefaultCellEditor(new JCheckBox()));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -902,7 +782,6 @@ public class JGP extends JFrame
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("add")) {
-			saveHistoryState(e.getActionCommand());
 			int i = tp.getSelectedIndex();
 
 			switch (i) {
@@ -918,23 +797,17 @@ public class JGP extends JFrame
 			}
 				break;
 			}
-		} else if (e.getActionCommand().equals("undo")) {
-			acUndo();
 		} else if (e.getActionCommand().equals("Exit")) {
 			exit();
 		} else if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
 		} else if (e.getActionCommand().equals("edit")) {
-			saveHistoryState(e.getActionCommand());
 			acEdit();
 		} else if (e.getActionCommand().equals("delete")) {
-			saveHistoryState(e.getActionCommand());
 			acDelete();
 		} else if (e.getActionCommand().equals("moveup")) {
-			saveHistoryState(e.getActionCommand());
 			acMoveUp();
 		} else if (e.getActionCommand().equals("movedown")) {
-			saveHistoryState(e.getActionCommand());
 			acMoveDown();
 		} else if (e.getActionCommand().equals("showconsole")) {
 			acShowConsole();
@@ -953,15 +826,12 @@ public class JGP extends JFrame
 		} else if (e.getActionCommand().equals("print")) {
 			acPrint();
 		} else if (e.getActionCommand().equals("new")) {
-			saveHistoryState(e.getActionCommand());
 			acNew();
 		} else if (e.getActionCommand().equals("about"))
 			AboutDialog.showAboutDialog();
 		else if (e.getActionCommand().equals("clone")) {
-			saveHistoryState(e.getActionCommand());
 			acClone();
 		} else if (e.getActionCommand().equals("clear")) {
-			saveHistoryState(e.getActionCommand());
 			acClear();
 		} else if (e.getActionCommand().equals("Save project to..."))
 			acSaveProjectTo();
@@ -1038,50 +908,6 @@ public class JGP extends JFrame
 	}
 
 	public void acPlotPS() {
-		// JFileChooser file_chooser;
-		//
-		// File file;
-		//
-		// if (psFileName != null)
-		// file = new File(psFileName);
-		// else
-		// file = new File(".");
-		//
-		// // Open a file chooser that points to the current dir.
-		// file_chooser = new JFileChooser(file.getPath());
-		//
-		// // Set the file chooser size.
-		// file_chooser.setPreferredSize(new Dimension(500, 400));
-		//
-		// // Show the Save dialog box (returns the option selected)
-		// int selected = file_chooser.showSaveDialog(this);
-		//
-		// // If the Open button is pressed.
-		// if (selected == JFileChooser.APPROVE_OPTION) {
-		// // Get the selected file.
-		// file = file_chooser.getSelectedFile();
-		//
-		// psFileName = file.getPath();
-		//
-		// clearShell();
-		//
-		// println("calling GNUplot...");
-		//
-		// GNUplot gp = getGNUplot();
-		// try {
-		// gp.plotPostScript(file.getPath());
-		// } catch (IOException e) {
-		// taShell.setText(e.getMessage());
-		// } catch (InterruptedException e) {
-		// taShell.setText(e.getMessage());
-		// }
-		//
-		// return;
-		// }
-		// // If the Cancel button is pressed.
-		// else if (selected == JFileChooser.CANCEL_OPTION) {
-		// return;
-		// }
 		plotDialog.setVisible(true);
 	}
 
@@ -1455,7 +1281,7 @@ public class JGP extends JFrame
 
 	public Plot getGNUplot() {
 		Plot gp;
-		
+
 		if (rb2D.isSelected())
 			gp = new Plot2D();
 		else
@@ -1585,7 +1411,6 @@ public class JGP extends JFrame
 			bClone.setEnabled(i == 0);
 			clone_menu_item.setEnabled(i == 0);
 
-			// bClear.setEnabled(i == 0);
 			bMoveUp.setEnabled(i == 0);
 			moveup_menu_item.setEnabled(i == 0);
 
@@ -1675,16 +1500,10 @@ public class JGP extends JFrame
 	}
 
 	public void loadProject(String fileName) {
-		// clear tables
-		// dsTableModel.data.clear();
-		// dsTableModel.fireTableDataChanged();
-		// labelTableModel.data.clear();
-		// labelTableModel.fireTableDataChanged();
 		clearDataSetTable();
 		clearLabelTable();
 		clearVariableTable();
 
-		// parseFile(inFile);
 		try {
 			new ProjectManager(this).loadProjectFile(fileName);
 		} catch (DOMException e) {
@@ -1874,86 +1693,6 @@ public class JGP extends JFrame
 		file_menu.add(menu_item, startRecentProjects);
 		file_menu.remove(startRecentProjects + nRecentProjects);
 
-	}
-
-	public void saveHistoryState(String desc) {
-		HistoryElement h = new HistoryElement(desc, new ProjectManager(this).saveProjectXML());
-		history.push(h);
-		undo_menu_item.setText("Undo " + desc);
-		undo_menu_item.setEnabled(true);
-		// redo_menu_item.setText("Redo ");
-		// redo_menu_item.setEnabled(false);
-	}
-
-	public void acUndo() {
-		HistoryElement h = history.pop();
-		HistoryElement previous = null;
-		if (history.isEmpty()) {
-			undo_menu_item.setText("Undo ");
-			undo_menu_item.setEnabled(false);
-
-		} else {
-			previous = history.peek();
-			undo_menu_item.setText("Undo " + previous.description);
-		}
-		// redo.push(current)
-
-		try {
-			clearDataSetTable();
-			clearLabelTable();
-			clearVariableTable();
-
-			// now restore previous state
-			new ProjectManager(this).loadProjectXML(h.state);
-		} catch (DOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProjectManagerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	boolean valueChanged = false;
-	HistoryElement tmpHistory;
-
-	public void changedUpdate(DocumentEvent e) {
-		valueChanged = true;
-	}
-
-	public void insertUpdate(DocumentEvent e) {
-		valueChanged = true;
-	}
-
-	public void removeUpdate(DocumentEvent e) {
-		valueChanged = true;
-	}
-
-	public void focusGained(FocusEvent e) {
-		valueChanged = false;
-		// save history since user might attempt to change the
-		// components value
-		tmpHistory = new HistoryElement("textfield change", new ProjectManager(this).saveProjectXML());
-	}
-
-	public void focusLost(FocusEvent e) {
-		// if the focus loosing component did change its value
-		// save history which was temporarey saved when component gained focus
-		// focus
-		if (valueChanged) {
-			history.push(tmpHistory);
-			undo_menu_item.setText("Undo " + tmpHistory.description);
-			undo_menu_item.setEnabled(true);
-		}
 	}
 
 }
