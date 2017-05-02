@@ -93,13 +93,12 @@ import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.Plot2D;
 import org.hopandfork.jgnuplot.model.Plot3D;
 import org.hopandfork.jgnuplot.model.PlottableData;
-import org.hopandfork.jgnuplot.utility.JGPPrintWriter;
 import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 public class JGP extends JFrame
-		implements ActionListener, ChangeListener, JGPPrintWriter {
+		implements ActionListener, ChangeListener {
 
 	public static final boolean debug = true;
 
@@ -880,7 +879,6 @@ public class JGP extends JFrame
 
 	public void acPrint() {
 		Plot gp = getGNUplot();
-		gp.setOut((JGPPrintWriter) this);
 		try {
 
 			gp.generatePostscriptFile("", "");
@@ -1275,7 +1273,6 @@ public class JGP extends JFrame
 		clearShell();
 		println("calling GNUplot...");
 		Plot gp = getGNUplot();
-		gp.setOut((JGPPrintWriter) this);
 		gp.plotAndPreview();
 	}
 

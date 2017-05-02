@@ -69,7 +69,6 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 		this.owner = owner;
 		add(createMainPanel());
 		pack();
-		// TODO Auto-generated constructor stub
 	}
 
 	PlotDialog(){
@@ -195,7 +194,6 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 			}
 		
 		try {
-			gp.setOut(owner);
 			gp.plotToFile(psFileName, (OutputFileFormat) cbFileFormat.getSelectedItem() );
 		} catch (IOException e) {
 			owner.taShell.setText(e.getMessage());
