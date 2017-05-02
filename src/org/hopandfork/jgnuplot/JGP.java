@@ -115,13 +115,10 @@ public class JGP extends JFrame
 	private UpdateChecker updateChecker;
 
 	private ConsoleDialog consoleDialog;
-	// private JGPAddDialog addDialog;
 
 	private PlotDialog plotDialog;
 
 	private JCheckBox cbUpdateCheck;
-
-	// public JTable dataSetTable;
 
 	public DatasetTableModel dsTableModel;
 	public JTable dataSetTable;
@@ -137,10 +134,8 @@ public class JGP extends JFrame
 
 	public JTextField tfTitle;
 	public JTextField tfMaxX;
-	// tfUpDown.setFont(new Font("Courier", Font.PLAIN, 32));
 
 	public JTextField tfMaxY;
-	// tfLeftRight.setFont(new Font("Courier", Font.PLAIN, 32));
 	public JTextField tfMinX;
 	public JTextField tfMinY;
 
@@ -196,17 +191,14 @@ public class JGP extends JFrame
 
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
 
-	// private ArrayList<JGPRecentProjectMenuItem> recentProjects;
 
 	public JGP() {
-		// super((Frame) null, "JGNUplot");
 		this.setTitle("JGNUplot");
 
 		this.setLocationByPlatform(true);
 
 		plotDialog = new PlotDialog(this);
 
-		// file = new File(".");
 
 		// Set the dialog box size.
 		setSize(550, 750);

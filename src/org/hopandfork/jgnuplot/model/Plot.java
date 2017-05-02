@@ -24,7 +24,7 @@ package org.hopandfork.jgnuplot.model;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.hopandfork.jgnuplot.runtime.GNUPlotRunner;
+import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
 import org.hopandfork.jgnuplot.utility.JGPPrintWriter;
 
 public abstract class Plot implements Plottable {
@@ -186,8 +186,8 @@ public abstract class Plot implements Plottable {
 		// we have to add this to keep the plot window open
 		s += ("pause -1\n");
 
-		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner(s, out);
+		System.out.println("Calling GnuplotRunner...");
+		GnuplotRunner pr = new GnuplotRunner(s);
 		new Thread(pr).start();
 
 	}
@@ -204,8 +204,8 @@ public abstract class Plot implements Plottable {
 
 		s += ("pause -1 'Press ENTER to continue...' \n");
 
-		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner(s, out);
+		System.out.println("Calling GnuplotRunner...");
+		GnuplotRunner pr = new GnuplotRunner(s);
 		new Thread(pr).start();
 	}
 
@@ -234,8 +234,8 @@ public abstract class Plot implements Plottable {
 		s += toPlotString();
 		s += "set terminal X11 \n";
 
-		System.out.println("Calling GNUPlotRunner...");
-		GNUPlotRunner pr = new GNUPlotRunner(s, out);
+		System.out.println("Calling GnuplotRunner...");
+		GnuplotRunner pr = new GnuplotRunner(s);
 		new Thread(pr).start();
 	}
 
