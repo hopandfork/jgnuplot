@@ -25,11 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
-import org.hopandfork.jgnuplot.utility.JGPPrintWriter;
 
 public abstract class Plot implements Plottable {
-
-	private JGPPrintWriter out = null;
 
 	private ArrayList<PlottableData> plottableData;
 	private ArrayList<Label> labels;
@@ -333,14 +330,6 @@ public abstract class Plot implements Plottable {
 
 	public void setLogScaleY(boolean logScaleY) {
 		this.logScaleY = logScaleY;
-	}
-
-	public JGPPrintWriter getOut() {
-		return out;
-	}
-
-	public void setOut(JGPPrintWriter out) {
-		this.out = out;
 	}
 
 	public String getPrePlotString() {
