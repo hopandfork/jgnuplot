@@ -33,7 +33,7 @@ public class DataFile extends PlottableData {
 
 	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
 	private String dataSelectionString;
-
+	
 	/** DataFile filename. */
 	private String fileName;
 
