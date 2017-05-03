@@ -34,6 +34,9 @@ public class DataFile extends PlottableData {
 	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
 	@Deprecated
 	private String dataSelectionString;
+
+	/** Columns selection. */
+	private DataSelection dataSelection;
 	
 	/** DataFile filename. */
 	private String fileName;
@@ -46,14 +49,6 @@ public class DataFile extends PlottableData {
 
 	/** Optional external command for preprocessing. */
 	private String preProcessProgram;
-
-	public long getLastChanged() {
-		return lastChanged;
-	}
-
-	public void setLastChanged(long lastChanged) {
-		this.lastChanged = lastChanged;
-	}
 
 	@Deprecated
 	public Object[] getData() {
@@ -91,33 +86,15 @@ public class DataFile extends PlottableData {
 			preProcessProgram = (String) value;
 	}
 
-	public DataFile(String fileName, String dataString) {
-		super();
-		this.dataSelectionString = dataString;
-		this.fileName = fileName;
-	}
-
-	public DataFile(String fileName, String dataString, String title) {
-		super();
-		this.dataSelectionString = dataString;
-		this.fileName = fileName;
-		this.title = title;
-	}
-
-	public DataFile(String fileName, String dataString, String title, PlottingStyle style) {
-		super();
-		this.dataSelectionString = dataString;
-		this.fileName = fileName;
-		this.title = title;
-		this.style = style;
-	}
-
-	public DataFile() {
-	}
 
 	public String toPlotString() {
 
 		String s = "";
+
+		if (dataSelection == null || fileName == null) {
+			System.err.println("Nothing to plot!");
+			return s;
+		}
 
 		if (preProcessProgram != null && !preProcessProgram.trim().equals("")
 				&& !preProcessProgram.trim().equals("null")) {
@@ -130,7 +107,7 @@ public class DataFile extends PlottableData {
 			s += "'" + fileName + "'";
 		}
 
-		s += " using " + dataSelectionString + " ";
+		s += " using " + dataSelection.toPlotString() + " ";
 
 		if (style != null || addStyleOpt != null || color != null) {
 			s += " with ";
@@ -174,14 +151,6 @@ public class DataFile extends PlottableData {
 		return dataSelectionString;
 	}
 
-	public String getDataSelectionString() {
-		return dataSelectionString;
-	}
-
-	public void setDataSelectionString(String dataSelectionString) {
-		this.dataSelectionString = dataSelectionString;
-	}
-
 	public String getFileName() {
 		return fileName;
 	}
@@ -189,6 +158,14 @@ public class DataFile extends PlottableData {
 	public void setFileName(String s) {
 		this.fileName = s;
 	};
+
+	public long getLastChanged() {
+		return lastChanged;
+	}
+
+	public void setLastChanged(long lastChanged) {
+		this.lastChanged = lastChanged;
+	}
 
 	@Deprecated
 	public void setDataString(String function) {
@@ -218,14 +195,21 @@ public class DataFile extends PlottableData {
 	public PlottableData getClone() {
 		DataFile ds = new DataFile();
 		ds.fileName = fileName;
-		ds.dataSelectionString = dataSelectionString;
 		ds.title = title;
 		ds.color = color;
 		ds.style = style;
 		ds.addStyleOpt = addStyleOpt;
 		ds.enabled = enabled;
 		ds.preProcessProgram = preProcessProgram;
+		ds.dataSelection = dataSelection;
 		return ds;
 	}
 
+	public DataSelection getDataSelection() {
+		return dataSelection;
+	}
+
+	public void setDataSelection(DataSelection dataSelection) {
+		this.dataSelection = dataSelection;
+	}
 }
