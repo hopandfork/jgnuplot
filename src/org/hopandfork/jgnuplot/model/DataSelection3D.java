@@ -1,5 +1,7 @@
 package org.hopandfork.jgnuplot.model;
 
+import java.util.Locale;
+
 /**
  * This class represents a data selection for 3D plot.
  * 
@@ -52,6 +54,6 @@ public class DataSelection3D extends DataSelection {
 	}
 
 	public String toPlotString() {
-		return String.format("($%d*%f+%f):($%d*%f+%f):($%d*%f+%f)", x, scaleX, shiftX, y, scaleY, shiftY, z, scaleZ, shiftZ);
+		return String.format(Locale.ROOT, "($%d*%f+%f):($%d*%f+%f):($%d*%f+%f)", x, scaleX, shiftX, y, scaleY, shiftY, z, scaleZ, shiftZ);
 	}
 }

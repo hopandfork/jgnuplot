@@ -6,7 +6,7 @@ import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 public class PlottableDataController {
 
 
-	public void addFunction (String expression, String title, PlottingStyle style)
+	public Function addFunction (String expression, String title, PlottingStyle style)
 	{
 		Plot plot = Project.currentProject().getPlot();
 
@@ -16,10 +16,11 @@ public class PlottableDataController {
 		function.setStyle(style);
 
 		plot.addPlottableData(function);
+		return function;
 	}
 
 
-	public void addDataFile (String filename, String title, PlottingStyle style, DataSelection dataSelection)
+	public DataFile addDataFile (String filename, String title, PlottingStyle style, DataSelection dataSelection)
 	{
 		Plot plot = Project.currentProject().getPlot();
 
@@ -27,9 +28,10 @@ public class PlottableDataController {
 		dataFile.setFileName(filename);
 		dataFile.setTitle(title);
 		dataFile.setStyle(style);
-
+		dataFile.setDataSelection(dataSelection);
 
 		plot.addPlottableData(dataFile);
+		return dataFile;
 	}
 
 	// TODO edit

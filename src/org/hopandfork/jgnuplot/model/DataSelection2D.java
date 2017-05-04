@@ -1,5 +1,7 @@
 package org.hopandfork.jgnuplot.model;
 
+import java.util.Locale;
+
 /**
  * This class represents a data selection for 2D plot with or without labels.
  * 
@@ -57,7 +59,7 @@ public class DataSelection2D extends DataSelection {
 	}
 
 	public String toPlotString() {
-		String s = String.format("($%d*%f+%f):($%d*%f+%f)", x, scaleX, shiftX, y, scaleY, shiftY);
+		String s = String.format(Locale.ROOT, "($%d*%f+%f):($%d*%f+%f)", x, scaleX, shiftX, y, scaleY, shiftY);
 		if (labelled) {
 			s = s + ":" + labels;
 		}

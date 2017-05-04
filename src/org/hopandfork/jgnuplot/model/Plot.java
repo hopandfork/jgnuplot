@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
 
-public abstract class Plot implements Plottable {
+public class Plot implements Plottable {
 
 	private ArrayList<PlottableData> plottableData;
 	private ArrayList<Label> labels;
@@ -44,8 +44,8 @@ public abstract class Plot implements Plottable {
 	private Double xmax;
 	private Double ymin;
 	private Double ymax;
-	protected Double zmin;
-	protected Double zmax;
+	private Double zmin;
+	private Double zmax;
 
 	private boolean logScaleX = false;
 	private boolean logScaleY = false;
@@ -55,7 +55,13 @@ public abstract class Plot implements Plottable {
 	private int psFontSize = 18;
 
 	private String psFontName = "";
-	protected String plotCommand = "plot";
+
+	public enum Mode {
+		PLOT_2D, PLOT_3D;
+	}
+
+	/** Plot mode (2D/3D). */
+	private Mode mode = Mode.PLOT_2D;
 
 	public Plot() {
 		super();
@@ -128,6 +134,12 @@ public abstract class Plot implements Plottable {
 		}
 
 		/* Adds the plot command. */
+		String plotCommand;
+		if (mode.equals(Mode.PLOT_3D)) {
+			plotCommand = "splot";
+		} else {
+			plotCommand = "plot";
+		}
 		if (plottableData.size() > 0) {
 			sb.append(plotCommand + " ");
 			sb.append(getRangePlotString());
@@ -171,6 +183,14 @@ public abstract class Plot implements Plottable {
 		s += ":";
 		if (ymax != null)
 			s += ymax;
+		s += "] ";
+
+		s += "[";
+		if (zmin != null)
+			s += zmin;
+		s += ":";
+		if (zmax != null)
+			s += zmax;
 		s += "] ";
 
 		return s;
@@ -366,6 +386,14 @@ public abstract class Plot implements Plottable {
 
 	public void addLabel(Label label) {
 		labels.add(label);
+	}
+
+	public Mode getMode() {
+		return mode;
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
 	}
 
 }

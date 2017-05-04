@@ -60,9 +60,6 @@ public abstract class PlottableData implements Plottable {
 		this.enabled = enabled;
 	}
 
-	@Deprecated
-	public abstract String getDataString();
-
 	/**
 	 * Returns a clone of this PlottableItem.
 	 * @return A clone of this PlottableItem.
@@ -78,9 +75,6 @@ public abstract class PlottableData implements Plottable {
 
 	@Deprecated
 	public abstract void setData(int i, Object value);
-
-	@Deprecated
-	public abstract void setDataString(String function);
 
 	public void setTitle(String title) {
 		this.title = title;

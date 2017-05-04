@@ -69,6 +69,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
@@ -87,12 +88,7 @@ import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.AddDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
-import org.hopandfork.jgnuplot.model.GnuplotVariable;
-import org.hopandfork.jgnuplot.model.Label;
-import org.hopandfork.jgnuplot.model.Plot;
-import org.hopandfork.jgnuplot.model.Plot2D;
-import org.hopandfork.jgnuplot.model.Plot3D;
-import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.*;
 import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
@@ -865,11 +861,7 @@ public class JGP extends JFrame
 	}
 
 	public void acAdd() {
-		PlottableData p = AddDialog.showAddDialog("Add dataset...");
-		if (null != p)
-			dsTableModel.addRow(p);
-		System.out.println("added..");
-
+		PlottableData p = AddDialog.showAddDialog("Add dataset...", new PlottableDataController());
 	}
 
 	public void acShowConsole() {
@@ -970,7 +962,7 @@ public class JGP extends JFrame
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
-			PlottableData p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...");
+			PlottableData p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...", new PlottableDataController());
 			if (null != p)
 				dsTableModel.data.set(r[0], p);
 			dsTableModel.fireTableDataChanged();
@@ -1277,12 +1269,12 @@ public class JGP extends JFrame
 	}
 
 	public Plot getGNUplot() {
-		Plot gp;
+		Plot gp = Project.currentProject().getPlot();
 
 		if (rb2D.isSelected())
-			gp = new Plot2D();
+			gp.setMode(Plot.Mode.PLOT_2D);
 		else
-			gp = new Plot3D();
+			gp.setMode(Plot.Mode.PLOT_3D);
 
 		for (int i = 0; i < dsTableModel.data.size(); i++) {
 			gp.addPlottableData(dsTableModel.data.get(i));
@@ -1431,27 +1423,6 @@ public class JGP extends JFrame
 			updateChecker.checkForUpdate = false;
 	}
 
-	/**
-	 * ****************************************************************************
-	 * Loads the component settings, previously stored in the specified text
-	 * file, into the Controller Setup Window. The file is specified via a input
-	 * parameter. Calls the read_file() method.
-	 *
-	 * @param file
-	 *            The input file.
-	 * @param cameraInfo.setupDialog
-	 *            The Controller Setup window.
-	 *
-	 * @throws IOException
-	 * @see read_file()
-	 * @see SetupDialog
-	 * @version 1.00
-	 * @author Scott Streit
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
-	 *             ****************************************************************************
-	 */
 	public void loadProject()
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		JFileChooser file_chooser;

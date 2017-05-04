@@ -19,7 +19,7 @@ public class Project {
 
 	public Project()
 	{
-		this.plot = new Plot2D(); // TODO how to switch to Plot3D when needed?
+		this.plot = new Plot();
 	}
 
 	public Plot getPlot() {

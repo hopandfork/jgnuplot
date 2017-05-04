@@ -58,16 +58,6 @@ public class Function extends PlottableData {
 	}
 
 	@Deprecated
-	public String getDataString() {
-		return functionString;
-	}
-
-	@Deprecated
-	public void setDataString(String function) {
-		this.functionString = function;
-	}
-
-	@Deprecated
 	public Object[] getData() {
 		Object data[] = new Object[8];
 		data[0] = "";

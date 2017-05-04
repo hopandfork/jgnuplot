@@ -31,10 +31,6 @@ import org.hopandfork.jgnuplot.utility.TempFile;
 
 public class DataFile extends PlottableData {
 
-	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
-	@Deprecated
-	private String dataSelectionString;
-
 	/** Columns selection. */
 	private DataSelection dataSelection;
 	
@@ -54,7 +50,7 @@ public class DataFile extends PlottableData {
 	public Object[] getData() {
 		Object data[] = new Object[8];
 		data[0] = this.fileName;
-		data[1] = this.dataSelectionString;
+		data[1] = "";
 		data[2] = this.title;
 		data[3] = this.color;
 		data[4] = this.style;
@@ -70,8 +66,6 @@ public class DataFile extends PlottableData {
 	public void setData(int i, Object value) {
 		if (i == 0)
 			fileName = (String) value;
-		else if (i == 1)
-			dataSelectionString = (String) value;
 		else if (i == 2)
 			title = (String) value;
 		else if (i == 3)
@@ -146,11 +140,6 @@ public class DataFile extends PlottableData {
 
 	}
 
-	@Deprecated
-	public String getDataString() {
-		return dataSelectionString;
-	}
-
 	public String getFileName() {
 		return fileName;
 	}
@@ -165,11 +154,6 @@ public class DataFile extends PlottableData {
 
 	public void setLastChanged(long lastChanged) {
 		this.lastChanged = lastChanged;
-	}
-
-	@Deprecated
-	public void setDataString(String function) {
-		this.dataSelectionString = function;
 	}
 
 	public PreProcessPlugin getPreProcessPlugin() {

@@ -30,6 +30,7 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -42,63 +43,59 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
-import org.hopandfork.jgnuplot.model.DataFile;
-import org.hopandfork.jgnuplot.model.Function;
-import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.*;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 
-public class AddDialog extends JGPDialog implements ActionListener{
-	
+public class AddDialog extends JGPDialog implements ActionListener {
+
 	JTextField tfFileName;
-	
+
 	JTextField tfDataString;
-	
+
 	JTextField tfTitle;
-	
+
 	JComboBox cbStyle;
-	
+
 	JTextField tfPreProcess;
-	
+
 	JRadioButton rbFile;
-	
-    JRadioButton rbFunc; 
-    
-    JLabel lFunction;
-	
-    JButton bFileChose;
-	
-    JButton bProgChose;
-    
-    JButton bDataStringAssist;
-	
-    static PlottableData plotObject;
 
-	public AddDialog(java.awt.Frame owner) throws HeadlessException {
-		super(owner);
-		add(createMainPanel());
-		pack();
-		// TODO Auto-generated constructor stub
-	}
+	JRadioButton rbFunc;
 
-	AddDialog(String title){
+	JLabel lFunction;
+
+	JButton bFileChose;
+
+	JButton bProgChose;
+
+	JButton bDataStringAssist;
+
+	static PlottableData plotObject;
+
+	private PlottableDataController controller;
+
+
+	AddDialog(String title, PlottableDataController controller) {
 		add(createMainPanel());
 		this.setTitle(title);
 		this.pack();
+		this.controller = controller;
 	}
 
-	AddDialog(PlottableData plotObject, String title){
+	AddDialog(PlottableData plotObject, String title, PlottableDataController controller) {
 		add(createMainPanel());
 		this.setTitle(title);
 		AddDialog.plotObject = plotObject;
 		initPlotObject(plotObject);
-		
+
 		this.pack();
 	}
-	
-	private JPanel createMainPanel(){
+
+	private JPanel createMainPanel() {
 		// Create the panel.
 		JGPPanel jp = new JGPPanel();
 		// jp.setPreferredSize(new Dimension(400, 400));
@@ -112,23 +109,23 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		border.setTitleColor(Color.blue);
 		jp.setBorder(border);
 
-		
+
 		// Create the buttons.
 		bFileChose = new JButton("...");
 		bFileChose.setPreferredSize(new Dimension(20, 20));
 		bFileChose.setActionCommand("...");
 		bFileChose.addActionListener(this);
-		
+
 		bProgChose = new JButton("...");
 		bProgChose.setPreferredSize(new Dimension(20, 20));
 		bProgChose.setActionCommand("progchoose");
 		bProgChose.addActionListener(this);
-		
+
 		bDataStringAssist = new JButton("...");
 		bDataStringAssist.setPreferredSize(new Dimension(20, 20));
 		bDataStringAssist.setActionCommand("DataStringAssist");
 		bDataStringAssist.addActionListener(this);
-		
+
 		JButton bOk = new JButton("ok");
 		bOk.setPreferredSize(new Dimension(60, 20));
 		bOk.setActionCommand("ok");
@@ -143,36 +140,35 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		bCancel.setPreferredSize(new Dimension(100, 20));
 		bCancel.setActionCommand("cancel");
 		bCancel.addActionListener(this);
-		
-	    rbFile = new JRadioButton("file", true);
-	    rbFunc = new JRadioButton("function");
-	    rbFile.addActionListener(this);
-	    rbFile.setActionCommand("file");
-	    rbFunc.addActionListener(this);
-	    rbFunc.setActionCommand("function");
+
+		rbFile = new JRadioButton("file", true);
+		rbFunc = new JRadioButton("function");
+		rbFile.addActionListener(this);
+		rbFile.setActionCommand("file");
+		rbFunc.addActionListener(this);
+		rbFunc.setActionCommand("function");
 
 
-	    ButtonGroup group = new ButtonGroup();
-	    group.add(rbFile);
-	    group.add(rbFunc);
-	    
-		
-		
-		tfFileName= new JTextField("",6);
-	    tfFileName.setToolTipText("Path to the data file.");
-		
-		tfPreProcess = new JTextField("",6);
+		ButtonGroup group = new ButtonGroup();
+		group.add(rbFile);
+		group.add(rbFunc);
+
+
+		tfFileName = new JTextField("", 6);
+		tfFileName.setToolTipText("Path to the data file.");
+
+		tfPreProcess = new JTextField("", 6);
 		tfPreProcess.setToolTipText("Allows to preprocess the file throu an external command.\n" +
 				"Variables: $if == input file, $of == ouput file. \n" +
 				"Example: cat $if | sort -n > $of; sorts the data file.");
 
-	    tfDataString = new JTextField("1:2",6);
-	    tfDataString.setToolTipText("This sting will be passed as 'using' part \n" +
+		tfDataString = new JTextField("1:2", 6);
+		tfDataString.setToolTipText("This sting will be passed as 'using' part \n" +
 				"of the plot command to gnuplot. Start gnuplot \n" +
 				"from the command line and enter 'help using' \n" +
 				"for documentation.");
-		
-		tfTitle = new JTextField("",6);
+
+		tfTitle = new JTextField("", 6);
 		tfTitle.setToolTipText("The title will be passed vie the 'title' option of the plot command to gnuplot.");
 
 		cbStyle = new StyleComboBox();
@@ -190,7 +186,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		jp.add(new JLabel("Preprocess external program"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(tfPreProcess, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(bProgChose, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		
+
 		row += 1;
 		jp.add(lFunction = new JLabel("Datastring"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(tfDataString, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
@@ -207,76 +203,70 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		jp.add(bApply, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(bCancel, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
 
-		return jp;		
+		return jp;
 	}
-	
+
 	/**
 	 * Initializes alls fields with the values from a iven plot object
+	 *
 	 * @param plotObject
 	 */
-	private void initPlotObject(PlottableData plotObject){
+	private void initPlotObject(PlottableData plotObject) {
 		//should never happen....but does not hurt to check
 		if (null == plotObject)
 			return;
 
-		if (plotObject.getClass().equals(Function.class)){
+		if (plotObject.getClass().equals(Function.class)) {
 			rbFile.setSelected(true);
-		}
-		else 
+		} else
 			rbFile.setSelected(true);
-	    
+
 		if (plotObject instanceof DataFile) {
-			DataFile ds = (DataFile)plotObject;
+			DataFile ds = (DataFile) plotObject;
 			tfFileName.setText(ds.getFileName());
 			tfPreProcess.setText(ds.getPreProcessProgram());
 		}
 
-		
-	    tfDataString.setText(plotObject.getDataString());
-		
+
+		if (plotObject instanceof DataFile) {
+			DataFile df = (DataFile) plotObject;
+			tfDataString.setText(df.getDataSelection().toString());
+		} else {
+			Function f = (Function) plotObject;
+			tfDataString.setText(f.getFunctionString());
+		}
+
 		tfTitle.setText(plotObject.getTitle());
 
 		cbStyle.setSelectedItem(plotObject.getStyle());
 
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("..."))
 			acFileBrowse();
 		if (e.getActionCommand().equals("progchoose"))
 			acProgBrowse();
-		else if (e.getActionCommand().equals("ok")){
+		else if (e.getActionCommand().equals("ok")) {
 			acApply();
 			this.setVisible(false);
-		}
-		else if (e.getActionCommand().equals("apply"))
+		} else if (e.getActionCommand().equals("apply"))
 			acApply();
 		else if (e.getActionCommand().equals("cancel"))
 			this.setVisible(false);
 		else if (e.getActionCommand().equals("DataStringAssist"))
 			acView();
-		else if (e.getActionCommand().equals("file")){
+		else if (e.getActionCommand().equals("file")) {
 			bDataStringAssist.setEnabled(true);
 			tfFileName.setEnabled(true);
 			bFileChose.setEnabled(true);
 			tfPreProcess.setEnabled(true);
 			bProgChose.setEnabled(true);
 			lFunction.setText("Datastring");
-		}
-		else if (e.getActionCommand().equals("function")){
+		} else if (e.getActionCommand().equals("function")) {
 			bDataStringAssist.setEnabled(false);
 			tfFileName.setEnabled(false);
 			bFileChose.setEnabled(false);
@@ -285,86 +275,51 @@ public class AddDialog extends JGPDialog implements ActionListener{
 			lFunction.setText("Function");
 		}
 	}
-	
-	public void acView(){
-//		...checks on aFile are elided
-//	    StringBuffer contents = new StringBuffer();
-//
-//	    //declared here only to make visible to finally clause
-//	    BufferedReader input = null;
-//	    try {
-//	      //use buffering
-//	      //this implementation reads one line at a time
-//	      //FileReader always assumes default encoding is OK!
-//	      input = new BufferedReader( new FileReader(tfFileName.getText()) );
-//	      String line = null; //not declared within while loop
-//	      while (( line = input.readLine()) != null){
-//	        contents.append(line);
-//	        contents.append(System.getProperty("line.separator"));
-//	      }
-//	    }
-//	    catch (FileNotFoundException ex) {
-//	      ex.printStackTrace();
-//	    }
-//	    catch (IOException ex){
-//	      ex.printStackTrace();
-//	    }
-//	    finally {
-//	      try {
-//	        if (input!= null) {
-//	          //flush and close both "input" and its underlying FileReader
-//	          input.close();
-//	        }
-//	      }
-//	      catch (IOException ex) {
-//	        ex.printStackTrace();
-//	      }
-//	    }
-//	    ((JGNUplot) this.getOwner()).taShell.setText(contents.toString());
-	
-	    String dataString = PreviewDialog.showDataStringAssist(tfFileName.getText(), tfDataString.getText());
-	    if (dataString != null)
-	    	this.tfDataString.setText(dataString);
+
+	public void acView() {
+		String dataString = PreviewDialog.showDataStringAssist(tfFileName.getText(), tfDataString.getText());
+		if (dataString != null)
+			this.tfDataString.setText(dataString);
 	}
-	
-	public void acApply(){
-		System.out.println("adding" );
-		
-		PlottableData p;
-		if (rbFile.isSelected() ){
-			DataFile ds = new DataFile();
-			p = ds;
-			ds.setFileName(tfFileName.getText());
-			((DataFile) p).setPreProcessProgram(tfPreProcess.getText()); 
+
+	public void acApply() {
+
+		// TODO check if we are editing!
+
+		if (rbFile.isSelected()) {
+			// TODO change the way dataSelection is set by user
+			String selectionString = tfDataString.getText();
+			String[] tokens = selectionString.split(":");
+			DataSelection dataSelection;
+			if (tokens.length == 2) {
+				dataSelection = new DataSelection2D(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]));
+			} else if (tokens.length == 3) {
+				dataSelection = new DataSelection3D(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+			} else {
+				return;
+			}
+
+			DataFile df = controller.addDataFile(tfFileName.getText(), tfTitle.getText(), (PlottingStyle)cbStyle.getSelectedItem(), dataSelection);
+			if (tfPreProcess.getText() != "")
+				df.setPreProcessProgram(tfPreProcess.getText());
+
+		} else {
+			controller.addFunction(tfDataString.getText(), tfTitle.getText(), (PlottingStyle)cbStyle.getSelectedItem());
 		}
-		else
-			p = new Function();
-			
-		p.setDataString(tfDataString.getText());
-		p.setTitle(tfTitle.getText());
-		p.setEnabled(true);
-		
-		
-		if (cbStyle.getSelectedItem() != null) p.setStyle((PlottingStyle) cbStyle.getSelectedItem());
-		
-		//((JGP) this.getOwner()).dsTableModel.addRow(p);
-		
-		plotObject = p;
-		
+
 		this.setVisible(false);
 	}
-	
+
 	public void acFileBrowse() {
-		
+
 		File f;
-		
-		if (!this.tfFileName.getText().trim().equals("")){
+
+		if (!this.tfFileName.getText().trim().equals("")) {
 			f = new File(tfFileName.getText().trim());
 			if (!f.exists()) f = new File(f.getPath());
-		}
-		else
+		} else
 			f = new File(".");
-		
+
 		// Open a file chooser that points to the current dir.
 		JFileChooser file_chooser = new JFileChooser(f.getPath());
 
@@ -373,9 +328,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 
 		// Set to select directory
 		file_chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		
-		//file_chooser.setSize(new Dimension(500, 400));
-		
+
 		// Show the Open dialog box (returns the option selected)
 		int selected = file_chooser.showOpenDialog(this);
 
@@ -392,18 +345,17 @@ public class AddDialog extends JGPDialog implements ActionListener{
 		}
 
 	}
-	
+
 	public void acProgBrowse() {
-		
+
 		File f;
-		
-		if (!this.tfFileName.getText().trim().equals("")){
+
+		if (!this.tfFileName.getText().trim().equals("")) {
 			f = new File(tfFileName.getText().trim());
 			if (!f.exists()) f = new File(f.getPath());
-		}
-		else
+		} else
 			f = new File(".");
-		
+
 		// Open a file chooser that points to the current dir.
 		JFileChooser file_chooser = new JFileChooser(f.getPath());
 
@@ -412,9 +364,7 @@ public class AddDialog extends JGPDialog implements ActionListener{
 
 		// Set to select directory
 		file_chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		
-		//file_chooser.setSize(new Dimension(500, 400));
-		
+
 		// Show the Open dialog box (returns the option selected)
 		int selected = file_chooser.showOpenDialog(this);
 
@@ -432,28 +382,21 @@ public class AddDialog extends JGPDialog implements ActionListener{
 
 	}
 
-	
-	public static PlottableData showAddDialog(String title){
-		AddDialog ptm = new AddDialog(title);
+
+	public static PlottableData showAddDialog(String title, PlottableDataController controller) {
+		AddDialog ptm = new AddDialog(title, controller);
 		ptm.setModal(true);
-      	ptm.show();
-        ptm.dispose();
+		ptm.show();
+		ptm.dispose();
 		return plotObject;
 	}
-	
-	public static PlottableData showAddDialog(PlottableData p , String title){
-		AddDialog ptm = new AddDialog(p, title);
+
+	public static PlottableData showAddDialog(PlottableData p, String title, PlottableDataController controller) {
+		AddDialog ptm = new AddDialog(p, title, controller);
 		ptm.setModal(true);
-      	ptm.show();
-        ptm.dispose();
+		ptm.show();
+		ptm.dispose();
 		return plotObject;
-	}
-	
-	@Override
-	public void setVisible(boolean b) {
-		// TODO Auto-generated method stub
-		super.setVisible(b);
-		
 	}
 
 }
