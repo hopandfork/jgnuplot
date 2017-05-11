@@ -29,6 +29,8 @@ import javax.swing.table.AbstractTableModel;
 
 public class PreviewTableModel extends AbstractTableModel {
 
+	private static final long serialVersionUID = 5649745765410641363L;
+
 	private TwoDimArrayList<String> data;
 	
 	private String[] columnNames;
@@ -45,10 +47,7 @@ public class PreviewTableModel extends AbstractTableModel {
 	public String getColumnName(int col) {
         return columnNames[col];
     }
-    
-
-	    
-	    
+        
 	private void parse(String fileName) throws IOException{
 		data = new TwoDimArrayList<String>();
 		
@@ -108,9 +107,4 @@ public class PreviewTableModel extends AbstractTableModel {
 		//System.out.println("PreviewTableModel.getValueAt(" + rowIndex + "," + columnIndex + "): " + data.getNrows());
 		return data.get(rowIndex, columnIndex);
 	}
-	
-    public static void main(String[] args) throws IOException {
-    	PreviewTableModel ptm = new PreviewTableModel("test.dat");
-      	System.out.println(ptm.getData().toString());
-    }
 }

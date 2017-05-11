@@ -1,5 +1,6 @@
 /*
  * JGNUplot is a GUI for gnuplot (http://www.gnuplot.info/)
+
  * The GUI is build on JAVA wrappers for gnuplot alos provided in this package.
  * 
  * Copyright (C) 2006  Maximilian H. Fabricius 
@@ -21,24 +22,21 @@
 
 package org.hopandfork.jgnuplot.gui.dialog;
 
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -46,59 +44,63 @@ import javax.swing.border.TitledBorder;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
-import org.hopandfork.jgnuplot.model.*;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.DataSelection;
+import org.hopandfork.jgnuplot.model.DataSelection2D;
+import org.hopandfork.jgnuplot.model.DataSelection3D;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
+/**
+ * 
+ * This class allows to add or edit a plottable object like Function or
+ * DataFile.
+ *
+ */
+public class PlottableDataDialog extends JGPDialog implements ActionListener {
 
-public class AddDialog extends JGPDialog implements ActionListener {
+	private static final long serialVersionUID = -4285893032555125235L;
 
-	JTextField tfFileName;
+	protected JTextField tfFileName;
 
-	JTextField tfDataString;
+	protected JTextField tfDataSelection;
 
-	JTextField tfTitle;
+	protected JTextField tfTitle;
 
-	JComboBox cbStyle;
+	protected StyleComboBox cbStyle;
 
-	JTextField tfPreProcess;
+	protected JTextField tfPreProcess;
 
-	JRadioButton rbFile;
+	protected JRadioButton rbFile;
 
-	JRadioButton rbFunc;
+	protected JRadioButton rbFunc;
 
-	JLabel lFunction;
+	private JLabel lFunction;
 
-	JButton bFileChose;
+	private JButton bFileChose;
 
-	JButton bProgChose;
-
-	JButton bDataStringAssist;
-
-	static PlottableData plotObject;
+	private JButton bProgChose;
 
 	private PlottableDataController controller;
 
-
-	AddDialog(String title, PlottableDataController controller) {
-		add(createMainPanel());
-		this.setTitle(title);
-		this.pack();
+	/**
+	 * This constructor allows to create a PlottableDataDialog with a specified
+	 * @param title
+	 * @param controller
+	 * @param plottableObject
+	 */
+	public PlottableDataDialog(String title, PlottableDataController controller) {
 		this.controller = controller;
-	}
 
-	AddDialog(PlottableData plotObject, String title, PlottableDataController controller) {
 		add(createMainPanel());
-		this.setTitle(title);
-		AddDialog.plotObject = plotObject;
-		initPlotObject(plotObject);
 
+		this.setTitle(title);
 		this.pack();
+		this.setModal(true);
 	}
 
 	private JPanel createMainPanel() {
 		// Create the panel.
 		JGPPanel jp = new JGPPanel();
-		// jp.setPreferredSize(new Dimension(400, 400));
 
 		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
@@ -109,7 +111,7 @@ public class AddDialog extends JGPDialog implements ActionListener {
 		border.setTitleColor(Color.blue);
 		jp.setBorder(border);
 
-
+		// TODO change columns' selection
 		// Create the buttons.
 		bFileChose = new JButton("...");
 		bFileChose.setPreferredSize(new Dimension(20, 20));
@@ -121,58 +123,49 @@ public class AddDialog extends JGPDialog implements ActionListener {
 		bProgChose.setActionCommand("progchoose");
 		bProgChose.addActionListener(this);
 
-		bDataStringAssist = new JButton("...");
-		bDataStringAssist.setPreferredSize(new Dimension(20, 20));
-		bDataStringAssist.setActionCommand("DataStringAssist");
-		bDataStringAssist.addActionListener(this);
-
 		JButton bOk = new JButton("ok");
 		bOk.setPreferredSize(new Dimension(60, 20));
 		bOk.setActionCommand("ok");
 		bOk.addActionListener(this);
 
-		JButton bApply = new JButton("apply");
-		bApply.setPreferredSize(new Dimension(100, 20));
-		bApply.setActionCommand("apply");
-		bApply.addActionListener(this);
+		JButton bAdvanced = new JButton("Advanced");
+		bAdvanced.setPreferredSize(new Dimension(100, 20));
+		bAdvanced.setActionCommand("advanced");
+		bAdvanced.addActionListener(this);
 
 		JButton bCancel = new JButton("cancel");
 		bCancel.setPreferredSize(new Dimension(100, 20));
 		bCancel.setActionCommand("cancel");
 		bCancel.addActionListener(this);
 
-		rbFile = new JRadioButton("file", true);
-		rbFunc = new JRadioButton("function");
+		rbFile = new JRadioButton("File", true);
+		rbFunc = new JRadioButton("Function");
 		rbFile.addActionListener(this);
 		rbFile.setActionCommand("file");
 		rbFunc.addActionListener(this);
 		rbFunc.setActionCommand("function");
 
-
 		ButtonGroup group = new ButtonGroup();
 		group.add(rbFile);
 		group.add(rbFunc);
-
 
 		tfFileName = new JTextField("", 6);
 		tfFileName.setToolTipText("Path to the data file.");
 
 		tfPreProcess = new JTextField("", 6);
-		tfPreProcess.setToolTipText("Allows to preprocess the file throu an external command.\n" +
-				"Variables: $if == input file, $of == ouput file. \n" +
-				"Example: cat $if | sort -n > $of; sorts the data file.");
+		tfPreProcess.setToolTipText("Allows to preprocess the file throu an external command.\n"
+				+ "Variables: $if == input file, $of == ouput file. \n"
+				+ "Example: cat $if | sort -n > $of; sorts the data file.");
 
-		tfDataString = new JTextField("1:2", 6);
-		tfDataString.setToolTipText("This sting will be passed as 'using' part \n" +
-				"of the plot command to gnuplot. Start gnuplot \n" +
-				"from the command line and enter 'help using' \n" +
-				"for documentation.");
+		tfDataSelection = new JTextField("1:2", 6);
+		tfDataSelection.setToolTipText(
+				"This sting will be passed as 'using' part \n" + "of the plot command to gnuplot. Start gnuplot \n"
+						+ "from the command line and enter 'help using' \n" + "for documentation.");
 
 		tfTitle = new JTextField("", 6);
 		tfTitle.setToolTipText("The title will be passed vie the 'title' option of the plot command to gnuplot.");
 
 		cbStyle = new StyleComboBox();
-		//tfLeftRight.setFont(new Font("Courier", Font.PLAIN, 32));
 
 		int row = 0;
 		jp.add(new JLabel("Source:"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
@@ -188,9 +181,12 @@ public class AddDialog extends JGPDialog implements ActionListener {
 		jp.add(bProgChose, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
 
 		row += 1;
-		jp.add(lFunction = new JLabel("Datastring"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(tfDataString, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bDataStringAssist, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		jp.add(lFunction = new JLabel("Columns selection"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		//Create the scroll pane and add the table to it.
+		JDataSelection dataSelectionTable = new JDataSelection();
+        JScrollPane scrollPane = new JScrollPane(dataSelectionTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		jp.add(scrollPane, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
+		
 		row += 1;
 		jp.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(tfTitle, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
@@ -199,112 +195,76 @@ public class AddDialog extends JGPDialog implements ActionListener {
 		jp.add(cbStyle, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
 
 		row += 1;
-		jp.add(bOk, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bApply, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		jp.add(bAdvanced, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		jp.add(bOk, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(bCancel, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
 
 		return jp;
 	}
 
 	/**
-	 * Initializes alls fields with the values from a iven plot object
-	 *
-	 * @param plotObject
+	 * This method allows to manage actions performed on the AddDialog.
 	 */
-	private void initPlotObject(PlottableData plotObject) {
-		//should never happen....but does not hurt to check
-		if (null == plotObject)
-			return;
-
-		if (plotObject.getClass().equals(Function.class)) {
-			rbFile.setSelected(true);
-		} else
-			rbFile.setSelected(true);
-
-		if (plotObject instanceof DataFile) {
-			DataFile ds = (DataFile) plotObject;
-			tfFileName.setText(ds.getFileName());
-			tfPreProcess.setText(ds.getPreProcessProgram());
-		}
-
-
-		if (plotObject instanceof DataFile) {
-			DataFile df = (DataFile) plotObject;
-			tfDataString.setText(df.getDataSelection().toString());
-		} else {
-			Function f = (Function) plotObject;
-			tfDataString.setText(f.getFunctionString());
-		}
-
-		tfTitle.setText(plotObject.getTitle());
-
-		cbStyle.setSelectedItem(plotObject.getStyle());
-
-	}
-
-	private static final long serialVersionUID = 1L;
-
-
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("..."))
 			acFileBrowse();
 		if (e.getActionCommand().equals("progchoose"))
 			acProgBrowse();
 		else if (e.getActionCommand().equals("ok")) {
+			// TODO checks if file path is empty
+			// TODO checks if function is empty
 			acApply();
 			this.setVisible(false);
-		} else if (e.getActionCommand().equals("apply"))
-			acApply();
-		else if (e.getActionCommand().equals("cancel"))
+		} else if (e.getActionCommand().equals("advanced")) {
+			// TODO change AddDialog content to advanced option
+			// PreProcessprogram
+
+		} else if (e.getActionCommand().equals("cancel"))
 			this.setVisible(false);
-		else if (e.getActionCommand().equals("DataStringAssist"))
-			acView();
 		else if (e.getActionCommand().equals("file")) {
-			bDataStringAssist.setEnabled(true);
 			tfFileName.setEnabled(true);
 			bFileChose.setEnabled(true);
 			tfPreProcess.setEnabled(true);
 			bProgChose.setEnabled(true);
-			lFunction.setText("Datastring");
+			tfDataSelection.setText("1:2");
+			lFunction.setText("Columns selection");
 		} else if (e.getActionCommand().equals("function")) {
-			bDataStringAssist.setEnabled(false);
 			tfFileName.setEnabled(false);
 			bFileChose.setEnabled(false);
 			tfPreProcess.setEnabled(false);
 			bProgChose.setEnabled(false);
+			tfDataSelection.setText("x**2");
 			lFunction.setText("Function");
 		}
 	}
 
-	public void acView() {
-		String dataString = PreviewDialog.showDataStringAssist(tfFileName.getText(), tfDataString.getText());
-		if (dataString != null)
-			this.tfDataString.setText(dataString);
-	}
-
+	// TODO integrate in this dialog
 	public void acApply() {
 
 		// TODO check if we are editing!
 
 		if (rbFile.isSelected()) {
 			// TODO change the way dataSelection is set by user
-			String selectionString = tfDataString.getText();
+			String selectionString = tfDataSelection.getText();
 			String[] tokens = selectionString.split(":");
 			DataSelection dataSelection;
 			if (tokens.length == 2) {
 				dataSelection = new DataSelection2D(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]));
 			} else if (tokens.length == 3) {
-				dataSelection = new DataSelection3D(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+				dataSelection = new DataSelection3D(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]),
+						Integer.parseInt(tokens[2]));
 			} else {
 				return;
 			}
 
-			DataFile df = controller.addDataFile(tfFileName.getText(), tfTitle.getText(), (PlottingStyle)cbStyle.getSelectedItem(), dataSelection);
+			DataFile df = controller.addDataFile(tfFileName.getText(), tfTitle.getText(),
+					(PlottingStyle) cbStyle.getSelectedItem(), dataSelection);
 			if (tfPreProcess.getText() != "")
 				df.setPreProcessProgram(tfPreProcess.getText());
 
 		} else {
-			controller.addFunction(tfDataString.getText(), tfTitle.getText(), (PlottingStyle)cbStyle.getSelectedItem());
+			controller.addFunction(tfDataSelection.getText(), tfTitle.getText(),
+					(PlottingStyle) cbStyle.getSelectedItem());
 		}
 
 		this.setVisible(false);
@@ -316,7 +276,8 @@ public class AddDialog extends JGPDialog implements ActionListener {
 
 		if (!this.tfFileName.getText().trim().equals("")) {
 			f = new File(tfFileName.getText().trim());
-			if (!f.exists()) f = new File(f.getPath());
+			if (!f.exists())
+				f = new File(f.getPath());
 		} else
 			f = new File(".");
 
@@ -352,7 +313,8 @@ public class AddDialog extends JGPDialog implements ActionListener {
 
 		if (!this.tfFileName.getText().trim().equals("")) {
 			f = new File(tfFileName.getText().trim());
-			if (!f.exists()) f = new File(f.getPath());
+			if (!f.exists())
+				f = new File(f.getPath());
 		} else
 			f = new File(".");
 
@@ -381,22 +343,4 @@ public class AddDialog extends JGPDialog implements ActionListener {
 		}
 
 	}
-
-
-	public static PlottableData showAddDialog(String title, PlottableDataController controller) {
-		AddDialog ptm = new AddDialog(title, controller);
-		ptm.setModal(true);
-		ptm.show();
-		ptm.dispose();
-		return plotObject;
-	}
-
-	public static PlottableData showAddDialog(PlottableData p, String title, PlottableDataController controller) {
-		AddDialog ptm = new AddDialog(p, title, controller);
-		ptm.setModal(true);
-		ptm.show();
-		ptm.dispose();
-		return plotObject;
-	}
-
 }

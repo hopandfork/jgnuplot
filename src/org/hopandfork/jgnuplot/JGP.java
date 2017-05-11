@@ -85,10 +85,15 @@ import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.gui.VariableTableModel;
 import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
-import org.hopandfork.jgnuplot.gui.dialog.AddDialog;
+import org.hopandfork.jgnuplot.gui.dialog.AddPlottableDataDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
+import org.hopandfork.jgnuplot.gui.dialog.EditPlottableDataDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
-import org.hopandfork.jgnuplot.model.*;
+import org.hopandfork.jgnuplot.model.GnuplotVariable;
+import org.hopandfork.jgnuplot.model.Label;
+import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.Project;
 import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
@@ -861,7 +866,9 @@ public class JGP extends JFrame
 	}
 
 	public void acAdd() {
-		PlottableData p = AddDialog.showAddDialog("Add dataset...", new PlottableDataController());
+		AddPlottableDataDialog addDialog = new AddPlottableDataDialog(new PlottableDataController());
+		addDialog.setVisible(true);
+		
 	}
 
 	public void acShowConsole() {
@@ -962,11 +969,14 @@ public class JGP extends JFrame
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
-			PlottableData p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...", new PlottableDataController());
-			if (null != p)
-				dsTableModel.data.set(r[0], p);
-			dsTableModel.fireTableDataChanged();
-			System.out.println("added..");
+			//TODO needs a method in controller to get a PlottableItem from some refs
+			EditPlottableDataDialog editDialog;
+			try {
+				editDialog = new EditPlottableDataDialog(dsTableModel.data.get(r[0]), new PlottableDataController());
+				editDialog.setVisible(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 			break;
 		case 1: {

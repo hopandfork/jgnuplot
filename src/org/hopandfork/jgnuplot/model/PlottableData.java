@@ -25,7 +25,7 @@ import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 /**
- * Abstract data item which can be added to a plot (e.g., a function, a dataset).
+ * Abstract data item which can be added to a plot (e.g., a Function, a DataFile).
  */
 public abstract class PlottableData implements Plottable {
 
