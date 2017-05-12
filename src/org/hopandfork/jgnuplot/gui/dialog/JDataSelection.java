@@ -21,54 +21,45 @@
 
 package org.hopandfork.jgnuplot.gui.dialog;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.io.IOException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicTreeUI.SelectionModelPropertyChangeHandler;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.gui.PreviewTableModel;
+import org.hopandfork.jgnuplot.model.DataSelection;
 
-public class JDataSelection extends JTable implements ActionListener, FocusListener {
+public class JDataSelection extends JGPPanel {
+
+	private static Logger LOG = Logger.getLogger(JDataSelection.class);
 
 	private static final long serialVersionUID = 853945391719595729L;
 
 	private String fileName;
 
-	public PreviewTableModel pvTableModel;
+	private JTable jTable;
 
-	public JTextField tfDataString;
+	private JButton bX, bY, bZ, bLabels,bCurrent;
 
-	private static String dataString;
+	private JTextField tfX, tfY, tfZ, tfLabels, tfCurrent;
 
-	// stores curser position in datastring field.
-	private int caretPos;
+	private DataSelection dataSelection;
 
 	// headers for the table
 	private static String[] columns = new String[] { "Id", "Name", "Hourly Rate", "Part Time" };
@@ -77,171 +68,188 @@ public class JDataSelection extends JTable implements ActionListener, FocusListe
 	private static Object[][] data = new Object[][] { { 1, "John", 40.0, false }, { 2, "Rambo", 70.0, false },
 			{ 3, "Zorro", 60.0, true }, };
 
-	public JDataSelection() throws HeadlessException {
-		super(data, columns);
-		init();
+	public JDataSelection(){
+		super();
+		createMainPanel();
 	}
 
-	private void init() {
+	/**
+	 * This methods allows to render the component elements.
+	 */
+	private void createMainPanel() {
+		// Set the default panel layout.
+		GridBagLayout gbl = new GridBagLayout();
+		this.setLayout(gbl);
 
-		this.setPreferredScrollableViewportSize(new Dimension(500, 200));
-		this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		this.setColumnSelectionAllowed(true);
-		this.setRowSelectionAllowed(false);
-		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		this.addFocusListener(this);
+		bX = new JButton("x");
+		bCurrent = bX;
+		bCurrent.setSelected(true);
+		bX.addMouseListener(new MouseListener() {
+			
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseClicked(MouseEvent e) {
+				tfCurrent = tfX;
+				bCurrent.setSelected(false);
+				bCurrent = bX;
+				bX.setSelected(true);
+			}
+		});
+		tfX = new JTextField("0");
+		tfX.setEditable(false);
+		tfCurrent = tfX;
+		
+		bY = new JButton("y");
+		bY.addMouseListener(new MouseListener() {
+			
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseClicked(MouseEvent e) {
+				tfCurrent = tfY;
+				bCurrent.setSelected(false);
+				bCurrent = bY;
+				bY.setSelected(true);
+			}
+		});
+		tfY = new JTextField("0");
+		tfY.setEditable(false);
+		
+		bZ = new JButton("z");
+		bZ.addMouseListener(new MouseListener() {
+			
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseClicked(MouseEvent e) {
+				tfCurrent = tfZ;
+				bCurrent.setSelected(false);
+				bCurrent = bZ;
+				bZ.setSelected(true);
+			}
+		});
+		tfZ = new JTextField("0");
+		tfZ.setEditable(false);
+		
+		bLabels = new JButton("labels");
+		bLabels.addMouseListener(new MouseListener() {
+			
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void mouseClicked(MouseEvent e) {
+				tfCurrent = tfLabels;
+				bCurrent.setSelected(false);
+				bCurrent = bLabels;
+				bLabels.setSelected(true);
+			}
+		});
+		tfLabels = new JTextField("0");
+		tfLabels.setEditable(false);
+		
+		jTable = new JTable(data, columns);
+
+		jTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
+		jTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		jTable.setColumnSelectionAllowed(true);
+		jTable.setRowSelectionAllowed(false);
+		jTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		// react to column selection
-		ListSelectionModel selectionModel = this.getColumnModel().getSelectionModel();
+		ListSelectionModel selectionModel = jTable.getColumnModel().getSelectionModel();
 		selectionModel.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 
 				if (e.getValueIsAdjusting()) {
-					System.out.println("selected column is " + getSelectedColumn() + 1);
-					//TODO Have to manage selected columns 
+					LOG.debug("selected column is " + (jTable.getSelectedColumn() + 1));
+					tfCurrent.setText("" + (jTable.getSelectedColumn() + 1));
 				}
 			}
 		});
 
-		packColumns(this);
-	}
+		packColumns(jTable);
 
-
-	/**
-	 * Inserts a string s into the datastring field at the last cursor position
-	 * 
-	 * @param isacViewacView
-	 */
-	protected void insertDataString(String is) {
-		String s = tfDataString.getText();
-		String s0 = s.substring(0, this.caretPos);
-		String s1 = s.substring(this.caretPos, s.length());
-		tfDataString.setText(s0 + is + s1);
-
-		tfDataString.setSelectionStart(this.caretPos);
-		tfDataString.setSelectionEnd(this.caretPos + is.length());
-		tfDataString.requestFocus();
-	}
-
-	/**
-	 * Inserts a string s into the datastrin field at the last cursor position
-	 * and increases the last cursor position by i.
-	 * 
-	 * @param is
-	 */
-	protected void insertDataString(String is, int i) {
-		insertDataString(is);
-		this.caretPos += i;
-		tfDataString.setCaretPosition(this.caretPos);
-	}
-
-	private JPanel createButtonPanel() {
-		// Create the panel.
-		JGPPanel jp = new JGPPanel();
-		jp.setBackground(new Color(0xf0f0f0));
-		// Set the default panel layout.
-		GridBagLayout gbl = new GridBagLayout();
-
-		tfDataString = new JTextField("", 20);
-		tfDataString.addFocusListener(this);
-		tfDataString.setToolTipText(
-				"This sting will be passed as 'using' part \n" + "of the plot command to gnuplot. Start gnuplot \n"
-						+ "from the command line and enter 'help using' \n" + "for documentation.");
-		// tfDataString.getCaretPosition()
-		jp.setLayout(gbl);
-
-		// Create the panel border.
-		TitledBorder border = new TitledBorder(new EtchedBorder(), "");
-		border.setTitleColor(Color.blue);
-		jp.setBorder(border);
-
-		// Create the buttons.
-		JButton bOk = new JButton("Ok");
-		bOk.setPreferredSize(new Dimension(80, 20));
-		bOk.setActionCommand("ok");
-		bOk.addActionListener(this);
-
-		// Create the buttons.
-		JButton bCancel = new JButton("Cancel");
-		bCancel.setPreferredSize(new Dimension(80, 20));
-		bCancel.setActionCommand("cancel");
-		bCancel.addActionListener(this);
-
-		int opButtonWidth = 60;
-		// Create the buttons.
-		JButton bParan = new JButton("(_)");
-		bParan.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bParan.setActionCommand("(_)");
-		bParan.addActionListener(this);
-
-		// Create the buttons.
-		JButton bFrac = new JButton("(_)/( )");
-		bFrac.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bFrac.setActionCommand("(_)/( )");
-		bFrac.addActionListener(this);
-
-		// Create the buttons.
-		JButton bExp = new JButton("(_)^( )");
-		bExp.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bExp.setActionCommand("(_)^( )");
-		bExp.addActionListener(this);
-
-		// Create the buttons.
-		JButton bSquare = new JButton("(_)^2");
-		bSquare.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bSquare.setActionCommand("(_)^2");
-		bSquare.addActionListener(this);
-
-		// Create the buttons.
-		JButton bSqrt = new JButton("sqrt");
-		bSqrt.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bSqrt.setActionCommand("sqrt");
-		bSqrt.addActionListener(this);
-
-		// Create the buttons.
-		JButton bPlus = new JButton("+");
-		bPlus.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bPlus.setActionCommand("+");
-		bPlus.addActionListener(this);
-
-		// Create the buttons.
-		JButton bMinus = new JButton("-");
-		bMinus.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bMinus.setActionCommand("-");
-		bMinus.addActionListener(this);
-
-		// Create the buttons.
-		JButton bMul = new JButton("x");
-		bMul.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bMul.setActionCommand("x");
-		bMul.addActionListener(this);
-
-		// Create the buttons.
-		JButton bSep = new JButton(":");
-		bSep.setPreferredSize(new Dimension(opButtonWidth, 20));
-		bSep.setActionCommand(":");
-		bSep.addActionListener(this);
-
-		int row = 0;
-		jp.add(bPlus, 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bMinus, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bMul, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bParan, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bSquare, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bSqrt, 5, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bExp, 6, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bFrac, 7, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		row += 1;
-		jp.add(new JLabel("Source:"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(tfDataString, 1, row, 7, 1, GridBagConstraints.HORIZONTAL);
-		row += 1;
-		jp.add(bOk, 6, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bCancel, 7, row, 1, 1, GridBagConstraints.HORIZONTAL);
-
-		jp.setPreferredSize(new Dimension(200, 90));
-		jp.setMaximumSize(new Dimension(200, 90));
-
-		return jp;
+		/* Adds component to the JScrollPane */
+		this.add(bX, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(tfX, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(bY, 2, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(tfY, 3, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(bZ, 4, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(tfZ, 5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(bLabels, 6, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		this.add(tfLabels, 7, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+		JScrollPane scrollPane = new JScrollPane(jTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		this.add(scrollPane, 0, 1, 9, 1, GridBagConstraints.HORIZONTAL);
 	}
 
 	public void packColumns(JTable table) {
@@ -285,50 +293,12 @@ public class JDataSelection extends JTable implements ActionListener, FocusListe
 		col.setPreferredWidth(width);
 	}
 
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("ok")) {
-			dataString = this.tfDataString.getText();
-			this.setVisible(false);
-		}
-		if (e.getActionCommand().equals("cancel")) {
-			dataString = null;
-			this.setVisible(false);
-		} else if (e.getActionCommand().equals("+"))
-			insertDataString("+", 1);
-		else if (e.getActionCommand().equals("-"))
-			insertDataString("-", 1);
-		else if (e.getActionCommand().equals("x"))
-			insertDataString("*", 1);
-		else if (e.getActionCommand().equals("(_)"))
-			insertDataString("()", 1);
-		else if (e.getActionCommand().equals("(_)/( )"))
-			insertDataString("()/()", 1);
-		else if (e.getActionCommand().equals("(_)^( )"))
-			insertDataString("()**()", 1);
-		else if (e.getActionCommand().equals("(_)^2"))
-			insertDataString("()**2", 1);
-		else if (e.getActionCommand().equals("sqrt"))
-			insertDataString("()**0.5", 1);
-		else if (e.getActionCommand().equals(":"))
-			insertDataString(":", 1);
-
+	public DataSelection getDataSelection() {
+		return dataSelection;
 	}
 
-	public void focusLost(FocusEvent e) {
-		if (e.getSource() == tfDataString) {
-			System.out.println("tfDataString lost focus, caret pos: " + tfDataString.getCaretPosition());
-
-			this.caretPos = tfDataString.getCaretPosition();
-		} else if (e.getSource() == this)
-			this.clearSelection();
-	}
-
-	public static String getDataString() {
-		return dataString;
-	}
-
-	public static void setDataString(String dataString) {
-		JDataSelection.dataString = dataString;
+	public void setDataSelection(DataSelection dataSelection) {
+		// TODO is possible to set
 	}
 
 	public void focusGained(FocusEvent arg0) {

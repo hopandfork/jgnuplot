@@ -20,7 +20,7 @@ public class PlottableDataController {
 	}
 
 
-	public DataFile addDataFile (String filename, String title, PlottingStyle style, DataSelection dataSelection)
+	public DataFile addDataFile (String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram)
 	{
 		Plot plot = Project.currentProject().getPlot();
 
@@ -29,7 +29,9 @@ public class PlottableDataController {
 		dataFile.setTitle(title);
 		dataFile.setStyle(style);
 		dataFile.setDataSelection(dataSelection);
-
+		dataFile.setPreProcessProgram(preProcessProgram);
+		
+		
 		plot.addPlottableData(dataFile);
 		return dataFile;
 	}

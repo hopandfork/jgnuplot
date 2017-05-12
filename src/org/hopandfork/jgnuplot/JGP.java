@@ -69,6 +69,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerFactory;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
@@ -85,9 +88,8 @@ import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.gui.VariableTableModel;
 import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
-import org.hopandfork.jgnuplot.gui.dialog.AddPlottableDataDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
-import org.hopandfork.jgnuplot.gui.dialog.EditPlottableDataDialog;
+import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
 import org.hopandfork.jgnuplot.model.GnuplotVariable;
 import org.hopandfork.jgnuplot.model.Label;
@@ -98,8 +100,7 @@ import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-public class JGP extends JFrame
-		implements ActionListener, ChangeListener {
+public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public static final boolean debug = true;
 
@@ -758,6 +759,9 @@ public class JGP extends JFrame
 	}
 
 	public static void main(String[] args) throws MalformedURLException {
+		/* Log4j initialization */
+		PropertyConfigurator.configure("config/log4j2.properties");
+
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -866,9 +870,8 @@ public class JGP extends JFrame
 	}
 
 	public void acAdd() {
-		AddPlottableDataDialog addDialog = new AddPlottableDataDialog(new PlottableDataController());
-		addDialog.setVisible(true);
-		
+		DataFileDialog addDataFileDialog = new DataFileDialog(new PlottableDataController());
+		addDataFileDialog.setVisible(true);
 	}
 
 	public void acShowConsole() {
@@ -969,14 +972,14 @@ public class JGP extends JFrame
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
-			//TODO needs a method in controller to get a PlottableItem from some refs
-			EditPlottableDataDialog editDialog;
-			try {
-				editDialog = new EditPlottableDataDialog(dsTableModel.data.get(r[0]), new PlottableDataController());
-				editDialog.setVisible(true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			// TODO needs a method in controller to get a PlottableItem from
+			// some refs and identify the type to open the correct dialog
+			/*
+			 * FunctionDialog editDialog; try { editDialog = new
+			 * FunctionDialog(dsTableModel.data.get(r[0]), new
+			 * PlottableDataController()); editDialog.setVisible(true); } catch
+			 * (IOException e) { e.printStackTrace(); }
+			 */
 		}
 			break;
 		case 1: {
