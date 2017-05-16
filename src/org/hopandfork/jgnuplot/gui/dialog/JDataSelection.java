@@ -25,7 +25,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -46,6 +45,8 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.model.DataSelection;
+import org.hopandfork.jgnuplot.model.DataSelection2D;
+import org.hopandfork.jgnuplot.model.DataSelection3D;
 import org.hopandfork.jgnuplot.utility.FileColumnsParser;
 
 public class JDataSelection extends JGPPanel {
@@ -59,7 +60,7 @@ public class JDataSelection extends JGPPanel {
 	private JTable jTable;
 	private JScrollPane jScrollPane;
 
-	private JButton bX, bY, bZ, bLabels,bCurrent;
+	private JButton bX, bY, bZ, bLabels, bCurrent;
 
 	private JTextField tfX, tfY, tfZ, tfLabels, tfCurrent;
 
@@ -72,12 +73,10 @@ public class JDataSelection extends JGPPanel {
 	private static Object[][] SAMPLE_DATA = new Object[][] { { 1, "John", 40.0, false }, { 2, "Rambo", 70.0, false },
 			{ 3, "Zorro", 60.0, true }, };
 
-	public JDataSelection(){
+	public JDataSelection() {
 		super();
 		createMainPanel();
 	}
-
-
 
 	/**
 	 * This methods allows to render the component elements.
@@ -91,27 +90,27 @@ public class JDataSelection extends JGPPanel {
 		bCurrent = bX;
 		bCurrent.setSelected(true);
 		bX.addMouseListener(new MouseListener() {
-			
+
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseClicked(MouseEvent e) {
 				tfCurrent = tfX;
 				bCurrent.setSelected(false);
@@ -122,30 +121,30 @@ public class JDataSelection extends JGPPanel {
 		tfX = new JTextField("0");
 		tfX.setEditable(false);
 		tfCurrent = tfX;
-		
+
 		bY = new JButton("y");
 		bY.addMouseListener(new MouseListener() {
-			
+
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseClicked(MouseEvent e) {
 				tfCurrent = tfY;
 				bCurrent.setSelected(false);
@@ -155,29 +154,29 @@ public class JDataSelection extends JGPPanel {
 		});
 		tfY = new JTextField("0");
 		tfY.setEditable(false);
-		
+
 		bZ = new JButton("z");
 		bZ.addMouseListener(new MouseListener() {
-			
+
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 			}
-			
+
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseClicked(MouseEvent e) {
 				tfCurrent = tfZ;
 				bCurrent.setSelected(false);
@@ -187,30 +186,30 @@ public class JDataSelection extends JGPPanel {
 		});
 		tfZ = new JTextField("0");
 		tfZ.setEditable(false);
-		
+
 		bLabels = new JButton("labels");
 		bLabels.addMouseListener(new MouseListener() {
-			
+
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			public void mouseClicked(MouseEvent e) {
 				tfCurrent = tfLabels;
 				bCurrent.setSelected(false);
@@ -232,7 +231,8 @@ public class JDataSelection extends JGPPanel {
 		this.add(tfZ, 5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
 		this.add(bLabels, 6, 0, 1, 1, GridBagConstraints.HORIZONTAL);
 		this.add(tfLabels, 7, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-		jScrollPane = new JScrollPane(jTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		jScrollPane = new JScrollPane(jTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		this.add(jScrollPane, 0, 1, 9, 1, GridBagConstraints.HORIZONTAL);
 	}
 
@@ -269,11 +269,13 @@ public class JDataSelection extends JGPPanel {
 				Object value = table.getValueAt(r, vColIndex);
 				if (value == null)
 					continue;
-				comp = renderer.getTableCellRendererComponent(table, value, false, false, r,
-						vColIndex);
+				comp = renderer.getTableCellRendererComponent(table, value, false, false, r, vColIndex);
 				width = Math.max(width, comp.getPreferredSize().width);
 			} catch (IndexOutOfBoundsException e) {
-				/* This happens if the data file is not well formatted, with rows longer/shorter than expected */
+				/*
+				 * This happens if the data file is not well formatted, with
+				 * rows longer/shorter than expected
+				 */
 			}
 		}
 
@@ -284,7 +286,40 @@ public class JDataSelection extends JGPPanel {
 		col.setPreferredWidth(width);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public DataSelection getDataSelection() {
+		int x = Integer.parseInt(tfX.getText());
+		int y = Integer.parseInt(tfY.getText());
+		int z = Integer.parseInt(tfZ.getText());
+		int labels = Integer.parseInt(tfLabels.getText());
+
+		if (z != 0) {
+			try {
+				dataSelection = new DataSelection3D(x, y, z);
+			} catch (IOException e) {
+				//TODO Manages the exception showing an advertisement
+				LOG.error(e.getMessage());
+			}
+		} else {
+			if (labels != 0) {
+				try {
+					dataSelection = new DataSelection2D(x, y, labels);
+				} catch (IOException e) {
+					//TODO Manages the exception showing an advertisement
+					LOG.error(e.getMessage());
+				}
+			} else {
+				try {
+					dataSelection = new DataSelection2D(x, y);
+				} catch (IOException e) {
+					//TODO Manages the exception showing an advertisement
+					LOG.error(e.getMessage());
+				}
+			}
+		}
 		return dataSelection;
 	}
 
@@ -292,13 +327,7 @@ public class JDataSelection extends JGPPanel {
 		// TODO is possible to set
 	}
 
-	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void initTable (Object data[][], String columns[])
-	{
+	private void initTable(Object data[][], String columns[]) {
 		jTable = new JTable(data, columns);
 
 		jTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
@@ -313,8 +342,15 @@ public class JDataSelection extends JGPPanel {
 			public void valueChanged(ListSelectionEvent e) {
 
 				if (e.getValueIsAdjusting()) {
-					LOG.debug("selected column is " + (jTable.getSelectedColumn() + 1));
 					tfCurrent.setText("" + (jTable.getSelectedColumn() + 1));
+					
+					if(tfCurrent.equals(tfLabels)){
+						bZ.setVisible(false);
+						tfZ.setVisible(false);
+					} else if (tfCurrent.equals(tfZ)){
+						bLabels.setVisible(false);
+						tfLabels.setVisible(false);
+					}
 				}
 			}
 		});
@@ -322,8 +358,7 @@ public class JDataSelection extends JGPPanel {
 		packColumns(jTable);
 	}
 
-	public void update (String dataFile)
-	{
+	public void update(String dataFile) {
 		this.fileName = dataFile;
 		LOG.debug("Updating from file: " + dataFile);
 
@@ -336,25 +371,25 @@ public class JDataSelection extends JGPPanel {
 			 */
 			String data[][] = new String[parsedLines.size()][];
 			int columns = 0;
-			for (int i = 0; i<parsedLines.size(); i++) {
+			for (int i = 0; i < parsedLines.size(); i++) {
 				columns = Math.max(columns, parsedLines.get(i).length);
 			}
-			for (int i = 0; i<parsedLines.size(); i++) {
+			for (int i = 0; i < parsedLines.size(); i++) {
 				if (parsedLines.get(i).length == columns) {
 					data[i] = parsedLines.get(i);
 				} else {
 					data[i] = new String[columns];
-					for (int j = 0; j<parsedLines.get(i).length; j++)
+					for (int j = 0; j < parsedLines.get(i).length; j++)
 						data[i][j] = parsedLines.get(i)[j];
-					for (int j = parsedLines.get(i).length; j<columns; j++)
+					for (int j = parsedLines.get(i).length; j < columns; j++)
 						data[i][j] = "";
 				}
 			}
 
 			/* Creates column headers. */
 			String columnHeaders[] = new String[columns];
-			for (int i = 0; i<columns; i++)
-				columnHeaders[i] = "#" + (i+1);
+			for (int i = 0; i < columns; i++)
+				columnHeaders[i] = "#" + (i + 1);
 
 			initTable(data, columnHeaders);
 

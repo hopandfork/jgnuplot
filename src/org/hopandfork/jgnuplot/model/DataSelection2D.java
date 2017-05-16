@@ -1,5 +1,6 @@
 package org.hopandfork.jgnuplot.model;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -19,8 +20,9 @@ public class DataSelection2D extends DataSelection {
 	 *            data file column associated with x values.
 	 * @param y
 	 *            data file column associated with y values.
+	 * @throws IOException 
 	 */
-	public DataSelection2D(int x, int y) {
+	public DataSelection2D(int x, int y) throws IOException {
 		super(x, y);
 	}
 
@@ -34,9 +36,14 @@ public class DataSelection2D extends DataSelection {
 	 *            data file column associated with y values.
 	 * @param labels
 	 *            data file column associated with labels.
+	 * @throws IOException 
 	 */
-	public DataSelection2D(int x, int y, int labels) {
+	public DataSelection2D(int x, int y, int labels) throws IOException {
 		super(x, y);
+		if (labels <= 0){
+			throw new IOException("labels has to be greather then 0.");
+		}
+		
 		this.labels = labels;
 		labelled = true;
 	}

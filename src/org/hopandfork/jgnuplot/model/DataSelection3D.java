@@ -1,5 +1,6 @@
 package org.hopandfork.jgnuplot.model;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -23,9 +24,13 @@ public class DataSelection3D extends DataSelection {
 	 *            data file column associated with y values.
 	 * @param z
 	 *            data file column associated with z values.
+	 * @throws IOException 
 	 */
-	public DataSelection3D(int x, int y, int z) {
+	public DataSelection3D(int x, int y, int z) throws IOException {
 		super(x, y);
+		if(z <= 0){
+			throw new IOException("z has to be greather then 0.");
+		}
 		this.z = z;
 	}
 
