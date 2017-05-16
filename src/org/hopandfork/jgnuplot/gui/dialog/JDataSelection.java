@@ -334,11 +334,21 @@ public class JDataSelection extends JGPPanel {
 			/*
 			 * Prepares data for the new table.
 			 */
-			int columns = 0;
 			String data[][] = new String[parsedLines.size()][];
+			int columns = 0;
 			for (int i = 0; i<parsedLines.size(); i++) {
-				data[i] = parsedLines.get(i);
-				columns = Math.max(columns, data[i].length);
+				columns = Math.max(columns, parsedLines.get(i).length);
+			}
+			for (int i = 0; i<parsedLines.size(); i++) {
+				if (parsedLines.get(i).length == columns) {
+					data[i] = parsedLines.get(i);
+				} else {
+					data[i] = new String[columns];
+					for (int j = 0; j<parsedLines.get(i).length; j++)
+						data[i][j] = parsedLines.get(i)[j];
+					for (int j = parsedLines.get(i).length; j<columns; j++)
+						data[i][j] = "";
+				}
 			}
 
 			/* Creates column headers. */
