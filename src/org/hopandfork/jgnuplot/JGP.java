@@ -760,7 +760,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public static void main(String[] args) throws MalformedURLException {
 		/* Log4j initialization */
-		PropertyConfigurator.configure("config/log4j2.properties");
+		PropertyConfigurator.configure(
+				System.getProperty("user.dir") + System.getProperty("file.separator") + "config/log4j2.properties");
 
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
