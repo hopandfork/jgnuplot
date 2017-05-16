@@ -28,6 +28,8 @@ import java.awt.GridBagLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -44,6 +46,7 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.model.DataSelection;
+import org.hopandfork.jgnuplot.utility.FileColumnsParser;
 
 public class JDataSelection extends JGPPanel {
 
@@ -54,6 +57,7 @@ public class JDataSelection extends JGPPanel {
 	private String fileName;
 
 	private JTable jTable;
+	private JScrollPane jScrollPane;
 
 	private JButton bX, bY, bZ, bLabels,bCurrent;
 
@@ -62,16 +66,18 @@ public class JDataSelection extends JGPPanel {
 	private DataSelection dataSelection;
 
 	// headers for the table
-	private static String[] columns = new String[] { "Id", "Name", "Hourly Rate", "Part Time" };
+	private static String[] SAMPLE_COLUMNS = new String[] { "Id", "Name", "Hourly Rate", "Part Time" };
 
 	// actual data for the table in a 2d array
-	private static Object[][] data = new Object[][] { { 1, "John", 40.0, false }, { 2, "Rambo", 70.0, false },
+	private static Object[][] SAMPLE_DATA = new Object[][] { { 1, "John", 40.0, false }, { 2, "Rambo", 70.0, false },
 			{ 3, "Zorro", 60.0, true }, };
 
 	public JDataSelection(){
 		super();
 		createMainPanel();
 	}
+
+
 
 	/**
 	 * This methods allows to render the component elements.
@@ -155,7 +161,6 @@ public class JDataSelection extends JGPPanel {
 			
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
 			}
 			
 			public void mousePressed(MouseEvent e) {
@@ -215,28 +220,8 @@ public class JDataSelection extends JGPPanel {
 		});
 		tfLabels = new JTextField("0");
 		tfLabels.setEditable(false);
-		
-		jTable = new JTable(data, columns);
 
-		jTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
-		jTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		jTable.setColumnSelectionAllowed(true);
-		jTable.setRowSelectionAllowed(false);
-		jTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-		// react to column selection
-		ListSelectionModel selectionModel = jTable.getColumnModel().getSelectionModel();
-		selectionModel.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-
-				if (e.getValueIsAdjusting()) {
-					LOG.debug("selected column is " + (jTable.getSelectedColumn() + 1));
-					tfCurrent.setText("" + (jTable.getSelectedColumn() + 1));
-				}
-			}
-		});
-
-		packColumns(jTable);
+		initTable(SAMPLE_DATA, SAMPLE_COLUMNS);
 
 		/* Adds component to the JScrollPane */
 		this.add(bX, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
@@ -247,9 +232,8 @@ public class JDataSelection extends JGPPanel {
 		this.add(tfZ, 5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
 		this.add(bLabels, 6, 0, 1, 1, GridBagConstraints.HORIZONTAL);
 		this.add(tfLabels, 7, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-		JScrollPane scrollPane = new JScrollPane(jTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		this.add(scrollPane, 0, 1, 9, 1, GridBagConstraints.HORIZONTAL);
+		jScrollPane = new JScrollPane(jTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		this.add(jScrollPane, 0, 1, 9, 1, GridBagConstraints.HORIZONTAL);
 	}
 
 	public void packColumns(JTable table) {
@@ -281,9 +265,16 @@ public class JDataSelection extends JGPPanel {
 		// Get maximum width of column data
 		for (int r = 0; r < table.getRowCount(); r++) {
 			renderer = table.getCellRenderer(r, vColIndex);
-			comp = renderer.getTableCellRendererComponent(table, table.getValueAt(r, vColIndex), false, false, r,
-					vColIndex);
-			width = Math.max(width, comp.getPreferredSize().width);
+			try {
+				Object value = table.getValueAt(r, vColIndex);
+				if (value == null)
+					continue;
+				comp = renderer.getTableCellRendererComponent(table, value, false, false, r,
+						vColIndex);
+				width = Math.max(width, comp.getPreferredSize().width);
+			} catch (IndexOutOfBoundsException e) {
+				/* This happens if the data file is not well formatted, with rows longer/shorter than expected */
+			}
 		}
 
 		// Add margin
@@ -304,6 +295,68 @@ public class JDataSelection extends JGPPanel {
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void initTable (Object data[][], String columns[])
+	{
+		jTable = new JTable(data, columns);
+
+		jTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
+		jTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		jTable.setColumnSelectionAllowed(true);
+		jTable.setRowSelectionAllowed(false);
+		jTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+		// react to column selection
+		ListSelectionModel selectionModel = jTable.getColumnModel().getSelectionModel();
+		selectionModel.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+
+				if (e.getValueIsAdjusting()) {
+					LOG.debug("selected column is " + (jTable.getSelectedColumn() + 1));
+					tfCurrent.setText("" + (jTable.getSelectedColumn() + 1));
+				}
+			}
+		});
+
+		packColumns(jTable);
+	}
+
+	public void update (String dataFile)
+	{
+		this.fileName = dataFile;
+		LOG.debug("Updating from file: " + dataFile);
+
+		try {
+			List<String[]> parsedLines = new FileColumnsParser(dataFile).parse();
+			LOG.debug(String.format("Found %d lines in the file.", parsedLines.size()));
+
+			/*
+			 * Prepares data for the new table.
+			 */
+			int columns = 0;
+			String data[][] = new String[parsedLines.size()][];
+			for (int i = 0; i<parsedLines.size(); i++) {
+				data[i] = parsedLines.get(i);
+				columns = Math.max(columns, data[i].length);
+			}
+
+			/* Creates column headers. */
+			String columnHeaders[] = new String[columns];
+			for (int i = 0; i<columns; i++)
+				columnHeaders[i] = "#" + (i+1);
+
+			initTable(data, columnHeaders);
+
+			/*
+			 * Replaces table in the UI.
+			 */
+			if (jScrollPane.getViewport().getComponentCount() > 0)
+				jScrollPane.getViewport().remove(0);
+			jScrollPane.getViewport().add(jTable);
+		} catch (IOException e) {
+			LOG.warn("Could not parse file: " + fileName);
+		}
 	}
 
 }

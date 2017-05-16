@@ -74,10 +74,8 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 
 	/**
 	 * This constructor allows to create a PlottableDataDialog with a specified
-	 * 
-	 * @param title
-	 * @param controller
-	 * @param plottableObject
+	 *
+	 * @param controller Controller.
 	 */
 	public DataFileDialog(PlottableDataController controller) {
 		this.controller = controller;
@@ -114,10 +112,6 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 
 	/**
 	 * This method allows to set all field in the dialog to apply some changes.
-	 *
-	 * @param plottableObject
-	 *            DataFile to be modified.
-	 * 
 	 */
 	private void initFields() {
 
@@ -266,6 +260,7 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 			// Get the selected file.
 			tfFileName.setText(file_chooser.getSelectedFile().toString());
 			tfFileName.setToolTipText(file_chooser.getSelectedFile().toString());
+			dataSelectionTable.update(tfFileName.getText());
 			return;
 		}
 		// If the Cancel button is pressed.
