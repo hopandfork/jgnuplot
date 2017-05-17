@@ -90,6 +90,7 @@ import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
+import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
 import org.hopandfork.jgnuplot.model.GnuplotVariable;
 import org.hopandfork.jgnuplot.model.Label;
@@ -153,7 +154,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public JButton bMoveUp;
 	public JButton bMoveDown;
 
-	public JMenuItem add_menu_item;
+	public JMenuItem add_datafile_menu_item;
+	public JMenuItem add_function_menu_item;
 	public JMenuItem delete_menu_item;
 	public JMenuItem clear_menu_item;
 	public JMenuItem edit_menu_item;
@@ -302,11 +304,16 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 		edit_menu.addSeparator();
 
-		add_menu_item = new JMenuItem("Add");
-		add_menu_item.addActionListener(this);
-		add_menu_item.setActionCommand("add");
-		edit_menu.add(add_menu_item);
+		add_datafile_menu_item = new JMenuItem("Add DataFile");
+		add_datafile_menu_item.addActionListener(this);
+		add_datafile_menu_item.setActionCommand("add_datafile");
+		edit_menu.add(add_datafile_menu_item);
 
+		add_function_menu_item = new JMenuItem("Add Function");
+		add_function_menu_item.addActionListener(this);
+		add_function_menu_item.setActionCommand("add_function");
+		edit_menu.add(add_function_menu_item);
+		
 		delete_menu_item = new JMenuItem("Delete");
 		delete_menu_item.addActionListener(this);
 		delete_menu_item.setActionCommand("delete");
@@ -459,7 +466,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 		bAdd = new JButton("add");
 		bAdd.setPreferredSize(new Dimension(80, 20));
-		bAdd.setActionCommand("add");
+		bAdd.setActionCommand("add_datafile");
 		bAdd.addActionListener(this);
 
 		bClone = new JButton("clone");
@@ -786,7 +793,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("add")) {
+		if (e.getActionCommand().equals("add_datafile")) {
 			int i = tp.getSelectedIndex();
 
 			switch (i) {
@@ -802,6 +809,9 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			}
 				break;
 			}
+		} else if (e.getActionCommand().equals("add_function")){
+			FunctionDialog addFunctionDialog = new FunctionDialog(new PlottableDataController());
+			addFunctionDialog.setVisible(true);
 		} else if (e.getActionCommand().equals("Exit")) {
 			exit();
 		} else if (e.getActionCommand().equals("genplotcmds")) {
@@ -1409,7 +1419,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			delete_menu_item.setEnabled(i < 3);
 
 			bAdd.setEnabled(i < 3);
-			add_menu_item.setEnabled(i < 3);
+			add_datafile_menu_item.setEnabled(i < 3);
 
 			bClone.setEnabled(i == 0);
 			clone_menu_item.setEnabled(i == 0);

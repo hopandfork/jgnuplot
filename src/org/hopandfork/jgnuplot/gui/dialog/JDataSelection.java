@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -300,23 +301,23 @@ public class JDataSelection extends JGPPanel {
 			try {
 				dataSelection = new DataSelection3D(x, y, z);
 			} catch (IOException e) {
-				//TODO Manages the exception showing an advertisement
-				LOG.error(e.getMessage());
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		} else {
 			if (labels != 0) {
 				try {
 					dataSelection = new DataSelection2D(x, y, labels);
 				} catch (IOException e) {
-					//TODO Manages the exception showing an advertisement
-					LOG.error(e.getMessage());
+					JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
 				try {
 					dataSelection = new DataSelection2D(x, y);
 				} catch (IOException e) {
-					//TODO Manages the exception showing an advertisement
-					LOG.error(e.getMessage());
+					JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
@@ -343,11 +344,11 @@ public class JDataSelection extends JGPPanel {
 
 				if (e.getValueIsAdjusting()) {
 					tfCurrent.setText("" + (jTable.getSelectedColumn() + 1));
-					
-					if(tfCurrent.equals(tfLabels)){
+
+					if (tfCurrent.equals(tfLabels)) {
 						bZ.setVisible(false);
 						tfZ.setVisible(false);
-					} else if (tfCurrent.equals(tfZ)){
+					} else if (tfCurrent.equals(tfZ)) {
 						bLabels.setVisible(false);
 						tfLabels.setVisible(false);
 					}

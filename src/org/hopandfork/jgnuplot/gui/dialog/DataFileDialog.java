@@ -34,14 +34,14 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.model.DataFile;
-import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.DataSelection;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 /**
@@ -52,19 +52,19 @@ import org.hopandfork.jgnuplot.model.style.PlottingStyle;
  */
 public class DataFileDialog extends PlottableDataDialog implements ActionListener {
 
+	private static Logger LOG = Logger.getLogger(DataFileDialog.class);
+
 	private static final long serialVersionUID = -4285893032555125235L;
 
 	public static final String TITLE = "Data File";
 
-	protected JTextField tfFileName;
+	private JTextField tfFileName;
 
-	protected JTextField tfTitle;
+	private JTextField tfTitle;
 
-	protected StyleComboBox cbStyle;
+	private StyleComboBox cbStyle;
 
-	protected JTextField tfPreProcess;
-
-	private JLabel lColumnSelection;
+	private JTextField tfPreProcess;
 
 	private JButton bFileChose;
 
@@ -75,7 +75,8 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 	/**
 	 * This constructor allows to create a PlottableDataDialog with a specified
 	 *
-	 * @param controller Controller.
+	 * @param controller
+	 *            Controller.
 	 */
 	public DataFileDialog(PlottableDataController controller) {
 		this.controller = controller;
@@ -91,22 +92,24 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 	 * This constructor is used to create a PlottableDataDialog filled with a
 	 * PlottableData values, ready to be modified.
 	 * 
-	 * @param plottableObject
+	 * @param dataFile
 	 *            the object from which values are taken.
 	 * @param controller
 	 *            a PlottableDataController to update the PlottableData in case
 	 *            of changes.
 	 * @throws NullPointerException
-	 *             is thrown in case of null plottableObject.
+	 *             is thrown in case of null dataFile.
 	 */
-	public DataFileDialog(PlottableData plottableObject, PlottableDataController controller) throws IOException {
+	public DataFileDialog(DataFile dataFile, PlottableDataController controller) throws IOException {
+
+		add(createMainPanel());
 
 		/* Checks if a PlottableData is valid. */
-		if (plottableObject != null) {
+		if (dataFile != null) {
+			this.plottableObject = dataFile;
 			initFields();
-			this.plottableObject = plottableObject;
 		} else {
-			throw new NullPointerException("plottableObject has to be not null");
+			throw new NullPointerException("dataFile has to be not null");
 		}
 	}
 
@@ -119,9 +122,9 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 		tfFileName.setText(dataFile.getFileName());
 		tfPreProcess.setText(dataFile.getPreProcessProgram());
 
-		tfTitle.setText(plottableObject.getTitle());
+		tfTitle.setText(dataFile.getTitle());
 
-		cbStyle.setSelectedItem(plottableObject.getStyle());
+		cbStyle.setSelectedItem(dataFile.getStyle());
 	}
 
 	private JPanel createMainPanel() {
@@ -183,7 +186,7 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 		jp.add(bProgChose, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
 
 		row += 1;
-		jp.add(lColumnSelection = new JLabel("Columns selection"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		jp.add(new JLabel("Columns selection"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		// Create the scroll pane and add the table to it.
 		jp.add(dataSelectionTable, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
 
@@ -223,13 +226,24 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 			this.setVisible(false);
 	}
 
-	// TODO integrate in this dialog
-	public void acApply() {
+	/**
+	 * This method allows to create a new DataFile or modify an existing one.
+	 */
+	private void acApply() {
+		DataSelection dataSelection = dataSelectionTable.getDataSelection();
+		
+		if (plottableObject != null) {
+			/* TODO Edits function */
+		} else {
+			/* Adds new function */
+			if (dataSelection != null) {
+				controller.addDataFile(tfFileName.getText(), tfTitle.getText(),
+						(PlottingStyle) cbStyle.getSelectedItem(), dataSelectionTable.getDataSelection(),
+						tfPreProcess.getText());
 
-		controller.addDataFile(tfFileName.getText(), tfTitle.getText(), (PlottingStyle) cbStyle.getSelectedItem(),
-				dataSelectionTable.getDataSelection(), tfPreProcess.getText());
-
-		this.setVisible(false);
+				this.setVisible(false);
+			}
+		}
 	}
 
 	public void acFileBrowse() {
