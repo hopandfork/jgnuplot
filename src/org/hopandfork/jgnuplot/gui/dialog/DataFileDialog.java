@@ -101,16 +101,20 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 	 *             is thrown in case of null dataFile.
 	 */
 	public DataFileDialog(DataFile dataFile, PlottableDataController controller) throws IOException {
+		this.plottableObject = dataFile;
 
 		add(createMainPanel());
 
 		/* Checks if a PlottableData is valid. */
 		if (dataFile != null) {
-			this.plottableObject = dataFile;
 			initFields();
 		} else {
 			throw new NullPointerException("dataFile has to be not null");
 		}
+
+		this.setTitle(TITLE);
+		this.pack();
+		this.setModal(true);
 	}
 
 	/**
@@ -231,7 +235,7 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 	 */
 	private void acApply() {
 		DataSelection dataSelection = dataSelectionTable.getDataSelection();
-		
+
 		if (plottableObject != null) {
 			/* TODO Edits function */
 		} else {

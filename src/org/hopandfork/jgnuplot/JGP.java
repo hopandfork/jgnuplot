@@ -69,26 +69,29 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
-import org.hopandfork.jgnuplot.gui.table.ColorEditor;
-import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
-import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
-import org.hopandfork.jgnuplot.gui.table.VariableTableModel;
 import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
 import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
+import org.hopandfork.jgnuplot.gui.table.ColorEditor;
+import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
+import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
+import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
+import org.hopandfork.jgnuplot.gui.table.VariableTableModel;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.GnuplotVariable;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot;
@@ -99,6 +102,8 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 public class JGP extends JFrame implements ActionListener, ChangeListener {
+
+	private static Logger LOG = Logger.getLogger(JGP.class);
 
 	public static final boolean debug = true;
 
@@ -111,6 +116,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	private JCheckBox cbUpdateCheck;
 
 	public PlottableDataTableModel dsTableModel;
+
 	public JTable dataSetTable;
 
 	public LabelTableModel labelTableModel;
@@ -307,7 +313,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		add_function_menu_item.addActionListener(this);
 		add_function_menu_item.setActionCommand("add_function");
 		edit_menu.add(add_function_menu_item);
-		
+
 		delete_menu_item = new JMenuItem("Delete");
 		delete_menu_item.addActionListener(this);
 		delete_menu_item.setActionCommand("delete");
@@ -660,8 +666,9 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-//		TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
-//		styleColumn.setCellEditor(new DefaultCellEditor(new StyleComboBox()));
+		// TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
+		// styleColumn.setCellEditor(new DefaultCellEditor(new
+		// StyleComboBox()));
 
 		// Set up renderer and editor for the Favorite Color column.
 		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
@@ -792,7 +799,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			}
 				break;
 			}
-		} else if (e.getActionCommand().equals("add_function")){
+		} else if (e.getActionCommand().equals("add_function")) {
 			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
 			addFunctionDialog.setVisible(true);
 		} else if (e.getActionCommand().equals("Exit")) {
@@ -948,43 +955,35 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		}
 	}
 
+	/**
+	 * This method allows to edit the PlottableData object in the main table.
+	 */
 	public void acEdit() {
-		int i = tp.getSelectedIndex();
+		int i = dataSetTable.getSelectedRow();
 
-		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "You need to select one row to edit.", "Editing datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-
-				return;
-			} else if (r.length > 1) {
-				JOptionPane.showMessageDialog(this, "You need to select only one row to edit.", "Editing datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+		if (i > 0) {
+			PlottableData plottableData = dsTableModel.getPlottableData(i);
+			if (plottableData != null) {
+				if (plottableData instanceof Function) {
+					try {
+						FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
+								plottableDataController);
+						functionDialog.setVisible(true);
+					} catch (IOException e) {
+						LOG.error(e.getMessage());
+					}
+				} else {
+					try {
+						DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
+								plottableDataController);
+						dataFileDialog.setVisible(true);
+					} catch (IOException e) {
+						LOG.error(e.getMessage());
+					}
+				}
 			}
-			// TODO needs a method in controller to get a PlottableItem from
-			// some refs and identify the type to open the correct dialog
-			/*
-			 * FunctionDialog editDialog; try { editDialog = new
-			 * FunctionDialog(dsTableModel.data.get(r[0]), new
-			 * PlottableDataController()); editDialog.setVisible(true); } catch
-			 * (IOException e) { e.printStackTrace(); }
-			 */
-		}
-			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Dialog editing of labels not supported yet! Edit them in the table.",
-					"Editing labels", JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this,
-					"Dialog editing of variables not supported yet! Edit them in the table.", "Editing variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
+		} else {
+			LOG.info("Please select something");
 		}
 	}
 

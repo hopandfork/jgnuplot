@@ -58,16 +58,20 @@ public class FunctionDialog extends PlottableDataDialog implements ActionListene
 	 *             is thrown in case of null plottableObject.
 	 */
 	public FunctionDialog(Function function, PlottableDataController controller) throws IOException {
-
+		this.plottableObject = function;
+		
 		add(createMainPanel());
-
+		
 		/* Checks if a PlottableData is valid. */
 		if (plottableObject != null) {
-			this.plottableObject = function;
 			initFields();
 		} else {
 			throw new NullPointerException("plottableObject has to be not null");
 		}
+		
+		this.setTitle(TITLE);
+		this.pack();
+		this.setModal(true);
 	}
 
 	/**
