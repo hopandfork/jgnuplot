@@ -1,13 +1,19 @@
 package org.hopandfork.jgnuplot.control;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.model.*;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
-public class PlottableDataController {
+import java.util.Collection;
+import java.util.Observable;
 
 
-	public Function addFunction (String expression, String title, PlottingStyle style)
-	{
+public class PlottableDataController extends Observable {
+
+
+	static private final Logger LOG = Logger.getLogger(PlottableDataController.class);
+
+	public Function addFunction(String expression, String title, PlottingStyle style) {
 		Plot plot = Project.currentProject().getPlot();
 
 		Function function = new Function();
@@ -16,12 +22,13 @@ public class PlottableDataController {
 		function.setStyle(style);
 
 		plot.addPlottableData(function);
+
+		notifyObservers(function);
 		return function;
 	}
 
 
-	public DataFile addDataFile (String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram)
-	{
+	public DataFile addDataFile(String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
 		Plot plot = Project.currentProject().getPlot();
 
 		DataFile dataFile = new DataFile();
@@ -30,10 +37,25 @@ public class PlottableDataController {
 		dataFile.setStyle(style);
 		dataFile.setDataSelection(dataSelection);
 		dataFile.setPreProcessProgram(preProcessProgram);
-		
-		
+
+
 		plot.addPlottableData(dataFile);
+
+		notifyObservers(dataFile);
 		return dataFile;
+	}
+
+	@Override
+	public void notifyObservers(Object o) {
+		this.setChanged();
+		super.notifyObservers(o);
+		this.clearChanged();
+	}
+
+	public Collection<PlottableData> getPlottableData ()
+	{
+		Plot plot = Project.currentProject().getPlot();
+		return plot.getPlottableData();
 	}
 
 	// TODO edit

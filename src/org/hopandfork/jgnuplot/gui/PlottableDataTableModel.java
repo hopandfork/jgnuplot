@@ -1,0 +1,194 @@
+/*
+ * JGNUplot is a GUI for gnuplot (http://www.gnuplot.info/)
+ * The GUI is build on JAVA wrappers for gnuplot alos provided in this package.
+ * 
+ * Copyright (C) 2006  Maximilian H. Fabricius 
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package org.hopandfork.jgnuplot.gui;
+
+
+import java.awt.Color;
+import java.util.*;
+
+import javax.swing.table.AbstractTableModel;
+
+import org.apache.log4j.Logger;
+import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
+
+
+/**
+ * Table model used for displaying PlottableData in a table.
+ */
+public class PlottableDataTableModel extends AbstractTableModel implements Observer {
+
+
+	private static final long serialVersionUID = -6078450755616561995L;
+
+	/**
+	 * Logger.
+	 */
+	static private final Logger LOG = Logger.getLogger(PlottableDataTableModel.class);
+
+	/**
+	 * Controller for PlottableData management.
+	 */
+	private PlottableDataController controller;
+
+	public PlottableDataTableModel(PlottableDataController controller) {
+		this.controller = controller;
+		controller.addObserver(this);
+	}
+
+	/*
+	 * Column names.
+	 */
+	static private final String COL_TITLE = "Title";
+	static private final String COL_COLOR = "Color";
+	static private final String COL_STYLE = "Style";
+	static private final String COL_ENABLED = "Enabled";
+	final static private String[] columnNames = {
+			COL_TITLE,
+			COL_COLOR,
+			COL_STYLE,
+			COL_ENABLED
+	};
+
+	/*
+	 * Column data type Class.
+	 */
+	final static private Class[] columnClasses = {
+			String.class,
+			Color.class,
+			PlottingStyle.class,
+			Boolean.class
+	};
+
+
+	/**
+	 * PlottableData shown in the table.
+	 */
+	public List<PlottableData> data = new ArrayList<PlottableData>();
+
+
+	/**
+	 * Returns the count of available columns.
+	 *
+	 * @return Count of available columns.
+	 */
+	public int getColumnCount() {
+		return columnNames.length;
+	}
+
+	/**
+	 * Returns the count of existing rows.
+	 *
+	 * @return Count of existing rows.
+	 */
+	public int getRowCount() {
+		return data.size();
+
+	}
+
+	/**
+	 * Returns the name of i-th column.
+	 *
+	 * @param i Index of the column.
+	 * @return Name of the column.
+	 */
+	public String getColumnName(int i) {
+		return columnNames[i];
+	}
+
+	/**
+	 * Returns the content of a table cell.
+	 *
+	 * @param row Index of the row.
+	 * @param col Index of the column.
+	 * @return Content of the cell.
+	 */
+	public Object getValueAt(int row, int col) {
+		PlottableData plottableData = data.get(row);
+		String columnName = columnNames[col];
+
+		if (columnName.equals(COL_TITLE)) {
+			return plottableData.getTitle();
+		} else if (columnName.equals(COL_COLOR)) {
+			return plottableData.getColor();
+		} else if (columnName.equals(COL_STYLE)) {
+			return plottableData.getStyle();
+		} else {
+			return plottableData.isEnabled();
+		}
+	}
+
+
+	/**
+	 * Returns the type of a column data.
+	 *
+	 * @param c Column index.
+	 * @return Type of the column data.
+	 */
+	public Class getColumnClass(int c) {
+		return columnClasses[c];
+	}
+
+	/**
+	 * Returns true if the given cell can be edited.
+	 *
+	 * @param row Row index.
+	 * @param col Column index.
+	 * @return true if the cell can be edited.
+	 */
+	public boolean isCellEditable(int row, int col) {
+		return false; /* at the moment, we don't allow editing */
+	}
+
+	/**
+	 * Updates the table on change in the model.
+	 *
+	 * @param observable Model subject to change.
+	 * @param o          Optional object associated to the notification.
+	 */
+	public void update(Observable observable, Object o) {
+		if (!(o instanceof PlottableData)) {
+			LOG.error("Received an update with an object which is not a PlottableData!");
+			return;
+		}
+
+		Collection<PlottableData> allPlottableData = controller.getPlottableData();
+		PlottableData changedPlottableData = (PlottableData) o;
+
+		if (allPlottableData.contains(changedPlottableData)) {
+			if (!data.contains(changedPlottableData)) {
+				/* Added */
+				LOG.info("A PlottableData has been added");
+				data.add(changedPlottableData);
+			}
+			/* Just changed...nothing to do */
+			LOG.info("A PlottableData has been edited");
+		} else {
+			/* Removed */
+			LOG.info("A PlottableData has been removed");
+			data.remove(changedPlottableData);
+		}
+
+		fireTableDataChanged();
+	}
+}

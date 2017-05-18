@@ -69,22 +69,19 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.LoggerFactory;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
 import org.hopandfork.jgnuplot.gui.ColorEditor;
 import org.hopandfork.jgnuplot.gui.ColorRenderer;
-import org.hopandfork.jgnuplot.gui.DatasetTableModel;
+import org.hopandfork.jgnuplot.gui.PlottableDataTableModel;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
-import org.hopandfork.jgnuplot.gui.StyleComboBox;
 import org.hopandfork.jgnuplot.gui.VariableTableModel;
 import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
@@ -113,7 +110,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	private JCheckBox cbUpdateCheck;
 
-	public DatasetTableModel dsTableModel;
+	public PlottableDataTableModel dsTableModel;
 	public JTable dataSetTable;
 
 	public LabelTableModel labelTableModel;
@@ -174,14 +171,15 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public static final int nRecentProjects = 8;
 
 	public static final int startRecentProjects = 7;
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private static final String SETTINGS_FILE = ".JGP";
 
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
+
+	/** Controller for PlottableData. */
+	private PlottableDataController plottableDataController = new PlottableDataController();
 
 	public JGP() {
 		this.setTitle("JGNUplot");
@@ -668,7 +666,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		dsTableModel = new DatasetTableModel();
+		dsTableModel = new PlottableDataTableModel(plottableDataController);
 		dataSetTable = new JTable(dsTableModel);
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -677,8 +675,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
-		styleColumn.setCellEditor(new DefaultCellEditor(new StyleComboBox()));
+//		TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
+//		styleColumn.setCellEditor(new DefaultCellEditor(new StyleComboBox()));
 
 		// Set up renderer and editor for the Favorite Color column.
 		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
@@ -810,7 +808,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 				break;
 			}
 		} else if (e.getActionCommand().equals("add_function")){
-			FunctionDialog addFunctionDialog = new FunctionDialog(new PlottableDataController());
+			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
 			addFunctionDialog.setVisible(true);
 		} else if (e.getActionCommand().equals("Exit")) {
 			exit();
@@ -881,7 +879,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void acAdd() {
-		DataFileDialog addDataFileDialog = new DataFileDialog(new PlottableDataController());
+		DataFileDialog addDataFileDialog = new DataFileDialog(plottableDataController);
 		addDataFileDialog.setVisible(true);
 	}
 

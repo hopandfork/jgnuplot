@@ -23,14 +23,19 @@ package org.hopandfork.jgnuplot.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
 
 public class Plot implements Plottable {
 
-	private ArrayList<PlottableData> plottableData;
-	private ArrayList<Label> labels;
-	private ArrayList<Variable> variables;
+	public List<PlottableData> getPlottableData() {
+		return plottableData;
+	}
+
+	private List<PlottableData> plottableData;
+	private List<Label> labels;
+	private List<Variable> variables;
 
 	private String prePlotString;
 
