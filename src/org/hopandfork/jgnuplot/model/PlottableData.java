@@ -60,21 +60,9 @@ public abstract class PlottableData implements Plottable {
 		this.enabled = enabled;
 	}
 
-	/**
-	 * Returns a clone of this PlottableItem.
-	 * @return A clone of this PlottableItem.
-	 */
-	public abstract PlottableData getClone();
-
 	public void setStyle(PlottingStyle s) {
 		this.style = s;
 	}
-
-	@Deprecated
-	public abstract Object[] getData();
-
-	@Deprecated
-	public abstract void setData(int i, Object value);
 
 	public void setTitle(String title) {
 		this.title = title;

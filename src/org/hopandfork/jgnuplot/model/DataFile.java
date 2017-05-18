@@ -46,41 +46,6 @@ public class DataFile extends PlottableData {
 	/** Optional external command for preprocessing. */
 	private String preProcessProgram;
 
-	@Deprecated
-	public Object[] getData() {
-		Object data[] = new Object[8];
-		data[0] = this.fileName;
-		data[1] = "";
-		data[2] = this.title;
-		data[3] = this.color;
-		data[4] = this.style;
-		if (this.addStyleOpt == null)
-			addStyleOpt = "";
-		data[5] = this.addStyleOpt;
-		data[6] = this.enabled;
-		data[7] = this.preProcessProgram;
-		return data;
-	}
-
-	@Deprecated
-	public void setData(int i, Object value) {
-		if (i == 0)
-			fileName = (String) value;
-		else if (i == 2)
-			title = (String) value;
-		else if (i == 3)
-			color = new GnuplotColor((Color) value);
-		else if (i == 4)
-			style = (PlottingStyle) value;
-		else if (i == 5)
-			addStyleOpt = (String) value;
-		else if (i == 6)
-			enabled = ((Boolean) value).booleanValue();
-		else if (i == 7)
-			preProcessProgram = (String) value;
-	}
-
-
 	public String toPlotString() {
 
 		String s = "";
@@ -175,19 +140,6 @@ public class DataFile extends PlottableData {
 			this.preProcessProgram = preProcessProgram;
 	}
 
-	@Override
-	public PlottableData getClone() {
-		DataFile ds = new DataFile();
-		ds.fileName = fileName;
-		ds.title = title;
-		ds.color = color;
-		ds.style = style;
-		ds.addStyleOpt = addStyleOpt;
-		ds.enabled = enabled;
-		ds.preProcessProgram = preProcessProgram;
-		ds.dataSelection = dataSelection;
-		return ds;
-	}
 
 	public DataSelection getDataSelection() {
 		return dataSelection;
