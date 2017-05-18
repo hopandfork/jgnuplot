@@ -385,6 +385,15 @@ public class Plot implements Plottable {
 		plottableData.add(data);
 	}
 
+	public void deletePlottableData (PlottableData data) {
+		if (plottableData.contains(data))
+			plottableData.remove(data);
+	}
+
+	public void deleteAllPlottableData () {
+		plottableData.clear();
+	}
+
 	public void addVariable(Variable variable) {
 		variables.add(variable);
 	}
@@ -400,5 +409,6 @@ public class Plot implements Plottable {
 	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
+
 
 }

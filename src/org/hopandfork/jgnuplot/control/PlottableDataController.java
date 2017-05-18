@@ -58,6 +58,19 @@ public class PlottableDataController extends Observable {
 		return plot.getPlottableData();
 	}
 
+	public void delete (PlottableData plottableData) {
+		Plot plot = Project.currentProject().getPlot();
+		plot.deletePlottableData(plottableData);
+		notifyObservers(plottableData);
+	}
+
+	public void deleteAll ()
+	{
+		Plot plot = Project.currentProject().getPlot();
+		plot.deleteAllPlottableData();
+		notifyObservers(null);
+	}
+
 	// TODO edit
 
 	// TODO delete

@@ -328,7 +328,7 @@ public class ProjectManager extends XMLManager {
 				if (n.getElementsByTagName(PRE_PROCESS_PROGRAM).getLength() != 0)
 					ds.setPreProcessProgram(n.getElementsByTagName(PRE_PROCESS_PROGRAM).item(0).getTextContent());
 
-				mainWindow.dsTableModel.data.add(ds);
+				//mainWindow.dsTableModel.data.add(ds); TODO
 			}
 
 			mainWindow.dsTableModel.fireTableDataChanged();
@@ -426,8 +426,8 @@ public class ProjectManager extends XMLManager {
 			// add datasets
 			Element datasets = (Element) document.createElement(DATASET_ITEMS);
 
-			for (int i = 0; i < mainWindow.dsTableModel.data.size(); i++) {
-				PlottableData ds = mainWindow.dsTableModel.data.get(i);
+			for (int i = 0; i < mainWindow.dsTableModel.getRowCount(); i++) {
+				PlottableData ds = mainWindow.dsTableModel.getPlottableData(i);
 				Element dataset = (Element) document.createElement(DATASET);
 				dataset.setAttribute(ID, i + "");
 

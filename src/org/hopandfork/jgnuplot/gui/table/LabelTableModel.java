@@ -19,19 +19,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.table;
 
 
 import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.hopandfork.jgnuplot.model.GnuplotVariable;
-import org.hopandfork.jgnuplot.model.StringVariable;
-import org.hopandfork.jgnuplot.model.Variable;
+import org.hopandfork.jgnuplot.model.Label;
 
 
-public class VariableTableModel  extends AbstractTableModel  {
+public class LabelTableModel  extends AbstractTableModel  {
 	
 
 	/**
@@ -39,15 +37,16 @@ public class VariableTableModel  extends AbstractTableModel  {
 	 */
 	private static final long serialVersionUID = -2543760974372040136L;
 
-	private String[] columnNames = {"Type",
-               "Name",
-               "value",
-               "active"};
+	private String[] columnNames = {"Text",
+               "X",
+               "Y",
+               "relative to",
+               "do plot"};
 
-	public ArrayList<Variable> variables = new ArrayList<Variable> ();
+	public ArrayList<Label> data = new ArrayList<Label> ();
 	
-	public void addRow(Variable lbl){
-		variables.add(lbl);
+	public void addRow(Label lbl){
+		data.add(lbl);
 		fireTableDataChanged();
 	}
 	
@@ -56,7 +55,7 @@ public class VariableTableModel  extends AbstractTableModel  {
 	}
 	
 	public int getRowCount() {
-		return variables.size();
+		return data.size();
 	}
 	
 	public String getColumnName(int col) {
@@ -64,7 +63,7 @@ public class VariableTableModel  extends AbstractTableModel  {
 	}
 	
 	public Object getValueAt(int row, int col) {
-		return variables.get(row).getData()[col];
+		return data.get(row).getData()[col];
 	}
 	
 	/*
@@ -81,25 +80,9 @@ public class VariableTableModel  extends AbstractTableModel  {
 		          + value.getClass() + ")");
 		}
 		
-		if (col == 0){ 
-			//uh, now we have to replace the Variable with a variable of different
-			// class
-			Variable v = null;
-			if (value.equals(Variable.Type.STRING))
-				v = new StringVariable();
-			else 
-				v = new GnuplotVariable();
-			
-			for (int i = 0; i < 4; i++){
-				v.setData(i, variables.get(row).getData()[i]);
-			}
-			
-			variables.set(row, v);
-		}
-		else {
-			variables.get(row).getData()[col] = value;
-			variables.get(row).setData(col, value);
-		}
+		data.get(row).getData()[col] = value;
+		data.get(row).setData(col, value);
+		
 		fireTableCellUpdated(row, col);
 	}
 	

@@ -74,15 +74,15 @@ import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
-import org.hopandfork.jgnuplot.gui.ColorEditor;
-import org.hopandfork.jgnuplot.gui.ColorRenderer;
-import org.hopandfork.jgnuplot.gui.PlottableDataTableModel;
+import org.hopandfork.jgnuplot.gui.table.ColorEditor;
+import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
+import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.gui.LabelTableModel;
+import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
-import org.hopandfork.jgnuplot.gui.VariableTableModel;
+import org.hopandfork.jgnuplot.gui.table.VariableTableModel;
 import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
@@ -825,10 +825,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			acPrint();
 		} else if (e.getActionCommand().equals("new")) {
 			acNew();
-		} else if (e.getActionCommand().equals("about"))
+		} else if (e.getActionCommand().equals("about")) {
 			AboutDialog.showAboutDialog();
-		else if (e.getActionCommand().equals("clone")) {
-			acClone();
 		} else if (e.getActionCommand().equals("clear")) {
 			acClear();
 		} else if (e.getActionCommand().equals("Save project to..."))
@@ -1001,7 +999,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		cbLogScaleX.setSelected(false);
 		cbLogScaleX.setSelected(false);
 
-		clearDataSetTable();
+		clearPlottableData();
 		clearLabelTable();
 		clearVariableTable();
 
@@ -1033,22 +1031,9 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 				return;
 			}
 
-			// move all selected datasets one position further up
-			for (int j = 0; j < r.length; j++) {
-				// get selected and prevoius datasets
-				PlottableData pCur = dsTableModel.data.get(r[j]);
-				PlottableData pPre = dsTableModel.data.get(r[j] - 1);
+			JOptionPane.showMessageDialog(this, "Moving of plottable data not supported yet!", "Moving labels",
+					JOptionPane.INFORMATION_MESSAGE);
 
-				// and swap them
-				dsTableModel.data.set(r[j], pPre);
-				dsTableModel.data.set(r[j] - 1, pCur);
-			}
-			// notify renderer that there were changes
-			dsTableModel.fireTableDataChanged();
-			// re-select rows
-			for (int j = 0; j < r.length; j++) {
-				dataSetTable.addRowSelectionInterval(r[j] - 1, r[j] - 1);
-			}
 		}
 			break;
 		case 1: {
@@ -1084,28 +1069,15 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			}
 
 			// check if user tried to move the last dataset further down
-			if (r[r.length - 1] == (dsTableModel.data.size() - 1)) {
+			if (r[r.length - 1] == (dsTableModel.getRowCount() - 1)) {
 				JOptionPane.showMessageDialog(this, "Cannot move datasets further down.", "Moving datasets",
 						JOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
 
-			// move all selected datasets one position further up
-			for (int j = 0; j < r.length; j++) {
-				// get selected and prevoius datasets
-				PlottableData pCur = dsTableModel.data.get(r[j]);
-				PlottableData pNext = dsTableModel.data.get(r[j] + 1);
+			JOptionPane.showMessageDialog(this, "Moving plottable data not supported yet!", "Moving labels",
+					JOptionPane.INFORMATION_MESSAGE);
 
-				// and swap them
-				dsTableModel.data.set(r[j], pNext);
-				dsTableModel.data.set(r[j] + 1, pCur);
-
-			}
-			// notify renderer that there were changes
-			dsTableModel.fireTableDataChanged();
-			for (int j = 0; j < r.length; j++) {
-				dataSetTable.addRowSelectionInterval(r[j] + 1, r[j] + 1);
-			}
 		}
 			break;
 		case 1: {
@@ -1123,51 +1095,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		}
 	}
 
-	/**
-	 * Clones currently selected datasets.
-	 */
-	public void acClone() {
-		int i = tp.getSelectedIndex();
-		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-
-			// check if user selected any datasets to move
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected!", "Cloning datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-
-				return;
-			}
-
-			// check if user selected more than one dataset
-			if (r.length > 1) {
-				JOptionPane.showMessageDialog(this, "Can only clone one dataset!", "Cloning datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-
-			// get selected and prevoius datasets
-			PlottableData pCur = dsTableModel.data.get(r[0]);
-			dsTableModel.data.add(r[0] + 1, pCur.getClone());
-
-			// notify renderer that there were changes
-			dsTableModel.fireTableDataChanged();
-		}
-			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Cloning of labels not supported yet!", "Cloning labels",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this, "Cloning of variables not supported yet!", "Cloning variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
-		}
-	}
-
 	public void acDelete() {
 		int i = tp.getSelectedIndex();
 
@@ -1180,8 +1107,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 				return;
 			}
 			for (int j = 0; j < r.length; j++) {
-				this.dsTableModel.data.remove(r[j]);
-				dsTableModel.fireTableDataChanged();
+				PlottableData data = dsTableModel.getPlottableData(r[j]);
+				plottableDataController.delete(data);
 			}
 		}
 			break;
@@ -1219,7 +1146,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 		switch (i) {
 		case 0: {
-			clearDataSetTable();
+			clearPlottableData();
 		}
 			break;
 		case 1: {
@@ -1241,13 +1168,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		prePlotString.setText("");
 	}
 
-	public void clearDataSetTable() {
-		int count = dataSetTable.getRowCount();
-		for (int j = 0; j < count; j++) {
-			this.dsTableModel.data.remove(0);
-		}
-		dsTableModel.fireTableDataChanged();
-
+	public void clearPlottableData() {
+		plottableDataController.deleteAll();
 	}
 
 	public void clearLabelTable() {
@@ -1283,8 +1205,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		else
 			gp.setMode(Plot.Mode.PLOT_3D);
 
-		for (int i = 0; i < dsTableModel.data.size(); i++) {
-			gp.addPlottableData(dsTableModel.data.get(i));
+		for (int i = 0; i < dsTableModel.getRowCount(); i++) {
+			gp.addPlottableData(dsTableModel.getPlottableData(i));
 		}
 		for (int i = 0; i < labelTableModel.data.size(); i++) {
 			gp.addLabel(labelTableModel.data.get(i));
@@ -1472,7 +1394,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void loadProject(String fileName) {
-		clearDataSetTable();
+		clearPlottableData();
 		clearLabelTable();
 		clearVariableTable();
 

@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.table;
 
 /* 
  * ColorRenderer.java (compiles with releases 1.2, 1.3, and 1.4) is used by 

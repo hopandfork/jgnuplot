@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.table;
 
 
 import java.awt.Color;
@@ -84,7 +84,7 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 	/**
 	 * PlottableData shown in the table.
 	 */
-	public List<PlottableData> data = new ArrayList<PlottableData>();
+	private List<PlottableData> data = new ArrayList<PlottableData>();
 
 
 	/**
@@ -180,9 +180,10 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 				/* Added */
 				LOG.info("A PlottableData has been added");
 				data.add(changedPlottableData);
+			} else {
+				/* Just changed...nothing to do */
+				LOG.info("A PlottableData has been edited");
 			}
-			/* Just changed...nothing to do */
-			LOG.info("A PlottableData has been edited");
 		} else {
 			/* Removed */
 			LOG.info("A PlottableData has been removed");
@@ -190,5 +191,9 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 		}
 
 		fireTableDataChanged();
+	}
+
+	public PlottableData getPlottableData(int i) {
+		return data.get(i);
 	}
 }
