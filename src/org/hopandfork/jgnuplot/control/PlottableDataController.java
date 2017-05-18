@@ -71,9 +71,4 @@ public class PlottableDataController extends Observable {
 		notifyObservers(null);
 	}
 
-	// TODO edit
-
-	// TODO delete
-
-
 }

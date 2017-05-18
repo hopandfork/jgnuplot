@@ -30,19 +30,19 @@ import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 public abstract class PlottableData implements Plottable {
 
 	/** Title of this item in the plot. */
-	public String title;
+	protected String title;
 
 	/** Enable flag for this item. */
-	public boolean enabled = true;
+	protected boolean enabled = true;
 
 	/** PlottingStyle to use. */
-	public PlottingStyle style;
+	protected PlottingStyle style;
 
 	/** Color to use. */
-	public GnuplotColor color;
+	protected GnuplotColor color;
 
 	/** Additional style options like linecolor, pointsize a.s.o. */
-	public String addStyleOpt; // TODO we should avoid a user-defined String...
+	protected String addStyleOpt; // TODO we should avoid a user-defined String...
 
 	public boolean isEnabled() {
 		return this.enabled;

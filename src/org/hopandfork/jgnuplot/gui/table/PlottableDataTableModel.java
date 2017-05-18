@@ -29,6 +29,8 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
@@ -128,7 +130,14 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 		String columnName = columnNames[col];
 
 		if (columnName.equals(COL_TITLE)) {
-			return plottableData.getTitle();
+			String title = plottableData.getTitle();
+			if (title == null || title.length() < 1) {
+				if (plottableData instanceof Function)
+					title = ((Function)plottableData).getFunctionString();
+				else if (plottableData instanceof DataFile)
+					title = ((DataFile)plottableData).getFileName();
+			}
+			return title;
 		} else if (columnName.equals(COL_COLOR)) {
 			return plottableData.getColor();
 		} else if (columnName.equals(COL_STYLE)) {
