@@ -961,9 +961,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public void acEdit() {
 		int i = dataSetTable.getSelectedRow();
 
-		if (i > 0) {
+		if (i >= 0) {
 			PlottableData plottableData = dsTableModel.getPlottableData(i);
-			if (plottableData != null) {
 				if (plottableData instanceof Function) {
 					try {
 						FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
@@ -981,7 +980,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 						LOG.error(e.getMessage());
 					}
 				}
-			}
 		} else {
 			LOG.info("Please select something");
 		}
