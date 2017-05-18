@@ -146,7 +146,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public JButton bEdit;
 	public JButton bDelete;
 	public JButton bAdd;
-	public JButton bClone;
 	public JButton bClear;
 	public JButton bMoveUp;
 	public JButton bMoveDown;
@@ -156,15 +155,12 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public JMenuItem delete_menu_item;
 	public JMenuItem clear_menu_item;
 	public JMenuItem edit_menu_item;
-	public JMenuItem clone_menu_item;
 	public JMenuItem moveup_menu_item;
 	public JMenuItem movedown_menu_item;
 
 	public JTextField statusBar;
 
 	public String projectFileName;
-
-	public String psFileName;
 
 	public JMenu file_menu;
 
@@ -329,11 +325,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		edit_menu_item.setActionCommand("edit");
 		edit_menu.add(edit_menu_item);
 
-		clone_menu_item = new JMenuItem("Clone dataset");
-		clone_menu_item.addActionListener(this);
-		clone_menu_item.setActionCommand("clone");
-		edit_menu.add(clone_menu_item);
-
 		moveup_menu_item = new JMenuItem("Move dataset(s) up");
 		moveup_menu_item.addActionListener(this);
 		moveup_menu_item.setActionCommand("moveup");
@@ -467,11 +458,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		bAdd.setActionCommand("add_datafile");
 		bAdd.addActionListener(this);
 
-		bClone = new JButton("clone");
-		bClone.setPreferredSize(new Dimension(80, 20));
-		bClone.setActionCommand("clone");
-		bClone.addActionListener(this);
-
 		bClear = new JButton("clear");
 		bClear.setPreferredSize(new Dimension(80, 20));
 		bClear.setActionCommand("clear");
@@ -555,7 +541,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		row += 1;
 		jp.add(bEdit, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bAdd, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		jp.add(bClone, 2, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bDelete, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bClear, 4, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
@@ -1418,9 +1403,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 			bAdd.setEnabled(i < 3);
 			add_datafile_menu_item.setEnabled(i < 3);
-
-			bClone.setEnabled(i == 0);
-			clone_menu_item.setEnabled(i == 0);
 
 			bMoveUp.setEnabled(i == 0);
 			moveup_menu_item.setEnabled(i == 0);
