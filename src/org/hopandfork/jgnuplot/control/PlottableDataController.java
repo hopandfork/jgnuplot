@@ -14,12 +14,6 @@ public class PlottableDataController extends Observable {
 
 	static private final Logger LOG = Logger.getLogger(PlottableDataController.class);
 
-	/**
-	 * @param expression
-	 * @param title
-	 * @param style
-	 * @return
-	 */
 	public Function addFunction(String expression, String title, PlottingStyle style) {
 		Plot plot = Project.currentProject().getPlot();
 
@@ -34,14 +28,6 @@ public class PlottableDataController extends Observable {
 		return function;
 	}
 
-	/**
-	 * @param filename
-	 * @param title
-	 * @param style
-	 * @param dataSelection
-	 * @param preProcessProgram
-	 * @return
-	 */
 	public DataFile addDataFile(String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
 		Plot plot = Project.currentProject().getPlot();
 
@@ -59,9 +45,6 @@ public class PlottableDataController extends Observable {
 		return dataFile;
 	}
 
-	/**
-	 * @return
-	 */
 	public Function updateFunction(Function function, String expression, String title, PlottingStyle style) {
 		
 		/* Updates function */
@@ -73,9 +56,6 @@ public class PlottableDataController extends Observable {
 		return function;
 	}
 
-	/**
-	 * @return
-	 */
 	public DataFile updateDataFile(DataFile dataFile, String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
 	
 	/* Updates dataFile */
@@ -89,26 +69,17 @@ public class PlottableDataController extends Observable {
 		return dataFile;
 	}
 
-	/**
-	 * @return
-	 */
 	public Collection<PlottableData> getPlottableData() {
 		Plot plot = Project.currentProject().getPlot();
 		return plot.getPlottableData();
 	}
 
-	/**
-	 * @param plottableData
-	 */
 	public void delete(PlottableData plottableData) {
 		Plot plot = Project.currentProject().getPlot();
 		plot.deletePlottableData(plottableData);
 		notifyObservers(plottableData);
 	}
 
-	/**
-	 *
-	 */
 	public void deleteAll() {
 		Plot plot = Project.currentProject().getPlot();
 		plot.deleteAllPlottableData();
@@ -121,4 +92,6 @@ public class PlottableDataController extends Observable {
 		super.notifyObservers(o);
 		this.clearChanged();
 	}
+
+
 }
