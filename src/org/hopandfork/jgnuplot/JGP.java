@@ -38,6 +38,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
@@ -69,36 +71,41 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
-import org.hopandfork.jgnuplot.gui.ColorEditor;
-import org.hopandfork.jgnuplot.gui.ColorRenderer;
-import org.hopandfork.jgnuplot.gui.DatasetTableModel;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.gui.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
-import org.hopandfork.jgnuplot.gui.StyleComboBox;
-import org.hopandfork.jgnuplot.gui.VariableTableModel;
 import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
-import org.hopandfork.jgnuplot.gui.dialog.AddDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
+import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
+import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
+import org.hopandfork.jgnuplot.gui.table.ColorEditor;
+import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
+import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
+import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
+import org.hopandfork.jgnuplot.gui.table.VariableTableModel;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.GnuplotVariable;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot;
-import org.hopandfork.jgnuplot.model.Plot2D;
-import org.hopandfork.jgnuplot.model.Plot3D;
 import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.Project;
 import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-public class JGP extends JFrame
-		implements ActionListener, ChangeListener {
+public class JGP extends JFrame implements ActionListener, ChangeListener {
+
+	private static Logger LOG = Logger.getLogger(JGP.class);
 
 	public static final boolean debug = true;
 
@@ -110,7 +117,8 @@ public class JGP extends JFrame
 
 	private JCheckBox cbUpdateCheck;
 
-	public DatasetTableModel dsTableModel;
+	public PlottableDataTableModel plottableDataTableModel;
+
 	public JTable dataSetTable;
 
 	public LabelTableModel labelTableModel;
@@ -146,16 +154,15 @@ public class JGP extends JFrame
 	public JButton bEdit;
 	public JButton bDelete;
 	public JButton bAdd;
-	public JButton bClone;
 	public JButton bClear;
 	public JButton bMoveUp;
 	public JButton bMoveDown;
 
-	public JMenuItem add_menu_item;
+	public JMenuItem add_datafile_menu_item;
+	public JMenuItem add_function_menu_item;
 	public JMenuItem delete_menu_item;
 	public JMenuItem clear_menu_item;
 	public JMenuItem edit_menu_item;
-	public JMenuItem clone_menu_item;
 	public JMenuItem moveup_menu_item;
 	public JMenuItem movedown_menu_item;
 
@@ -163,21 +170,22 @@ public class JGP extends JFrame
 
 	public String projectFileName;
 
-	public String psFileName;
-
 	public JMenu file_menu;
 
 	public static final int nRecentProjects = 8;
 
 	public static final int startRecentProjects = 7;
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private static final String SETTINGS_FILE = ".JGP";
 
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
+
+	/**
+	 * Controller for PlottableData.
+	 */
+	private PlottableDataController plottableDataController = new PlottableDataController();
 
 	public JGP() {
 		this.setTitle("JGNUplot");
@@ -229,12 +237,11 @@ public class JGP extends JFrame
 	 * *******************************************************************************
 	 * This method creates the default menu bar for the Voodoo dialog box. The
 	 * menu bar contains a single "Close" button.
-	 * 
+	 *
 	 * @return Returns a JMenuBar that contains a "Close" menu button.
-	 * 
 	 * @version 1.00
 	 * @author Scott Streit
-	 *         *******************************************************************************
+	 * *******************************************************************************
 	 */
 	protected JMenuBar create_menu_bar() {
 		JMenuBar menu_bar = new JMenuBar();
@@ -300,10 +307,15 @@ public class JGP extends JFrame
 
 		edit_menu.addSeparator();
 
-		add_menu_item = new JMenuItem("Add");
-		add_menu_item.addActionListener(this);
-		add_menu_item.setActionCommand("add");
-		edit_menu.add(add_menu_item);
+		add_datafile_menu_item = new JMenuItem("Add DataFile");
+		add_datafile_menu_item.addActionListener(this);
+		add_datafile_menu_item.setActionCommand("add_datafile");
+		edit_menu.add(add_datafile_menu_item);
+
+		add_function_menu_item = new JMenuItem("Add Function");
+		add_function_menu_item.addActionListener(this);
+		add_function_menu_item.setActionCommand("add_function");
+		edit_menu.add(add_function_menu_item);
 
 		delete_menu_item = new JMenuItem("Delete");
 		delete_menu_item.addActionListener(this);
@@ -321,11 +333,6 @@ public class JGP extends JFrame
 		edit_menu_item.addActionListener(this);
 		edit_menu_item.setActionCommand("edit");
 		edit_menu.add(edit_menu_item);
-
-		clone_menu_item = new JMenuItem("Clone dataset");
-		clone_menu_item.addActionListener(this);
-		clone_menu_item.setActionCommand("clone");
-		edit_menu.add(clone_menu_item);
 
 		moveup_menu_item = new JMenuItem("Move dataset(s) up");
 		moveup_menu_item.addActionListener(this);
@@ -363,13 +370,12 @@ public class JGP extends JFrame
 	/**
 	 * ****************************************************************************
 	 * Creates the "tabbed" panels portion of the window.
-	 * 
+	 *
 	 * @return The created "tabbed pane" is returned.
-	 * 
-	 * @see JTabbedPane
 	 * @version 1.00
 	 * @author Xiangyang (Helena) Xian
-	 *         ****************************************************************************
+	 * ****************************************************************************
+	 * @see JTabbedPane
 	 */
 	private JTabbedPane create_tabbed_pane() {
 		// Create a new tabbed pane and set the tabs to be on top.
@@ -457,13 +463,8 @@ public class JGP extends JFrame
 
 		bAdd = new JButton("add");
 		bAdd.setPreferredSize(new Dimension(80, 20));
-		bAdd.setActionCommand("add");
+		bAdd.setActionCommand("add_datafile");
 		bAdd.addActionListener(this);
-
-		bClone = new JButton("clone");
-		bClone.setPreferredSize(new Dimension(80, 20));
-		bClone.setActionCommand("clone");
-		bClone.addActionListener(this);
 
 		bClear = new JButton("clear");
 		bClear.setPreferredSize(new Dimension(80, 20));
@@ -548,7 +549,6 @@ public class JGP extends JFrame
 		row += 1;
 		jp.add(bEdit, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bAdd, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		jp.add(bClone, 2, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bDelete, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		jp.add(bClear, 4, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
@@ -659,8 +659,8 @@ public class JGP extends JFrame
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		dsTableModel = new DatasetTableModel();
-		dataSetTable = new JTable(dsTableModel);
+		plottableDataTableModel = new PlottableDataTableModel(plottableDataController);
+		dataSetTable = new JTable(plottableDataTableModel);
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -668,8 +668,9 @@ public class JGP extends JFrame
 		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
-		styleColumn.setCellEditor(new DefaultCellEditor(new StyleComboBox()));
+		// TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
+		// styleColumn.setCellEditor(new DefaultCellEditor(new
+		// StyleComboBox()));
 
 		// Set up renderer and editor for the Favorite Color column.
 		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
@@ -757,6 +758,10 @@ public class JGP extends JFrame
 	}
 
 	public static void main(String[] args) throws MalformedURLException {
+		/* Log4j initialization */
+		PropertyConfigurator.configure(
+				System.getProperty("user.dir") + System.getProperty("file.separator") + "config/log4j2.properties");
+
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -780,22 +785,25 @@ public class JGP extends JFrame
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("add")) {
+		if (e.getActionCommand().equals("add_datafile")) {
 			int i = tp.getSelectedIndex();
 
 			switch (i) {
-			case 0:
-				acAdd();
+				case 0:
+					acAdd();
+					break;
+				case 1: {
+					labelTableModel.addRow(new Label());
+				}
 				break;
-			case 1: {
-				labelTableModel.addRow(new Label());
-			}
-				break;
-			case 2: {
-				variableTableModel.addRow(new GnuplotVariable());
-			}
+				case 2: {
+					variableTableModel.addRow(new GnuplotVariable());
+				}
 				break;
 			}
+		} else if (e.getActionCommand().equals("add_function")) {
+			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
+			addFunctionDialog.setVisible(true);
 		} else if (e.getActionCommand().equals("Exit")) {
 			exit();
 		} else if (e.getActionCommand().equals("genplotcmds")) {
@@ -810,9 +818,7 @@ public class JGP extends JFrame
 			acMoveDown();
 		} else if (e.getActionCommand().equals("showconsole")) {
 			acShowConsole();
-		}
-
-		else if (e.getActionCommand().equals("plot")) {
+		} else if (e.getActionCommand().equals("plot")) {
 			try {
 				acPlot();
 			} catch (IOException e1) {
@@ -826,10 +832,8 @@ public class JGP extends JFrame
 			acPrint();
 		} else if (e.getActionCommand().equals("new")) {
 			acNew();
-		} else if (e.getActionCommand().equals("about"))
+		} else if (e.getActionCommand().equals("about")) {
 			AboutDialog.showAboutDialog();
-		else if (e.getActionCommand().equals("clone")) {
-			acClone();
 		} else if (e.getActionCommand().equals("clear")) {
 			acClear();
 		} else if (e.getActionCommand().equals("Save project to..."))
@@ -865,11 +869,8 @@ public class JGP extends JFrame
 	}
 
 	public void acAdd() {
-		PlottableData p = AddDialog.showAddDialog("Add dataset...");
-		if (null != p)
-			dsTableModel.addRow(p);
-		System.out.println("added..");
-
+		DataFileDialog addDataFileDialog = new DataFileDialog(plottableDataController);
+		addDataFileDialog.setVisible(true);
 	}
 
 	public void acShowConsole() {
@@ -911,7 +912,7 @@ public class JGP extends JFrame
 
 	public void acSaveStandardProject() {
 
-		new ProjectManager(this).writeProjectFile(STANDARD_PROJECT_FILE);
+		new ProjectManager(this, plottableDataController).writeProjectFile(STANDARD_PROJECT_FILE);
 
 	}
 
@@ -933,7 +934,7 @@ public class JGP extends JFrame
 		/* Checks if a project already exists before load it */
 		if (Files.exists(Paths.get(STANDARD_PROJECT_FILE))) {
 			try {
-				new ProjectManager(this).loadProjectFile(STANDARD_PROJECT_FILE);
+				new ProjectManager(this, plottableDataController).loadProjectFile(STANDARD_PROJECT_FILE);
 			} catch (RuntimeException e) {
 				showConsole("No standard project loaded:" + e.getMessage(), false);
 			} catch (ClassNotFoundException e) {
@@ -954,40 +955,32 @@ public class JGP extends JFrame
 		}
 	}
 
+	/**
+	 * This method allows to edit the PlottableData object in the main table.
+	 */
 	public void acEdit() {
-		int i = tp.getSelectedIndex();
+		PlottableData plottableData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRow());
+		if (plottableData == null) {
+			LOG.info("Nothing to edit");
+			return;
+		}
 
-		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "You need to select one row to edit.", "Editing datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-
-				return;
-			} else if (r.length > 1) {
-				JOptionPane.showMessageDialog(this, "You need to select only one row to edit.", "Editing datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+		if (plottableData instanceof Function) {
+			try {
+				FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
+						plottableDataController);
+				functionDialog.setVisible(true);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
 			}
-			PlottableData p = AddDialog.showAddDialog(dsTableModel.data.get(r[0]), "Edit dataset...");
-			if (null != p)
-				dsTableModel.data.set(r[0], p);
-			dsTableModel.fireTableDataChanged();
-			System.out.println("added..");
-		}
-			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Dialog editing of labels not supported yet! Edit them in the table.",
-					"Editing labels", JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this,
-					"Dialog editing of variables not supported yet! Edit them in the table.", "Editing variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
+		} else {
+			try {
+				DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
+						plottableDataController);
+				dataFileDialog.setVisible(true);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
 		}
 	}
 
@@ -1002,7 +995,7 @@ public class JGP extends JFrame
 		cbLogScaleX.setSelected(false);
 		cbLogScaleX.setSelected(false);
 
-		clearDataSetTable();
+		clearPlottableData();
 		clearLabelTable();
 		clearVariableTable();
 
@@ -1017,51 +1010,22 @@ public class JGP extends JFrame
 	public void acMoveUp() {
 		int i = tp.getSelectedIndex();
 		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-
-			// check if userselected any datasets to move
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected.", "Moving datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 0: {
+				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRows());
+				for (PlottableData plottableData : selectedData)
+					plottableDataController.moveUp(plottableData);
 			}
-
-			// check if user tried to move the first dataset further up
-			if (r[0] == 0) {
-				JOptionPane.showMessageDialog(this, "Cannot move datasets further up.", "Moving datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-
-			// move all selected datasets one position further up
-			for (int j = 0; j < r.length; j++) {
-				// get selected and prevoius datasets
-				PlottableData pCur = dsTableModel.data.get(r[j]);
-				PlottableData pPre = dsTableModel.data.get(r[j] - 1);
-
-				// and swap them
-				dsTableModel.data.set(r[j], pPre);
-				dsTableModel.data.set(r[j] - 1, pCur);
-			}
-			// notify renderer that there were changes
-			dsTableModel.fireTableDataChanged();
-			// re-select rows
-			for (int j = 0; j < r.length; j++) {
-				dataSetTable.addRowSelectionInterval(r[j] - 1, r[j] - 1);
-			}
-		}
 			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
-					JOptionPane.INFORMATION_MESSAGE);
+			case 1: {
+				JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
+						JOptionPane.INFORMATION_MESSAGE);
 
-		}
+			}
 			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
+			case 2: {
+				JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 			break;
 
 		}
@@ -1074,98 +1038,24 @@ public class JGP extends JFrame
 	public void acMoveDown() {
 		int i = tp.getSelectedIndex();
 		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-
-			// check if userselected any datasets to move
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected.", "Moving datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 0: {
+				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRows());
+				for (PlottableData plottableData : selectedData)
+					plottableDataController.moveDown(plottableData);
 			}
-
-			// check if user tried to move the last dataset further down
-			if (r[r.length - 1] == (dsTableModel.data.size() - 1)) {
-				JOptionPane.showMessageDialog(this, "Cannot move datasets further down.", "Moving datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-
-			// move all selected datasets one position further up
-			for (int j = 0; j < r.length; j++) {
-				// get selected and prevoius datasets
-				PlottableData pCur = dsTableModel.data.get(r[j]);
-				PlottableData pNext = dsTableModel.data.get(r[j] + 1);
-
-				// and swap them
-				dsTableModel.data.set(r[j], pNext);
-				dsTableModel.data.set(r[j] + 1, pCur);
-
-			}
-			// notify renderer that there were changes
-			dsTableModel.fireTableDataChanged();
-			for (int j = 0; j < r.length; j++) {
-				dataSetTable.addRowSelectionInterval(r[j] + 1, r[j] + 1);
-			}
-		}
 			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
-					JOptionPane.INFORMATION_MESSAGE);
-
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
-
-		}
-	}
-
-	/**
-	 * Clones currently selected datasets.
-	 */
-	public void acClone() {
-		int i = tp.getSelectedIndex();
-		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-
-			// check if user selected any datasets to move
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected!", "Cloning datasets",
+			case 1: {
+				JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
 						JOptionPane.INFORMATION_MESSAGE);
 
-				return;
 			}
-
-			// check if user selected more than one dataset
-			if (r.length > 1) {
-				JOptionPane.showMessageDialog(this, "Can only clone one dataset!", "Cloning datasets",
+			break;
+			case 2: {
+				JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
 						JOptionPane.INFORMATION_MESSAGE);
-				return;
 			}
+			break;
 
-			// get selected and prevoius datasets
-			PlottableData pCur = dsTableModel.data.get(r[0]);
-			dsTableModel.data.add(r[0] + 1, pCur.getClone());
-
-			// notify renderer that there were changes
-			dsTableModel.fireTableDataChanged();
-		}
-			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Cloning of labels not supported yet!", "Cloning labels",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this, "Cloning of variables not supported yet!", "Cloning variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-			break;
 		}
 	}
 
@@ -1173,44 +1063,38 @@ public class JGP extends JFrame
 		int i = tp.getSelectedIndex();
 
 		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected.", "Deleting datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-			for (int j = 0; j < r.length; j++) {
-				this.dsTableModel.data.remove(r[j]);
-				dsTableModel.fireTableDataChanged();
-			}
-		}
+			case 0:
+				int[] selectedIndices = dataSetTable.getSelectedRows();
+				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(selectedIndices);
+				for (PlottableData plottableData : selectedData) {
+					plottableDataController.delete(plottableData);
+				}
 			break;
-		case 1: {
-			int[] r = labelTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No label selected.", "Deleting labels",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 1: {
+				int[] r = labelTable.getSelectedRows();
+				if (r.length == 0) {
+					JOptionPane.showMessageDialog(this, "No label selected.", "Deleting labels",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				for (int j = 0; j < r.length; j++) {
+					this.labelTableModel.data.remove(r[j]);
+					labelTableModel.fireTableDataChanged();
+				}
 			}
-			for (int j = 0; j < r.length; j++) {
-				this.labelTableModel.data.remove(r[j]);
-				labelTableModel.fireTableDataChanged();
-			}
-		}
 			break;
-		case 2: {
-			int[] r = variableTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No variable selected.", "Deleting variables",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 2: {
+				int[] r = variableTable.getSelectedRows();
+				if (r.length == 0) {
+					JOptionPane.showMessageDialog(this, "No variable selected.", "Deleting variables",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				for (int j = 0; j < r.length; j++) {
+					this.variableTableModel.variables.remove(r[j]);
+					variableTableModel.fireTableDataChanged();
+				}
 			}
-			for (int j = 0; j < r.length; j++) {
-				this.variableTableModel.variables.remove(r[j]);
-				variableTableModel.fireTableDataChanged();
-			}
-		}
 			break;
 		}
 	}
@@ -1219,21 +1103,21 @@ public class JGP extends JFrame
 		int i = tp.getSelectedIndex();
 
 		switch (i) {
-		case 0: {
-			clearDataSetTable();
-		}
+			case 0: {
+				clearPlottableData();
+			}
 			break;
-		case 1: {
-			clearLabelTable();
-		}
+			case 1: {
+				clearLabelTable();
+			}
 			break;
-		case 2: {
-			clearVariableTable();
-		}
+			case 2: {
+				clearVariableTable();
+			}
 			break;
-		case 3: {
-			clearPrePlotString();
-		}
+			case 3: {
+				clearPrePlotString();
+			}
 			break;
 		}
 	}
@@ -1242,13 +1126,8 @@ public class JGP extends JFrame
 		prePlotString.setText("");
 	}
 
-	public void clearDataSetTable() {
-		int count = dataSetTable.getRowCount();
-		for (int j = 0; j < count; j++) {
-			this.dsTableModel.data.remove(0);
-		}
-		dsTableModel.fireTableDataChanged();
-
+	public void clearPlottableData() {
+		plottableDataController.deleteAll();
 	}
 
 	public void clearLabelTable() {
@@ -1277,16 +1156,14 @@ public class JGP extends JFrame
 	}
 
 	public Plot getGNUplot() {
-		Plot gp;
+		Plot gp = Project.currentProject().getPlot();
 
 		if (rb2D.isSelected())
-			gp = new Plot2D();
+			gp.setMode(Plot.Mode.PLOT_2D);
 		else
-			gp = new Plot3D();
+			gp.setMode(Plot.Mode.PLOT_3D);
 
-		for (int i = 0; i < dsTableModel.data.size(); i++) {
-			gp.addPlottableData(dsTableModel.data.get(i));
-		}
+		// TODO move this code when controllers are available!
 		for (int i = 0; i < labelTableModel.data.size(); i++) {
 			gp.addLabel(labelTableModel.data.get(i));
 		}
@@ -1352,9 +1229,8 @@ public class JGP extends JFrame
 	/**
 	 * Shows a console dialog. Calls showConsole(String text, boolean append,
 	 * boolean makeVisible) with makeVisible == true.
-	 * 
-	 * @param text
-	 *            Text to display in the console.
+	 *
+	 * @param text Text to display in the console.
 	 */
 	void showConsole(String text, boolean append) {
 		showConsole(text, append, true);
@@ -1362,12 +1238,10 @@ public class JGP extends JFrame
 
 	/**
 	 * Shows a console dialog.
-	 * 
-	 * @param text
-	 *            Text to display in the console.
-	 * @param makeVisible
-	 *            Tells whether the console should be made visibile if not
-	 *            visible already.
+	 *
+	 * @param text        Text to display in the console.
+	 * @param makeVisible Tells whether the console should be made visibile if not
+	 *                    visible already.
 	 */
 	public void showConsole(String text, boolean append, boolean makeVisible) {
 
@@ -1403,10 +1277,7 @@ public class JGP extends JFrame
 			delete_menu_item.setEnabled(i < 3);
 
 			bAdd.setEnabled(i < 3);
-			add_menu_item.setEnabled(i < 3);
-
-			bClone.setEnabled(i == 0);
-			clone_menu_item.setEnabled(i == 0);
+			add_datafile_menu_item.setEnabled(i < 3);
 
 			bMoveUp.setEnabled(i == 0);
 			moveup_menu_item.setEnabled(i == 0);
@@ -1419,7 +1290,7 @@ public class JGP extends JFrame
 
 	public void startCheckUpdates() {
 		System.out.println("Starting update checking ...");
-		updateChecker = new UpdateChecker(this);
+		updateChecker = new UpdateChecker(this, plottableDataController);
 		Thread t = new Thread(updateChecker);
 		t.start();
 
@@ -1428,30 +1299,9 @@ public class JGP extends JFrame
 	public void stopCheckUpdates() {
 		System.out.println("Stopping update checking ...");
 		if (updateChecker != null)
-			updateChecker.checkForUpdate = false;
+			updateChecker.setCheckForUpdate(false);
 	}
 
-	/**
-	 * ****************************************************************************
-	 * Loads the component settings, previously stored in the specified text
-	 * file, into the Controller Setup Window. The file is specified via a input
-	 * parameter. Calls the read_file() method.
-	 *
-	 * @param file
-	 *            The input file.
-	 * @param cameraInfo.setupDialog
-	 *            The Controller Setup window.
-	 *
-	 * @throws IOException
-	 * @see read_file()
-	 * @see SetupDialog
-	 * @version 1.00
-	 * @author Scott Streit
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
-	 *             ****************************************************************************
-	 */
 	public void loadProject()
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		JFileChooser file_chooser;
@@ -1489,7 +1339,7 @@ public class JGP extends JFrame
 
 	/**
 	 * Updates the dialog title.
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void setFileTitle(String fileName) {
@@ -1497,12 +1347,12 @@ public class JGP extends JFrame
 	}
 
 	public void loadProject(String fileName) {
-		clearDataSetTable();
+		clearPlottableData();
 		clearLabelTable();
 		clearVariableTable();
 
 		try {
-			new ProjectManager(this).loadProjectFile(fileName);
+			new ProjectManager(this, plottableDataController).loadProjectFile(fileName);
 		} catch (DOMException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		} catch (ClassNotFoundException e) {
@@ -1537,9 +1387,7 @@ public class JGP extends JFrame
 	 * ****************************************************************************
 	 * Saves the current cproject asking the user for a filname.
 	 *
-	 *
-	 * @throws IOException
-	 *             ****************************************************************************
+	 * @throws IOException ****************************************************************************
 	 */
 	public void saveProjectTo() throws IOException {
 		JFileChooser file_chooser;
@@ -1572,7 +1420,7 @@ public class JGP extends JFrame
 
 			// dumpSettings(outFile);
 
-			new ProjectManager(this).writeProjectFile(file.getPath());
+			new ProjectManager(this, plottableDataController).writeProjectFile(file.getPath());
 			addRecentProject(file.getPath());
 
 			return;
@@ -1598,7 +1446,7 @@ public class JGP extends JFrame
 			return;
 		}
 
-		new ProjectManager(this).writeProjectFile(projectFileName);
+		new ProjectManager(this, plottableDataController).writeProjectFile(projectFileName);
 		showStatus("Project saved to: " + projectFileName);
 		addRecentProject(projectFileName);
 
@@ -1662,7 +1510,7 @@ public class JGP extends JFrame
 
 	/**
 	 * Add a project (its filename) to the recent project list in the file menu.
-	 * 
+	 *
 	 * @param textContent
 	 */
 	public void addRecentProject(String textContent) {

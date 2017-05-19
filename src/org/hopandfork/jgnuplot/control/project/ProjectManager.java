@@ -34,19 +34,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
-import org.hopandfork.jgnuplot.model.DataFile;
-import org.hopandfork.jgnuplot.model.Label;
-import org.hopandfork.jgnuplot.model.Plot2D;
-import org.hopandfork.jgnuplot.model.Plot3D;
-import org.hopandfork.jgnuplot.model.PlottableData;
-import org.hopandfork.jgnuplot.model.RelativePosition;
-import org.hopandfork.jgnuplot.model.Variable;
+import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.model.*;
 import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 import org.hopandfork.jgnuplot.utility.XMLManager;
@@ -141,13 +137,16 @@ public class ProjectManager extends XMLManager {
 	private final String VALUE = "value";
 	private final String ACTIVE = "active";
 
+	private PlottableDataController plottableDataController;
+
 	/**
 	 * ****************************************************************************
 	 * Default Constructor.
 	 * ****************************************************************************
 	 */
-	public ProjectManager(JGP mainWindow) {
+	public ProjectManager(JGP mainWindow, PlottableDataController plottableDataController) {
 		this.mainWindow = mainWindow;
+		this.plottableDataController = plottableDataController;
 		file = new File(".");
 	}
 
@@ -246,7 +245,7 @@ public class ProjectManager extends XMLManager {
 		if (document.getElementsByTagName(PLOT_TYPE).item(0) != null) {
 			String splotType;
 			splotType = document.getElementsByTagName(PLOT_TYPE).item(0).getTextContent();
-			if (splotType.equals(Plot2D.class.getName()))
+			if (splotType.equals(Plot.Mode.PLOT_2D.name()))
 				mainWindow.rb2D.setSelected(true);
 			else
 				mainWindow.rb3D.setSelected(true);
@@ -313,8 +312,8 @@ public class ProjectManager extends XMLManager {
 
 				if (n.getElementsByTagName(FILENAME).getLength() != 0)
 					ds.setFileName(n.getElementsByTagName(FILENAME).item(0).getTextContent());
-				if (n.getElementsByTagName(DATASTRING).getLength() != 0)
-					ds.setDataString(n.getElementsByTagName(DATASTRING).item(0).getTextContent());
+				//if (n.getElementsByTagName(DATASTRING).getLength() != 0)
+				//	ds.setDataString(n.getElementsByTagName(DATASTRING).item(0).getTextContent());
 				if (n.getElementsByTagName(DATASET_TITLE).getLength() != 0)
 					ds.setTitle(n.getElementsByTagName(DATASET_TITLE).item(0).getTextContent());
 				if (n.getElementsByTagName(COLOR).getLength() != 0) {
@@ -334,10 +333,10 @@ public class ProjectManager extends XMLManager {
 				if (n.getElementsByTagName(PRE_PROCESS_PROGRAM).getLength() != 0)
 					ds.setPreProcessProgram(n.getElementsByTagName(PRE_PROCESS_PROGRAM).item(0).getTextContent());
 
-				mainWindow.dsTableModel.data.add(ds);
+				//mainWindow.plottableDataTableModel.data.add(ds); TODO
 			}
 
-			mainWindow.dsTableModel.fireTableDataChanged();
+			mainWindow.plottableDataTableModel.fireTableDataChanged();
 		}
 		// load labels
 		NodeList labels = document.getElementsByTagName(LABEL);
@@ -407,9 +406,9 @@ public class ProjectManager extends XMLManager {
 
 			String plotType;
 			if (mainWindow.rb2D.isSelected())
-				plotType = Plot2D.class.getName();
+				plotType = Plot.Mode.PLOT_2D.name();
 			else
-				plotType = Plot3D.class.getName();
+				plotType = Plot.Mode.PLOT_3D.name();
 			addTextNode(document, root, PLOT_TYPE, plotType.toString());
 
 			addTextNode(document, root, MAX_X, mainWindow.tfMaxX.getText());
@@ -432,8 +431,9 @@ public class ProjectManager extends XMLManager {
 			// add datasets
 			Element datasets = (Element) document.createElement(DATASET_ITEMS);
 
-			for (int i = 0; i < mainWindow.dsTableModel.data.size(); i++) {
-				PlottableData ds = mainWindow.dsTableModel.data.get(i);
+			List<PlottableData> allPlottableData = plottableDataController.getPlottableData();
+			for (int i = 0; i < allPlottableData.size(); i++) {
+				PlottableData ds = allPlottableData.get(i);
 				Element dataset = (Element) document.createElement(DATASET);
 				dataset.setAttribute(ID, i + "");
 
@@ -445,7 +445,7 @@ public class ProjectManager extends XMLManager {
 					preProcessProgram = ((DataFile) ds).getPreProcessProgram();
 				}
 				addTextNode(document, dataset, FILENAME, fname + "");
-				addTextNode(document, dataset, DATASTRING, ds.getDataString() + "");
+				//addTextNode(document, dataset, DATASTRING, ds.getDataString() + "");
 				addTextNode(document, dataset, DATASET_TITLE, ds.getTitle() + "");
 				Color c = ds.getColor();
 				String sc = "auto";

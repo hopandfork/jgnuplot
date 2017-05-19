@@ -37,22 +37,18 @@ public class JGPPanel extends JPanel{
 
 	public JGPPanel() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public JGPPanel(boolean isDoubleBuffered) {
 		super(isDoubleBuffered);
-		// TODO Auto-generated constructor stub
 	}
 
 	public JGPPanel(LayoutManager layout, boolean isDoubleBuffered) {
 		super(layout, isDoubleBuffered);
-		// TODO Auto-generated constructor stub
 	}
 
 	public JGPPanel(LayoutManager layout) {
 		super(layout);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int fill) {
@@ -79,5 +75,4 @@ public class JGPPanel extends JPanel{
 
 		add(comp, gbc);
 	}
-
 }

@@ -31,8 +31,8 @@ import org.hopandfork.jgnuplot.utility.TempFile;
 
 public class DataFile extends PlottableData {
 
-	/** Expression to be passed to gnuplot for selecting input data (e.g. 'using 1:2') */
-	private String dataSelectionString;
+	/** Columns selection. */
+	private DataSelection dataSelection;
 	
 	/** DataFile filename. */
 	private String fileName;
@@ -46,77 +46,14 @@ public class DataFile extends PlottableData {
 	/** Optional external command for preprocessing. */
 	private String preProcessProgram;
 
-	public long getLastChanged() {
-		return lastChanged;
-	}
-
-	public void setLastChanged(long lastChanged) {
-		this.lastChanged = lastChanged;
-	}
-
-	@Deprecated
-	public Object[] getData() {
-		Object data[] = new Object[8];
-		data[0] = this.fileName;
-		data[1] = this.dataSelectionString;
-		data[2] = this.title;
-		data[3] = this.color;
-		data[4] = this.style;
-		if (this.addStyleOpt == null)
-			addStyleOpt = "";
-		data[5] = this.addStyleOpt;
-		data[6] = this.enabled;
-		data[7] = this.preProcessProgram;
-		return data;
-	}
-
-	@Deprecated
-	public void setData(int i, Object value) {
-		if (i == 0)
-			fileName = (String) value;
-		else if (i == 1)
-			dataSelectionString = (String) value;
-		else if (i == 2)
-			title = (String) value;
-		else if (i == 3)
-			color = new GnuplotColor((Color) value);
-		else if (i == 4)
-			style = (PlottingStyle) value;
-		else if (i == 5)
-			addStyleOpt = (String) value;
-		else if (i == 6)
-			enabled = ((Boolean) value).booleanValue();
-		else if (i == 7)
-			preProcessProgram = (String) value;
-	}
-
-	public DataFile(String fileName, String dataString) {
-		super();
-		this.dataSelectionString = dataString;
-		this.fileName = fileName;
-	}
-
-	public DataFile(String fileName, String dataString, String title) {
-		super();
-		this.dataSelectionString = dataString;
-		this.fileName = fileName;
-		this.title = title;
-	}
-
-	public DataFile(String fileName, String dataString, String title, PlottingStyle style) {
-		super();
-		this.dataSelectionString = dataString;
-		this.fileName = fileName;
-		this.title = title;
-		this.style = style;
-	}
-
-	public DataFile() {
-	}
-
 	public String toPlotString() {
 
 		String s = "";
+
+		if (dataSelection == null || fileName == null) {
+			System.err.println("Nothing to plot!");
+			return s;
+		}
 
 		if (preProcessProgram != null && !preProcessProgram.trim().equals("")
 				&& !preProcessProgram.trim().equals("null")) {
@@ -129,7 +66,7 @@ public class DataFile extends PlottableData {
 			s += "'" + fileName + "'";
 		}
 
-		s += " using " + dataSelectionString + " ";
+		s += " using " + dataSelection.toPlotString() + " ";
 
 		if (style != null || addStyleOpt != null || color != null) {
 			s += " with ";
@@ -168,19 +105,6 @@ public class DataFile extends PlottableData {
 
 	}
 
-	@Deprecated
-	public String getDataString() {
-		return dataSelectionString;
-	}
-
-	public String getDataSelectionString() {
-		return dataSelectionString;
-	}
-
-	public void setDataSelectionString(String dataSelectionString) {
-		this.dataSelectionString = dataSelectionString;
-	}
-
 	public String getFileName() {
 		return fileName;
 	}
@@ -189,9 +113,12 @@ public class DataFile extends PlottableData {
 		this.fileName = s;
 	};
 
-	@Deprecated
-	public void setDataString(String function) {
-		this.dataSelectionString = function;
+	public long getLastChanged() {
+		return lastChanged;
+	}
+
+	public void setLastChanged(long lastChanged) {
+		this.lastChanged = lastChanged;
 	}
 
 	public PreProcessPlugin getPreProcessPlugin() {
@@ -213,18 +140,12 @@ public class DataFile extends PlottableData {
 			this.preProcessProgram = preProcessProgram;
 	}
 
-	@Override
-	public PlottableData getClone() {
-		DataFile ds = new DataFile();
-		ds.fileName = fileName;
-		ds.dataSelectionString = dataSelectionString;
-		ds.title = title;
-		ds.color = color;
-		ds.style = style;
-		ds.addStyleOpt = addStyleOpt;
-		ds.enabled = enabled;
-		ds.preProcessProgram = preProcessProgram;
-		return ds;
+
+	public DataSelection getDataSelection() {
+		return dataSelection;
 	}
 
+	public void setDataSelection(DataSelection dataSelection) {
+		this.dataSelection = dataSelection;
+	}
 }
