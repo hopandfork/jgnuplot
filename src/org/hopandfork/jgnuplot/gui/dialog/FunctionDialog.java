@@ -59,6 +59,7 @@ public class FunctionDialog extends PlottableDataDialog implements ActionListene
 	 */
 	public FunctionDialog(Function function, PlottableDataController controller) throws IOException {
 		this.plottableObject = function;
+		this.controller = controller;
 		
 		add(createMainPanel());
 		
@@ -157,7 +158,8 @@ public class FunctionDialog extends PlottableDataDialog implements ActionListene
 	 */
 	private void acApply() {
 		if (plottableObject != null) {
-			/* TODO Edits function */
+			/* Updates function */
+			controller.updateFunction((Function)plottableObject, tfFunction.getText(), tfTitle.getText(), (PlottingStyle) cbStyle.getSelectedItem());
 		} else {
 			/* Adds new function */
 			controller.addFunction(tfFunction.getText(), tfTitle.getText(), (PlottingStyle) cbStyle.getSelectedItem());

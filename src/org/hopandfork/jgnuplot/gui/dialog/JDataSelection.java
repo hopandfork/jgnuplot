@@ -301,31 +301,44 @@ public class JDataSelection extends JGPPanel {
 			try {
 				dataSelection = new DataSelection3D(x, y, z);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} else {
 			if (labels != 0) {
 				try {
 					dataSelection = new DataSelection2D(x, y, labels);
 				} catch (IOException e) {
-					JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
 				try {
 					dataSelection = new DataSelection2D(x, y);
 				} catch (IOException e) {
-					JOptionPane.showMessageDialog(this, e.getMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
 		return dataSelection;
 	}
 
-	public void setDataSelection(DataSelection dataSelection) {
-		// TODO is possible to set
+	/**
+	 * This method allows to update the data selected.
+	 * 
+	 * @param dataSelection
+	 */
+	public void updateDataSelection(DataSelection dataSelection) {
+		tfX.setText("" + dataSelection.getX());
+		tfY.setText("" + dataSelection.getY());
+		
+		if (dataSelection instanceof DataSelection2D) {
+			tfLabels.setText("" + ((DataSelection2D) dataSelection).getLabels());
+			bZ.setVisible(false);
+			tfZ.setVisible(false);
+		} else {
+			tfZ.setText(""+((DataSelection3D)dataSelection).getZ());
+			bLabels.setVisible(false);
+			tfLabels.setVisible(false);
+		}
 	}
 
 	private void initTable(Object data[][], String columns[]) {
@@ -359,12 +372,12 @@ public class JDataSelection extends JGPPanel {
 		packColumns(jTable);
 	}
 
-	public void update(String dataFile) {
-		this.fileName = dataFile;
-		LOG.debug("Updating from file: " + dataFile);
+	public void update(String fileName) {
+		this.fileName = fileName;
+		LOG.debug("Updating from file: " + fileName);
 
 		try {
-			List<String[]> parsedLines = new FileColumnsParser(dataFile).parse();
+			List<String[]> parsedLines = new FileColumnsParser(fileName).parse();
 			LOG.debug(String.format("Found %d lines in the file.", parsedLines.size()));
 
 			/*
@@ -403,6 +416,6 @@ public class JDataSelection extends JGPPanel {
 		} catch (IOException e) {
 			LOG.warn("Could not parse file: " + fileName);
 		}
-	}
 
+	}
 }

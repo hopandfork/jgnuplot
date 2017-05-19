@@ -64,11 +64,13 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 
 	private StyleComboBox cbStyle;
 
+	private JLabel lPrePreocessP;
+	
 	private JTextField tfPreProcess;
+	
+	private JButton bProgChose;
 
 	private JButton bFileChose;
-
-	private JButton bProgChose;
 
 	private JDataSelection dataSelectionTable;
 
@@ -102,11 +104,12 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 	 */
 	public DataFileDialog(DataFile dataFile, PlottableDataController controller) throws IOException {
 		this.plottableObject = dataFile;
+		this.controller = controller;
 
 		add(createMainPanel());
 
 		/* Checks if a PlottableData is valid. */
-		if (dataFile != null) {
+		if (plottableObject != null) {
 			initFields();
 		} else {
 			throw new NullPointerException("dataFile has to be not null");
@@ -126,6 +129,9 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 		tfFileName.setText(dataFile.getFileName());
 		tfPreProcess.setText(dataFile.getPreProcessProgram());
 
+		dataSelectionTable.update(dataFile.getFileName());
+		dataSelectionTable.updateDataSelection(dataFile.getDataSelection());
+		
 		tfTitle.setText(dataFile.getTitle());
 
 		cbStyle.setSelectedItem(dataFile.getStyle());
@@ -184,10 +190,6 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 		jp.add(new JLabel("File"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(tfFileName, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(bFileChose, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		row += 1;
-		jp.add(new JLabel("Preprocess external program"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(tfPreProcess, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(bProgChose, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
 
 		row += 1;
 		jp.add(new JLabel("Columns selection"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
@@ -201,6 +203,15 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 		jp.add(new JLabel("Style"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(cbStyle, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
 
+		row += 1;
+		lPrePreocessP = new JLabel("Preprocess external program");
+		jp.add(lPrePreocessP, 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		jp.add(tfPreProcess, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
+		jp.add(bProgChose, 4, row, 1, 1, GridBagConstraints.HORIZONTAL);
+		lPrePreocessP.setVisible(false);
+		tfPreProcess.setVisible(false);
+		bProgChose.setVisible(false);
+		
 		row += 1;
 		jp.add(bAdvanced, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(bOk, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
@@ -223,8 +234,10 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 			acApply();
 			this.setVisible(false);
 		} else if (e.getActionCommand().equals("advanced")) {
-			// TODO change AddDialog content to advanced option
-			// PreProcessprogram
+			lPrePreocessP.setVisible(true);
+			tfPreProcess.setVisible(true);
+			bProgChose.setVisible(true);
+			this.pack();
 
 		} else if (e.getActionCommand().equals("cancel"))
 			this.setVisible(false);
@@ -238,6 +251,9 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 
 		if (plottableObject != null) {
 			/* TODO Edits function */
+			controller.updateDataFile((DataFile) plottableObject, tfFileName.getText(), tfTitle.getText(),
+					(PlottingStyle) cbStyle.getSelectedItem(), dataSelectionTable.getDataSelection(),
+					tfPreProcess.getText());
 		} else {
 			/* Adds new function */
 			if (dataSelection != null) {
