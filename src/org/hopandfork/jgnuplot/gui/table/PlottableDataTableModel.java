@@ -84,9 +84,9 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 
 
 	/**
-	 * PlottableData shown in the table.
+	 * List of PlottableData.
 	 */
-	private List<PlottableData> data = new ArrayList<PlottableData>();
+	private List<PlottableData> data = null;
 
 
 	/**
@@ -104,8 +104,10 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 	 * @return Count of existing rows.
 	 */
 	public int getRowCount() {
-		return data.size();
+		if (data == null)
+			return 0;
 
+		return data.size();
 	}
 
 	/**
@@ -126,6 +128,9 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 	 * @return Content of the cell.
 	 */
 	public Object getValueAt(int row, int col) {
+		if (data == null)
+			return null;
+
 		PlottableData plottableData = data.get(row);
 		String columnName = columnNames[col];
 
@@ -133,9 +138,9 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 			String title = plottableData.getTitle();
 			if (title == null || title.length() < 1) {
 				if (plottableData instanceof Function)
-					title = ((Function)plottableData).getFunctionString();
+					title = ((Function) plottableData).getFunctionString();
 				else if (plottableData instanceof DataFile)
-					title = ((DataFile)plottableData).getFileName();
+					title = ((DataFile) plottableData).getFileName();
 			}
 			return title;
 		} else if (columnName.equals(COL_COLOR)) {
@@ -176,33 +181,24 @@ public class PlottableDataTableModel extends AbstractTableModel implements Obser
 	 * @param o          Optional object associated to the notification.
 	 */
 	public void update(Observable observable, Object o) {
-		if (!(o instanceof PlottableData)) {
-			LOG.error("Received an update with an object which is not a PlottableData!");
-			return;
-		}
-
-		Collection<PlottableData> allPlottableData = controller.getPlottableData();
-		PlottableData changedPlottableData = (PlottableData) o;
-
-		if (allPlottableData.contains(changedPlottableData)) {
-			if (!data.contains(changedPlottableData)) {
-				/* Added */
-				LOG.info("A PlottableData has been added");
-				data.add(changedPlottableData);
-			} else {
-				/* Just changed...nothing to do */
-				LOG.info("A PlottableData has been edited");
-			}
-		} else {
-			/* Removed */
-			LOG.info("A PlottableData has been removed");
-			data.remove(changedPlottableData);
-		}
-
+		data = controller.getPlottableData();
 		fireTableDataChanged();
 	}
 
-	public PlottableData getPlottableData(int i) {
-		return data.get(i);
+	public List<PlottableData> getSelectedPlottableData(int selectedRows[]) {
+		List<PlottableData> selectedPlottableData = new ArrayList<>();
+		for (int index : selectedRows) {
+			if (index >= 0 && index < data.size())
+				selectedPlottableData.add(data.get(index));
+		}
+
+		return selectedPlottableData;
+	}
+
+	public PlottableData getSelectedPlottableData(int index) {
+		PlottableData selectedPlottableData = null;
+		if (index >= 0 && index < data.size())
+			selectedPlottableData = data.get(index);
+		return selectedPlottableData;
 	}
 }

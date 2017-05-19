@@ -38,6 +38,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
@@ -115,7 +117,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	private JCheckBox cbUpdateCheck;
 
-	public PlottableDataTableModel dsTableModel;
+	public PlottableDataTableModel plottableDataTableModel;
 
 	public JTable dataSetTable;
 
@@ -180,7 +182,9 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
 
-	/** Controller for PlottableData. */
+	/**
+	 * Controller for PlottableData.
+	 */
 	private PlottableDataController plottableDataController = new PlottableDataController();
 
 	public JGP() {
@@ -233,12 +237,11 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	 * *******************************************************************************
 	 * This method creates the default menu bar for the Voodoo dialog box. The
 	 * menu bar contains a single "Close" button.
-	 * 
+	 *
 	 * @return Returns a JMenuBar that contains a "Close" menu button.
-	 * 
 	 * @version 1.00
 	 * @author Scott Streit
-	 *         *******************************************************************************
+	 * *******************************************************************************
 	 */
 	protected JMenuBar create_menu_bar() {
 		JMenuBar menu_bar = new JMenuBar();
@@ -367,13 +370,12 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	/**
 	 * ****************************************************************************
 	 * Creates the "tabbed" panels portion of the window.
-	 * 
+	 *
 	 * @return The created "tabbed pane" is returned.
-	 * 
-	 * @see JTabbedPane
 	 * @version 1.00
 	 * @author Xiangyang (Helena) Xian
-	 *         ****************************************************************************
+	 * ****************************************************************************
+	 * @see JTabbedPane
 	 */
 	private JTabbedPane create_tabbed_pane() {
 		// Create a new tabbed pane and set the tabs to be on top.
@@ -657,8 +659,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		dsTableModel = new PlottableDataTableModel(plottableDataController);
-		dataSetTable = new JTable(dsTableModel);
+		plottableDataTableModel = new PlottableDataTableModel(plottableDataController);
+		dataSetTable = new JTable(plottableDataTableModel);
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -787,16 +789,16 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			int i = tp.getSelectedIndex();
 
 			switch (i) {
-			case 0:
-				acAdd();
+				case 0:
+					acAdd();
+					break;
+				case 1: {
+					labelTableModel.addRow(new Label());
+				}
 				break;
-			case 1: {
-				labelTableModel.addRow(new Label());
-			}
-				break;
-			case 2: {
-				variableTableModel.addRow(new GnuplotVariable());
-			}
+				case 2: {
+					variableTableModel.addRow(new GnuplotVariable());
+				}
 				break;
 			}
 		} else if (e.getActionCommand().equals("add_function")) {
@@ -816,9 +818,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			acMoveDown();
 		} else if (e.getActionCommand().equals("showconsole")) {
 			acShowConsole();
-		}
-
-		else if (e.getActionCommand().equals("plot")) {
+		} else if (e.getActionCommand().equals("plot")) {
 			try {
 				acPlot();
 			} catch (IOException e1) {
@@ -912,7 +912,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public void acSaveStandardProject() {
 
-		new ProjectManager(this).writeProjectFile(STANDARD_PROJECT_FILE);
+		new ProjectManager(this, plottableDataController).writeProjectFile(STANDARD_PROJECT_FILE);
 
 	}
 
@@ -934,7 +934,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		/* Checks if a project already exists before load it */
 		if (Files.exists(Paths.get(STANDARD_PROJECT_FILE))) {
 			try {
-				new ProjectManager(this).loadProjectFile(STANDARD_PROJECT_FILE);
+				new ProjectManager(this, plottableDataController).loadProjectFile(STANDARD_PROJECT_FILE);
 			} catch (RuntimeException e) {
 				showConsole("No standard project loaded:" + e.getMessage(), false);
 			} catch (ClassNotFoundException e) {
@@ -959,29 +959,28 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	 * This method allows to edit the PlottableData object in the main table.
 	 */
 	public void acEdit() {
-		int i = dataSetTable.getSelectedRow();
+		PlottableData plottableData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRow());
+		if (plottableData == null) {
+			LOG.info("Nothing to edit");
+			return;
+		}
 
-		if (i >= 0) {
-			PlottableData plottableData = dsTableModel.getPlottableData(i);
-				if (plottableData instanceof Function) {
-					try {
-						FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
-								plottableDataController);
-						functionDialog.setVisible(true);
-					} catch (IOException e) {
-						LOG.error(e.getMessage());
-					}
-				} else {
-					try {
-						DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
-								plottableDataController);
-						dataFileDialog.setVisible(true);
-					} catch (IOException e) {
-						LOG.error(e.getMessage());
-					}
-				}
+		if (plottableData instanceof Function) {
+			try {
+				FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
+						plottableDataController);
+				functionDialog.setVisible(true);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
 		} else {
-			LOG.info("Please select something");
+			try {
+				DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
+						plottableDataController);
+				dataFileDialog.setVisible(true);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
 		}
 	}
 
@@ -1011,38 +1010,22 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public void acMoveUp() {
 		int i = tp.getSelectedIndex();
 		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-
-			// check if userselected any datasets to move
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected.", "Moving datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 0: {
+				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRows());
+				for (PlottableData plottableData : selectedData)
+					plottableDataController.moveUp(plottableData);
 			}
-
-			// check if user tried to move the first dataset further up
-			if (r[0] == 0) {
-				JOptionPane.showMessageDialog(this, "Cannot move datasets further up.", "Moving datasets",
+			break;
+			case 1: {
+				JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
 						JOptionPane.INFORMATION_MESSAGE);
-				return;
+
 			}
-
-			JOptionPane.showMessageDialog(this, "Moving of plottable data not supported yet!", "Moving labels",
-					JOptionPane.INFORMATION_MESSAGE);
-
-		}
 			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
-					JOptionPane.INFORMATION_MESSAGE);
-
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
+			case 2: {
+				JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 			break;
 
 		}
@@ -1055,38 +1038,22 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public void acMoveDown() {
 		int i = tp.getSelectedIndex();
 		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-
-			// check if userselected any datasets to move
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected.", "Moving datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 0: {
+				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRows());
+				for (PlottableData plottableData : selectedData)
+					plottableDataController.moveDown(plottableData);
 			}
-
-			// check if user tried to move the last dataset further down
-			if (r[r.length - 1] == (dsTableModel.getRowCount() - 1)) {
-				JOptionPane.showMessageDialog(this, "Cannot move datasets further down.", "Moving datasets",
+			break;
+			case 1: {
+				JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
 						JOptionPane.INFORMATION_MESSAGE);
-				return;
+
 			}
-
-			JOptionPane.showMessageDialog(this, "Moving plottable data not supported yet!", "Moving labels",
-					JOptionPane.INFORMATION_MESSAGE);
-
-		}
 			break;
-		case 1: {
-			JOptionPane.showMessageDialog(this, "Moving of labels not supported yet!", "Moving labels",
-					JOptionPane.INFORMATION_MESSAGE);
-
-		}
-			break;
-		case 2: {
-			JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
+			case 2: {
+				JOptionPane.showMessageDialog(this, "Moving of variables not supported yet!", "Moving variables",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 			break;
 
 		}
@@ -1096,44 +1063,38 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		int i = tp.getSelectedIndex();
 
 		switch (i) {
-		case 0: {
-			int[] r = dataSetTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No dataset selected.", "Deleting datasets",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-			for (int j = 0; j < r.length; j++) {
-				PlottableData data = dsTableModel.getPlottableData(r[j]);
-				plottableDataController.delete(data);
-			}
-		}
+			case 0:
+				int[] selectedIndices = dataSetTable.getSelectedRows();
+				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(selectedIndices);
+				for (PlottableData plottableData : selectedData) {
+					plottableDataController.delete(plottableData);
+				}
 			break;
-		case 1: {
-			int[] r = labelTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No label selected.", "Deleting labels",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 1: {
+				int[] r = labelTable.getSelectedRows();
+				if (r.length == 0) {
+					JOptionPane.showMessageDialog(this, "No label selected.", "Deleting labels",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				for (int j = 0; j < r.length; j++) {
+					this.labelTableModel.data.remove(r[j]);
+					labelTableModel.fireTableDataChanged();
+				}
 			}
-			for (int j = 0; j < r.length; j++) {
-				this.labelTableModel.data.remove(r[j]);
-				labelTableModel.fireTableDataChanged();
-			}
-		}
 			break;
-		case 2: {
-			int[] r = variableTable.getSelectedRows();
-			if (r.length == 0) {
-				JOptionPane.showMessageDialog(this, "No variable selected.", "Deleting variables",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
+			case 2: {
+				int[] r = variableTable.getSelectedRows();
+				if (r.length == 0) {
+					JOptionPane.showMessageDialog(this, "No variable selected.", "Deleting variables",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				for (int j = 0; j < r.length; j++) {
+					this.variableTableModel.variables.remove(r[j]);
+					variableTableModel.fireTableDataChanged();
+				}
 			}
-			for (int j = 0; j < r.length; j++) {
-				this.variableTableModel.variables.remove(r[j]);
-				variableTableModel.fireTableDataChanged();
-			}
-		}
 			break;
 		}
 	}
@@ -1142,21 +1103,21 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		int i = tp.getSelectedIndex();
 
 		switch (i) {
-		case 0: {
-			clearPlottableData();
-		}
+			case 0: {
+				clearPlottableData();
+			}
 			break;
-		case 1: {
-			clearLabelTable();
-		}
+			case 1: {
+				clearLabelTable();
+			}
 			break;
-		case 2: {
-			clearVariableTable();
-		}
+			case 2: {
+				clearVariableTable();
+			}
 			break;
-		case 3: {
-			clearPrePlotString();
-		}
+			case 3: {
+				clearPrePlotString();
+			}
 			break;
 		}
 	}
@@ -1202,9 +1163,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		else
 			gp.setMode(Plot.Mode.PLOT_3D);
 
-		for (int i = 0; i < dsTableModel.getRowCount(); i++) {
-			gp.addPlottableData(dsTableModel.getPlottableData(i));
-		}
+		// TODO move this code when controllers are available!
 		for (int i = 0; i < labelTableModel.data.size(); i++) {
 			gp.addLabel(labelTableModel.data.get(i));
 		}
@@ -1270,9 +1229,8 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	/**
 	 * Shows a console dialog. Calls showConsole(String text, boolean append,
 	 * boolean makeVisible) with makeVisible == true.
-	 * 
-	 * @param text
-	 *            Text to display in the console.
+	 *
+	 * @param text Text to display in the console.
 	 */
 	void showConsole(String text, boolean append) {
 		showConsole(text, append, true);
@@ -1280,12 +1238,10 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	/**
 	 * Shows a console dialog.
-	 * 
-	 * @param text
-	 *            Text to display in the console.
-	 * @param makeVisible
-	 *            Tells whether the console should be made visibile if not
-	 *            visible already.
+	 *
+	 * @param text        Text to display in the console.
+	 * @param makeVisible Tells whether the console should be made visibile if not
+	 *                    visible already.
 	 */
 	public void showConsole(String text, boolean append, boolean makeVisible) {
 
@@ -1334,7 +1290,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public void startCheckUpdates() {
 		System.out.println("Starting update checking ...");
-		updateChecker = new UpdateChecker(this);
+		updateChecker = new UpdateChecker(this, plottableDataController);
 		Thread t = new Thread(updateChecker);
 		t.start();
 
@@ -1343,7 +1299,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public void stopCheckUpdates() {
 		System.out.println("Stopping update checking ...");
 		if (updateChecker != null)
-			updateChecker.checkForUpdate = false;
+			updateChecker.setCheckForUpdate(false);
 	}
 
 	public void loadProject()
@@ -1383,7 +1339,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	/**
 	 * Updates the dialog title.
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void setFileTitle(String fileName) {
@@ -1396,7 +1352,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		clearVariableTable();
 
 		try {
-			new ProjectManager(this).loadProjectFile(fileName);
+			new ProjectManager(this, plottableDataController).loadProjectFile(fileName);
 		} catch (DOMException e) {
 			showConsole("No standard project loaded:" + e.getMessage(), false);
 		} catch (ClassNotFoundException e) {
@@ -1431,9 +1387,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	 * ****************************************************************************
 	 * Saves the current cproject asking the user for a filname.
 	 *
-	 *
-	 * @throws IOException
-	 *             ****************************************************************************
+	 * @throws IOException ****************************************************************************
 	 */
 	public void saveProjectTo() throws IOException {
 		JFileChooser file_chooser;
@@ -1466,7 +1420,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 			// dumpSettings(outFile);
 
-			new ProjectManager(this).writeProjectFile(file.getPath());
+			new ProjectManager(this, plottableDataController).writeProjectFile(file.getPath());
 			addRecentProject(file.getPath());
 
 			return;
@@ -1492,7 +1446,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			return;
 		}
 
-		new ProjectManager(this).writeProjectFile(projectFileName);
+		new ProjectManager(this, plottableDataController).writeProjectFile(projectFileName);
 		showStatus("Project saved to: " + projectFileName);
 		addRecentProject(projectFileName);
 
@@ -1556,7 +1510,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	/**
 	 * Add a project (its filename) to the recent project list in the file menu.
-	 * 
+	 *
 	 * @param textContent
 	 */
 	public void addRecentProject(String textContent) {

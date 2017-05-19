@@ -69,7 +69,7 @@ public class PlottableDataController extends Observable {
 		return dataFile;
 	}
 
-	public Collection<PlottableData> getPlottableData() {
+	public List<PlottableData> getPlottableData() {
 		Plot plot = Project.currentProject().getPlot();
 		return plot.getPlottableData();
 	}
@@ -93,5 +93,40 @@ public class PlottableDataController extends Observable {
 		this.clearChanged();
 	}
 
+	public void moveUp (PlottableData plottableData) {
+		Plot plot = Project.currentProject().getPlot();
+		List<PlottableData> list = plot.getPlottableData();
+
+		int position = list.indexOf(plottableData);
+		if (position < 0) {
+			LOG.warn("Trying to moveUp() a plottable data which is not in the plot!");
+			return;
+		}
+
+		if (position == 0)
+			return;
+
+		list.remove(position);
+		list.add(position-1, plottableData);
+		notifyObservers(plottableData);
+	}
+
+	public void moveDown (PlottableData plottableData) {
+		Plot plot = Project.currentProject().getPlot();
+		List<PlottableData> list = plot.getPlottableData();
+
+		int position = list.indexOf(plottableData);
+		if (position < 0) {
+			LOG.warn("Trying to moveDown() a plottable data which is not in the plot!");
+			return;
+		}
+
+		if (position == list.size()-1)
+			return;
+
+		list.remove(position);
+		list.add(position+1, plottableData);
+		notifyObservers(plottableData);
+	}
 
 }

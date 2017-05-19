@@ -34,12 +34,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
+import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.model.*;
 import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
@@ -135,13 +137,16 @@ public class ProjectManager extends XMLManager {
 	private final String VALUE = "value";
 	private final String ACTIVE = "active";
 
+	private PlottableDataController plottableDataController;
+
 	/**
 	 * ****************************************************************************
 	 * Default Constructor.
 	 * ****************************************************************************
 	 */
-	public ProjectManager(JGP mainWindow) {
+	public ProjectManager(JGP mainWindow, PlottableDataController plottableDataController) {
 		this.mainWindow = mainWindow;
+		this.plottableDataController = plottableDataController;
 		file = new File(".");
 	}
 
@@ -328,10 +333,10 @@ public class ProjectManager extends XMLManager {
 				if (n.getElementsByTagName(PRE_PROCESS_PROGRAM).getLength() != 0)
 					ds.setPreProcessProgram(n.getElementsByTagName(PRE_PROCESS_PROGRAM).item(0).getTextContent());
 
-				//mainWindow.dsTableModel.data.add(ds); TODO
+				//mainWindow.plottableDataTableModel.data.add(ds); TODO
 			}
 
-			mainWindow.dsTableModel.fireTableDataChanged();
+			mainWindow.plottableDataTableModel.fireTableDataChanged();
 		}
 		// load labels
 		NodeList labels = document.getElementsByTagName(LABEL);
@@ -426,8 +431,9 @@ public class ProjectManager extends XMLManager {
 			// add datasets
 			Element datasets = (Element) document.createElement(DATASET_ITEMS);
 
-			for (int i = 0; i < mainWindow.dsTableModel.getRowCount(); i++) {
-				PlottableData ds = mainWindow.dsTableModel.getPlottableData(i);
+			List<PlottableData> allPlottableData = plottableDataController.getPlottableData();
+			for (int i = 0; i < allPlottableData.size(); i++) {
+				PlottableData ds = allPlottableData.get(i);
 				Element dataset = (Element) document.createElement(DATASET);
 				dataset.setAttribute(ID, i + "");
 
