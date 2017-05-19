@@ -295,6 +295,7 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 			tfFileName.setText(file_chooser.getSelectedFile().toString());
 			tfFileName.setToolTipText(file_chooser.getSelectedFile().toString());
 			dataSelectionTable.update(tfFileName.getText());
+			this.pack();
 			return;
 		}
 		// If the Cancel button is pressed.

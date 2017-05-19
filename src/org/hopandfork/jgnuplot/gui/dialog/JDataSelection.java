@@ -21,34 +21,25 @@
 
 package org.hopandfork.jgnuplot.gui.dialog;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.model.DataSelection;
 import org.hopandfork.jgnuplot.model.DataSelection2D;
 import org.hopandfork.jgnuplot.model.DataSelection3D;
 import org.hopandfork.jgnuplot.utility.FileColumnsParser;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.util.List;
 
 public class JDataSelection extends JGPPanel {
 
@@ -66,13 +57,6 @@ public class JDataSelection extends JGPPanel {
 	private JTextField tfX, tfY, tfZ, tfLabels, tfCurrent;
 
 	private DataSelection dataSelection;
-
-	// headers for the table
-	private static String[] SAMPLE_COLUMNS = new String[] { "Id", "Name", "Hourly Rate", "Part Time" };
-
-	// actual data for the table in a 2d array
-	private static Object[][] SAMPLE_DATA = new Object[][] { { 1, "John", 40.0, false }, { 2, "Rambo", 70.0, false },
-			{ 3, "Zorro", 60.0, true }, };
 
 	public JDataSelection() {
 		super();
@@ -221,7 +205,7 @@ public class JDataSelection extends JGPPanel {
 		tfLabels = new JTextField("0");
 		tfLabels.setEditable(false);
 
-		initTable(SAMPLE_DATA, SAMPLE_COLUMNS);
+		//initTable(SAMPLE_DATA, SAMPLE_COLUMNS);
 
 		/* Adds component to the JScrollPane */
 		this.add(bX, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
