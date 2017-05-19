@@ -77,10 +77,6 @@ public class FunctionDialog extends PlottableDataDialog implements ActionListene
 
 	/**
 	 * This method allows to set all field in the dialog to apply some changes.
-	 *
-	 * @param plottableObject
-	 *            could be a Function or DataFile to be modified.
-	 * 
 	 */
 	private void initFields() {
 
@@ -146,7 +142,7 @@ public class FunctionDialog extends PlottableDataDialog implements ActionListene
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().equals("ok")) {
-			// TODO checks if function is empty
+			// TODO check if function is empty
 			acApply();
 			this.setVisible(false);
 		} else if (e.getActionCommand().equals("cancel"))

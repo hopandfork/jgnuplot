@@ -15,7 +15,6 @@ public class PlottableDataController extends Observable {
 	static private final Logger LOG = Logger.getLogger(PlottableDataController.class);
 
 	/**
-	 * 
 	 * @param expression
 	 * @param title
 	 * @param style
@@ -35,15 +34,14 @@ public class PlottableDataController extends Observable {
 		return function;
 	}
 
-/**
- * 
- * @param filename
- * @param title
- * @param style
- * @param dataSelection
- * @param preProcessProgram
- * @return
- */
+	/**
+	 * @param filename
+	 * @param title
+	 * @param style
+	 * @param dataSelection
+	 * @param preProcessProgram
+	 * @return
+	 */
 	public DataFile addDataFile(String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
 		Plot plot = Project.currentProject().getPlot();
 
@@ -62,60 +60,56 @@ public class PlottableDataController extends Observable {
 	}
 
 	/**
-	 * 
 	 * @return
 	 */
-	public Function updateFunction(Function function, String expression, String title, PlottingStyle style){
+	public Function updateFunction(Function function, String expression, String title, PlottingStyle style) {
 		
 		/* Updates function */
 		function.setFunctionString(expression);
 		function.setTitle(title);
 		function.setStyle(style);
-		
+
+		notifyObservers(function);
 		return function;
 	}
-	
+
 	/**
-	 * 
 	 * @return
 	 */
-public DataFile updateDataFile(DataFile dataFile, String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram){
+	public DataFile updateDataFile(DataFile dataFile, String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
 	
 	/* Updates dataFile */
-	dataFile.setFileName(filename);
-	dataFile.setTitle(title);
-	dataFile.setStyle(style);
-	dataFile.setDataSelection(dataSelection);
-	dataFile.setPreProcessProgram(preProcessProgram);
-	
-	return dataFile;
-}
+		dataFile.setFileName(filename);
+		dataFile.setTitle(title);
+		dataFile.setStyle(style);
+		dataFile.setDataSelection(dataSelection);
+		dataFile.setPreProcessProgram(preProcessProgram);
 
-/**
- * 
- * @return
- */
-	public Collection<PlottableData> getPlottableData ()
-	{
+		notifyObservers(dataFile);
+		return dataFile;
+	}
+
+	/**
+	 * @return
+	 */
+	public Collection<PlottableData> getPlottableData() {
 		Plot plot = Project.currentProject().getPlot();
 		return plot.getPlottableData();
 	}
-	
-/**
- * 
- * @param plottableData
- */
-	public void delete (PlottableData plottableData) {
+
+	/**
+	 * @param plottableData
+	 */
+	public void delete(PlottableData plottableData) {
 		Plot plot = Project.currentProject().getPlot();
 		plot.deletePlottableData(plottableData);
 		notifyObservers(plottableData);
 	}
-	
-/**
- * 
- */
-	public void deleteAll ()
-	{
+
+	/**
+	 *
+	 */
+	public void deleteAll() {
 		Plot plot = Project.currentProject().getPlot();
 		plot.deleteAllPlottableData();
 		notifyObservers(null);
