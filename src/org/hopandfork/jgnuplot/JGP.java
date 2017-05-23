@@ -38,7 +38,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -81,7 +80,6 @@ import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
-import org.hopandfork.jgnuplot.gui.VariableTypeComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
@@ -91,10 +89,8 @@ import org.hopandfork.jgnuplot.gui.table.ColorEditor;
 import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
 import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
-import org.hopandfork.jgnuplot.gui.table.VariableTableModel;
 import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.Function;
-import org.hopandfork.jgnuplot.model.GnuplotVariable;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.PlottableData;
@@ -123,9 +119,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public LabelTableModel labelTableModel;
 	public JTable labelTable;
-
-	public VariableTableModel variableTableModel;
-	public JTable variableTable;
 
 	public JTextArea taShell;
 	public JTextArea prePlotString;
@@ -384,8 +377,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		tp.addTab("Datasets", createDataSetPanel());
 
 		tp.addTab("Labels", createLabelSetPanel());
-
-		tp.addTab("Variables", createVariablePanel());
 
 		tp.addTab("Add. plot commands", createPrePlotStringPanel());
 
@@ -728,35 +719,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		col.setPreferredWidth(width);
 	}
 
-	private JPanel createVariablePanel() {
-
-		// Create the panel.
-		JGPPanel jp = new JGPPanel();
-		// Set the default panel layout.
-		GridBagLayout gbl = new GridBagLayout();
-		jp.setLayout(gbl);
-
-		variableTableModel = new VariableTableModel();
-		variableTable = new JTable(variableTableModel);
-		variableTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
-		// Create the scroll pane and add the table to it.
-		JScrollPane scrollPane = new JScrollPane(variableTable);
-
-		TableColumn typeColumn = variableTable.getColumnModel().getColumn(0);
-		typeColumn.setCellEditor(new DefaultCellEditor(new VariableTypeComboBox()));
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
-		jp.add(scrollPane, gbc);
-
-		return jp;
-
-	}
-
 	public static void main(String[] args) throws MalformedURLException {
 		/* Log4j initialization */
 		PropertyConfigurator.configure(
@@ -794,10 +756,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 					break;
 				case 1: {
 					labelTableModel.addRow(new Label());
-				}
-				break;
-				case 2: {
-					variableTableModel.addRow(new GnuplotVariable());
 				}
 				break;
 			}
@@ -997,7 +955,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 		clearPlottableData();
 		clearLabelTable();
-		clearVariableTable();
 
 		setFileTitle("<New>");
 		this.projectFileName = null;
@@ -1083,19 +1040,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 				}
 			}
 			break;
-			case 2: {
-				int[] r = variableTable.getSelectedRows();
-				if (r.length == 0) {
-					JOptionPane.showMessageDialog(this, "No variable selected.", "Deleting variables",
-							JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				for (int j = 0; j < r.length; j++) {
-					this.variableTableModel.variables.remove(r[j]);
-					variableTableModel.fireTableDataChanged();
-				}
-			}
-			break;
 		}
 	}
 
@@ -1109,10 +1053,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 			break;
 			case 1: {
 				clearLabelTable();
-			}
-			break;
-			case 2: {
-				clearVariableTable();
 			}
 			break;
 			case 3: {
@@ -1139,15 +1079,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	}
 
-	public void clearVariableTable() {
-		int count = variableTableModel.getRowCount();
-		for (int j = 0; j < count; j++) {
-			this.variableTableModel.variables.remove(0);
-		}
-		variableTableModel.fireTableDataChanged();
-
-	}
-
 	public void acPlot() throws IOException, InterruptedException {
 		clearShell();
 		println("calling GNUplot...");
@@ -1167,9 +1098,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		for (int i = 0; i < labelTableModel.data.size(); i++) {
 			gp.addLabel(labelTableModel.data.get(i));
 		}
-		for (int i = 0; i < variableTableModel.variables.size(); i++) {
-			gp.addVariable(variableTableModel.variables.get(i));
-		}
+		
 		gp.setTitle(tfTitle.getText());
 		try {
 			if (!tfMaxX.getText().trim().equals(""))
@@ -1349,7 +1278,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	public void loadProject(String fileName) {
 		clearPlottableData();
 		clearLabelTable();
-		clearVariableTable();
 
 		try {
 			new ProjectManager(this, plottableDataController).loadProjectFile(fileName);

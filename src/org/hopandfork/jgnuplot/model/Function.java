@@ -21,11 +21,16 @@
 
 package org.hopandfork.jgnuplot.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Function extends PlottableData {
 	
 	/** Expression for the function. */
 	private String functionString;
 
+	private List<Variable> variables = new ArrayList<>(); 
+	
 	public String getFunctionString() {
 		return functionString;
 	}
@@ -52,4 +57,20 @@ public class Function extends PlottableData {
 		return s;
 	}
 
+	/**
+	 * This method allows to add a new Variable to the function.
+	 * 
+	 * @param var is the new Variable.
+	 */
+	public void addVariable(Variable var){
+		variables.add(var);
+	}
+	
+	public List<Variable> getVariables(){
+		return variables;
+	}
+	
+	public void setVariables(List<Variable> variables){
+		this.variables = variables;
+	}
 }

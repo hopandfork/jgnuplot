@@ -42,7 +42,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
-import org.hopandfork.jgnuplot.model.*;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.Label;
+import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.RelativePosition;
 import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 import org.hopandfork.jgnuplot.utility.XMLManager;
@@ -359,30 +363,6 @@ public class ProjectManager extends XMLManager {
 			mainWindow.labelTableModel.data.add(l);
 
 		}
-
-		// load labels
-		NodeList variables = document.getElementsByTagName(VARIABLE);
-
-		for (int i = 0; i < variables.getLength(); i++) {
-			Element n = (Element) variables.item(i);
-
-			if (n.getElementsByTagName(CLASS).getLength() != 0) {
-				Class c = Class.forName(n.getElementsByTagName(CLASS).item(0).getTextContent());
-				Variable v = (Variable) c.newInstance();
-
-				if (n.getElementsByTagName(NAME).getLength() != 0)
-					v.setName(n.getElementsByTagName(NAME).item(0).getTextContent());
-
-				if (n.getElementsByTagName(VALUE).getLength() != 0)
-					v.setValue(n.getElementsByTagName(VALUE).item(0).getTextContent());
-
-				if (n.getElementsByTagName(ACTIVE).getLength() != 0)
-					v.setActive(Boolean.parseBoolean(n.getElementsByTagName(ACTIVE).item(0).getTextContent()));
-
-				mainWindow.variableTableModel.variables.add(v);
-			}
-
-		} // for (int i = 0; i < variables.getLength(); i++)
 	}
 
 	/**
@@ -478,32 +458,12 @@ public class ProjectManager extends XMLManager {
 				labels.appendChild(label);
 			}
 			root.appendChild(labels);
-
-			// add labels
-			Element variables = (Element) document.createElement(VARIABLE_ITEMS);
-
-			for (int i = 0; i < mainWindow.variableTableModel.variables.size(); i++) {
-				Variable v = mainWindow.variableTableModel.variables.get(i);
-				Element variable = (Element) document.createElement(VARIABLE);
-				variable.setAttribute(ID, i + "");
-
-				addTextNode(document, variable, CLASS, v.getClass().getName() + "");
-				addTextNode(document, variable, NAME, v.getName() + "");
-				addTextNode(document, variable, VALUE, v.getValue() + "");
-				addTextNode(document, variable, ACTIVE, v.isActive() + "");
-
-				variables.appendChild(variable);
-			}
-			root.appendChild(variables);
-
 		} catch (ParserConfigurationException pce) {
 			// Parser with specified options can't be built
 			pce.printStackTrace();
-
 		}
 
 		return document;
-
 	}
 
 	/**
