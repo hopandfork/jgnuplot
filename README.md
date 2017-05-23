@@ -1,72 +1,48 @@
 # jGNUplot #
 [![Build Status](https://travis-ci.org/hopandfork/jgnuplot.svg?branch=master)](https://travis-ci.org/hopandfork/jgnuplot)
 
-JGNUplot is a graphical user interface for gnuplot. So why would somebody
-want to have a user interface for something which is so great because it has
+jGNUplot is a graphical frontend for *gnuplot*, written in Java. So why would
+somebody want to have a GUI for something which is so great because it has
 none?
 
 Gnuplot is a fairly mighty plotting software. But when one has to deal with a
-large number of datasets, the typing of the plot commands over the keyboard
-can become fairly tedious. Sometimes the fields in the datasets have to be
-combined using more complex formula. In such cases you end up with very
-complicated plot commands.
-
+large number of datasets, typing the plot commands over the keyboard
+can become fairly tedious. 
 Sometimes one may want to quickly add or delete a certain dataset from the
-plot. Or maybe pick a different color or linestyle.
-
-jGNUplot is a JAVA written interface which uses gnuplot as plotting engine.
+plot, or just pick a different color or linestyle, having immediate visual
+feedback.
 
 jGNUPlot hasn't been actively mantained for several years; it was ported
-on GitHub in order to migrate the GUI from AWT to Swing, and to develop new
-features that will be defined in time.
+on GitHub in order to refactor the project, and to develop new
+features that will be defined in time. **So, at the moment we are mainly
+refactoring the code and fixing bugs.**
 
 ## Installation ##
 ### Prerequisites ###
-- A working installation of [gnuplot](http://www.gnuplot.info).
-- Java Runtime Environment (5+)
+- [gnuplot](http://www.gnuplot.info).
+- a Java Runtime Environment (7+)
 
 ### Compiling from source  ###
-jGNUplot can be built using *Maven*. Enter the root directory and run:
+jGNUplot can be built using *Maven*. Enter the project root directory and run:
 
 	mvn clean install package
 
+This command will produce a JAR file in `target` directory.
+
 ### Installing from a release archive ###
-1. Unzip the "tar.gz" or "zip" archive into a directory of your choice
-2. Make the file `jgp` executable: `chmod +x jgp`
-3. Execute `./jgp`. You may also start JGP with `java -cp <JARFILE.jar>
-jgp.gui.JGP`
+It is enough to extract the "tar.gz" or "zip" archive into a directory of your choice.
 
 ## Usage ##
-### Plotting a function ###
-- Start jGNUplot using the script
+Having downloaded (and compiled) jGNUplot, in order to run the application:
 
-```
-./jgp
-```
+	java -jar target/JGNUplot-x.y.z-jar-with-dependencies.jar
 
-- Click on **Add**.
-- Select **function**, replace **1:2** in the function field by a function like
-  **sin(x)**.
-- Enter a title and click **Ok**.
-- Click on **Plot**, a sine should appear on your screen. If not, check that
-  gnuplot is installed and that it is in your path. 
+Alternatively, you can use the `jpg` script available in the project root
+directory:
 
-### Plotting a datafile ###
-- Create an ASCII data file: using a text editor, create two colums comma
-  separated data.
-- Click on **Add**.
-- Make sure that **file** is selected, enter the path to the file or use the
-  file browser in order to search for it (button next to the *file* textfield).
-- Enter a the datastring **1:2** into the datastring textfield (it should
-  actually be already there).
-- Enter a title and click **Ok**.
-- Click on **Plot**, and the datafile should appear on your screen. 
+	chmod +x jgp
+	./jgp
 
-### Next steps ###
-Click on the **preview plotsting** button. It lets you examine the plotstring
-which is passed to gnuplot. It might be a good idea to start becoming familiar
-with the commands in the plot string, i.e. reading the gnuplot manual or
-starting gnuplot using the help command.
 
 ## Contributing ##
 If you want to contribute in the development of jGNUplot, don't forget to check
