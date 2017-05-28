@@ -38,8 +38,9 @@ import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.gui.DataSelector;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.gui.StyleComboBox;
+import org.hopandfork.jgnuplot.gui.combobox.StyleComboBox;
 import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.DataSelection;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
@@ -72,7 +73,7 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 
 	private JButton bFileChose;
 
-	private JDataSelection dataSelectionTable;
+	private DataSelector dataSelectionTable;
 
 	/**
 	 * This constructor allows to create a PlottableDataDialog with a specified
@@ -184,7 +185,7 @@ public class DataFileDialog extends PlottableDataDialog implements ActionListene
 
 		cbStyle = new StyleComboBox();
 
-		dataSelectionTable = new JDataSelection();
+		dataSelectionTable = new DataSelector();
 
 		int row = 0;
 		jp.add(new JLabel("File"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);

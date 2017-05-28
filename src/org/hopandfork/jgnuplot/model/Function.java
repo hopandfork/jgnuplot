@@ -24,13 +24,13 @@ package org.hopandfork.jgnuplot.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Function extends PlottableData {
-	
+public class Function extends PlottableData implements Cloneable{
+
 	/** Expression for the function. */
 	private String functionString;
 
-	private List<Variable> variables = new ArrayList<>(); 
-	
+	private List<Constant> constants = new ArrayList<>();
+
 	public String getFunctionString() {
 		return functionString;
 	}
@@ -39,8 +39,10 @@ public class Function extends PlottableData {
 		this.functionString = functionString;
 	}
 
+	@Override
 	public String toPlotString() {
-		String s = functionString;
+		String s = "" + functionString;
+		
 		if (style != null || addStyleOpt != null || color != null) {
 			s += " with ";
 			if (style != null)
@@ -54,23 +56,43 @@ public class Function extends PlottableData {
 			if (title != null && !title.equals(""))
 				s += "title '" + title + "'  ";
 		}
+		
 		return s;
 	}
 
 	/**
 	 * This method allows to add a new Variable to the function.
 	 * 
-	 * @param var is the new Variable.
+	 * @param var
+	 *            is the new Variable.
 	 */
-	public void addVariable(Variable var){
-		variables.add(var);
+	public void addConstant(Constant constant) {
+		constants.add(constant);
+	}
+
+	public List<Constant> getConstants() {
+		return constants;
+	}
+
+	public void setConstants(List<Constant> constants) {
+		this.constants = constants;
 	}
 	
-	public List<Variable> getVariables(){
-		return variables;
+	public void rmConstant(Constant constant){
+		constants.remove(constant);
 	}
 	
-	public void setVariables(List<Variable> variables){
-		this.variables = variables;
+	public Object clone() {
+		Function function = new Function();
+		
+		function.setAddStyleOpt(this.addStyleOpt);
+		function.setColor(color);
+		function.setConstants((ArrayList<Constant>)((ArrayList<Constant>)constants).clone());
+		function.setEnabled(enabled);
+		function.setFunctionString(functionString);
+		function.setStyle(this.style);
+		function.setTitle(title);
+		
+		return function;
 	}
 }

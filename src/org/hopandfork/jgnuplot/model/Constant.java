@@ -22,41 +22,41 @@
 package org.hopandfork.jgnuplot.model;
 
 /**
- * A string variable is not a actual varaible. It is rather a constant which
- * is pasted into the plot string prior to issuing it to GNUplot.
- * 
- * All string variable start of with a "$".
- * Each encounter of $VARIABLE_NAME in the plotstring will be replaced with
- * the value.
+ * This class allows to set a value for a variable.
+ * In GNUPLOT it means to write:
+ * <variable-name> = <constant-expression>
  * 
  * @author mxhf
  *
  */
-public class StringVariable extends Variable {
-	public String apply(String plotString){
-		
-		return plotString.replace("$" + getName(), getValue());
+public class Constant implements Plottable {
+
+	private String name = "c";
+
+	private String value = "0.0";
+
+	public String getPlotString() {
+		return getName() + "=" + getValue();
 	}
 
-	public Object[] getData() {
-		Object data[] = new Object[4];
-		data[0] = Variable.Type.STRING;
-		data[1] = getName();
-		data[2] = getValue();
-		data[3] = isActive();
-		
-		return data;
+	public String getName() {
+		return name;
 	}
 
-	public void setData(int i, Object value) {
-		if (i == 1)	setName( (String)value );
-		else if (i == 2)	setValue( (String)value );
-		else if (i == 3)	setActive( (Boolean)value );
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
-	public Type getType() {
-		return Variable.Type.STRING;
+	public String toPlotString() {
+		return name + "=" + value;
 	}
-
 }

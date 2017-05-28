@@ -19,31 +19,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui.dialog;
+package org.hopandfork.jgnuplot.gui;
 
-import org.apache.log4j.Logger;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.model.DataSelection;
-import org.hopandfork.jgnuplot.model.DataSelection2D;
-import org.hopandfork.jgnuplot.model.DataSelection3D;
-import org.hopandfork.jgnuplot.utility.FileColumnsParser;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.List;
 
-public class JDataSelection extends JGPPanel {
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-	private static Logger LOG = Logger.getLogger(JDataSelection.class);
+import org.apache.log4j.Logger;
+import org.hopandfork.jgnuplot.gui.utility.TableUtils;
+import org.hopandfork.jgnuplot.model.DataSelection;
+import org.hopandfork.jgnuplot.model.DataSelection2D;
+import org.hopandfork.jgnuplot.model.DataSelection3D;
+import org.hopandfork.jgnuplot.utility.FileColumnsParser;
+
+public class DataSelector extends JGPPanel {
+
+	private static Logger LOG = Logger.getLogger(DataSelector.class);
 
 	private static final long serialVersionUID = 853945391719595729L;
 
@@ -58,7 +62,7 @@ public class JDataSelection extends JGPPanel {
 
 	private DataSelection dataSelection;
 
-	public JDataSelection() {
+	public DataSelector() {
 		super();
 		createMainPanel();
 	}
@@ -205,8 +209,6 @@ public class JDataSelection extends JGPPanel {
 		tfLabels = new JTextField("0");
 		tfLabels.setEditable(false);
 
-		//initTable(SAMPLE_DATA, SAMPLE_COLUMNS);
-
 		/* Adds component to the JScrollPane */
 		this.add(bX, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
 		this.add(tfX, 1, 0, 1, 1, GridBagConstraints.HORIZONTAL);
@@ -219,56 +221,6 @@ public class JDataSelection extends JGPPanel {
 		jScrollPane = new JScrollPane(jTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		this.add(jScrollPane, 0, 1, 9, 1, GridBagConstraints.HORIZONTAL);
-	}
-
-	public void packColumns(JTable table) {
-		for (int c = 0; c < table.getColumnCount(); c++) {
-			packColumn(table, c, 2);
-		}
-	}
-
-	// Sets the preferred width of the visible column specified by vColIndex.
-	// The column
-	// will be just wide enough to show the column head and the widest cell in
-	// the column.
-	// margin pixels are added to the left and right
-	// (resulting in an additional width of 2*margin pixels).
-	public void packColumn(JTable table, int vColIndex, int margin) {
-		TableModel model = table.getModel();
-		DefaultTableColumnModel colModel = (DefaultTableColumnModel) table.getColumnModel();
-		TableColumn col = colModel.getColumn(vColIndex);
-		int width = 0;
-
-		// Get width of column header
-		TableCellRenderer renderer = col.getHeaderRenderer();
-		if (renderer == null) {
-			renderer = table.getTableHeader().getDefaultRenderer();
-		}
-		Component comp = renderer.getTableCellRendererComponent(table, col.getHeaderValue(), false, false, 0, 0);
-		width = comp.getPreferredSize().width;
-
-		// Get maximum width of column data
-		for (int r = 0; r < table.getRowCount(); r++) {
-			renderer = table.getCellRenderer(r, vColIndex);
-			try {
-				Object value = table.getValueAt(r, vColIndex);
-				if (value == null)
-					continue;
-				comp = renderer.getTableCellRendererComponent(table, value, false, false, r, vColIndex);
-				width = Math.max(width, comp.getPreferredSize().width);
-			} catch (IndexOutOfBoundsException e) {
-				/*
-				 * This happens if the data file is not well formatted, with
-				 * rows longer/shorter than expected
-				 */
-			}
-		}
-
-		// Add margin
-		width += 2 * margin;
-
-		// Set the width
-		col.setPreferredWidth(width);
 	}
 
 	/**
@@ -353,7 +305,7 @@ public class JDataSelection extends JGPPanel {
 			}
 		});
 
-		packColumns(jTable);
+		TableUtils.packColumns(jTable);
 	}
 
 	public void update(String fileName) {

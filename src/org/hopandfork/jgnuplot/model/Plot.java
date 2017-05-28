@@ -35,7 +35,6 @@ public class Plot implements Plottable {
 
 	private List<PlottableData> plottableData;
 	private List<Label> labels;
-	private List<Variable> variables;
 
 	private String prePlotString;
 
@@ -72,18 +71,6 @@ public class Plot implements Plottable {
 		super();
 		plottableData = new ArrayList<PlottableData>();
 		labels = new ArrayList<Label>();
-		variables = new ArrayList<Variable>();
-	}
-
-	protected String getVariablesPlotString() {
-		String s = "";
-		for (Variable var : variables) {
-			if (var.getType().equals(Variable.Type.GNUPLOT)) {
-				if (var.isActive())
-					s += ((GnuplotVariable) var).getPlotString() + "\n";
-			}
-		}
-		return s;
 	}
 
 	public String toPlotString() {
@@ -91,9 +78,6 @@ public class Plot implements Plottable {
 
 		/* Adds pre-plot commands. */
 		sb.append(prePlotString);
-
-		/* Adds variables. */
-		sb.append(getVariablesPlotString());
 
 		/* Adds various settings. */
 		if (title == null)
@@ -138,6 +122,15 @@ public class Plot implements Plottable {
 			}
 		}
 
+		/* Adds the constants for the function */
+		for (PlottableData pd : plottableData) {
+			if (pd instanceof Function) {
+				for (Constant constant : ((Function) pd).getConstants()) {
+					sb.append(constant.toPlotString() + "\n");
+				}
+			}
+		}
+
 		/* Adds the plot command. */
 		String plotCommand;
 		if (mode.equals(Mode.PLOT_3D)) {
@@ -159,14 +152,15 @@ public class Plot implements Plottable {
 			sb.append(" \n");
 		}
 
+		// TODO constants is directly in Function
 		/* Now replaces all string variables with their value. */
 		String s = sb.toString();
-		for (Variable var : variables) {
-			if (var.getType() == Variable.Type.STRING) {
-				if (var.isActive())
-					s = ((StringVariable) var).apply(s);
-			}
-		}
+		// for (Constants var : variables) {
+		// if (var.getType() == Constants.Type.STRING) {
+		// if (var.isActive())
+		// s = ((Constants) var).apply(s);
+		// }
+		// }
 
 		return s;
 	}
@@ -385,17 +379,13 @@ public class Plot implements Plottable {
 		plottableData.add(data);
 	}
 
-	public void deletePlottableData (PlottableData data) {
+	public void deletePlottableData(PlottableData data) {
 		if (plottableData.contains(data))
 			plottableData.remove(data);
 	}
 
-	public void deleteAllPlottableData () {
+	public void deleteAllPlottableData() {
 		plottableData.clear();
-	}
-
-	public void addVariable(Variable variable) {
-		variables.add(variable);
 	}
 
 	public void addLabel(Label label) {
@@ -409,6 +399,5 @@ public class Plot implements Plottable {
 	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
-
 
 }

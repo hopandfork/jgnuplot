@@ -22,7 +22,6 @@
 package org.hopandfork.jgnuplot;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -65,13 +64,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.hopandfork.jgnuplot.control.ConstantController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
@@ -79,7 +77,7 @@ import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
-import org.hopandfork.jgnuplot.gui.RelativePosComboBox;
+import org.hopandfork.jgnuplot.gui.combobox.RelativePosComboBox;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
@@ -89,6 +87,7 @@ import org.hopandfork.jgnuplot.gui.table.ColorEditor;
 import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
 import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
 import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
+import org.hopandfork.jgnuplot.gui.utility.TableUtils;
 import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.Label;
@@ -179,7 +178,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	 * Controller for PlottableData.
 	 */
 	private PlottableDataController plottableDataController = new PlottableDataController();
-
+	
 	public JGP() {
 		this.setTitle("JGNUplot");
 
@@ -676,47 +675,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		jp.add(scrollPane, gbc);
 
 		return jp;
-	}
-
-	public void packColumns(JTable table) {
-		for (int c = 1; c < table.getColumnCount(); c++) {
-			packColumn(table, c, 2);
-		}
-	}
-
-	// Sets the preferred width of the visible column specified by vColIndex.
-	// The column
-	// will be just wide enough to show the column head and the widest cell in
-	// the column.
-	// margin pixels are added to the left and right
-	// (resulting in an additional width of 2*margin pixels).
-	public void packColumn(JTable table, int vColIndex, int margin) {
-		// TableModel model = table.getModel();
-		DefaultTableColumnModel colModel = (DefaultTableColumnModel) table.getColumnModel();
-		TableColumn col = colModel.getColumn(vColIndex);
-		int width = 0;
-
-		// Get width of column header
-		TableCellRenderer renderer = col.getHeaderRenderer();
-		if (renderer == null) {
-			renderer = table.getTableHeader().getDefaultRenderer();
-		}
-		Component comp = renderer.getTableCellRendererComponent(table, col.getHeaderValue(), false, false, 0, 0);
-		width = comp.getPreferredSize().width;
-
-		// Get maximum width of column data
-		for (int r = 0; r < table.getRowCount(); r++) {
-			renderer = table.getCellRenderer(r, vColIndex);
-			comp = renderer.getTableCellRendererComponent(table, table.getValueAt(r, vColIndex), false, false, r,
-					vColIndex);
-			width = Math.max(width, comp.getPreferredSize().width);
-		}
-
-		// Add margin
-		width += 2 * margin;
-
-		// Set the width
-		col.setPreferredWidth(width);
 	}
 
 	public static void main(String[] args) throws MalformedURLException {
@@ -1300,7 +1258,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		}
 
 		// Pack the second column of the table
-		packColumns(dataSetTable);
+		TableUtils.packColumns(dataSetTable);
 
 		// update dialog title
 		setFileTitle(fileName);
