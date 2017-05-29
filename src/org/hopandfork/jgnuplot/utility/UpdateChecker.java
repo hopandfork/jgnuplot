@@ -9,6 +9,7 @@ import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.PlottableData;
 
+@Deprecated
 public class UpdateChecker implements Runnable {
 	private JGP owner;
 
