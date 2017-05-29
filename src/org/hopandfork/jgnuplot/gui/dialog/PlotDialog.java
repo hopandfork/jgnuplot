@@ -41,9 +41,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import org.hopandfork.jgnuplot.JGP;
-import org.hopandfork.jgnuplot.gui.FileFormatComboBox;
-import org.hopandfork.jgnuplot.gui.FontComboBox;
 import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.combobox.FileFormatComboBox;
+import org.hopandfork.jgnuplot.gui.combobox.FontComboBox;
 import org.hopandfork.jgnuplot.model.OutputFileFormat;
 import org.hopandfork.jgnuplot.model.Plot;
 

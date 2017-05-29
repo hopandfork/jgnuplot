@@ -14,13 +14,14 @@ public class PlottableDataController extends Observable {
 
 	static private final Logger LOG = Logger.getLogger(PlottableDataController.class);
 
-	public Function addFunction(String expression, String title, PlottingStyle style) {
+	public Function addFunction(String expression, String title, PlottingStyle style, List<Constant> constants) {
 		Plot plot = Project.currentProject().getPlot();
 
 		Function function = new Function();
 		function.setFunctionString(expression);
 		function.setTitle(title);
 		function.setStyle(style);
+		function.setConstants(constants);
 
 		plot.addPlottableData(function);
 
@@ -45,13 +46,14 @@ public class PlottableDataController extends Observable {
 		return dataFile;
 	}
 
-	public Function updateFunction(Function function, String expression, String title, PlottingStyle style) {
+	public Function updateFunction(Function function, String expression, String title, PlottingStyle style, List<Constant> constants) {
 		
 		/* Updates function */
 		function.setFunctionString(expression);
 		function.setTitle(title);
 		function.setStyle(style);
-
+		function.setConstants(constants);
+		
 		notifyObservers(function);
 		return function;
 	}

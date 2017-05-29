@@ -19,45 +19,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.model;
+package org.hopandfork.jgnuplot.gui.combobox;
 
-public abstract class Variable {
-	public enum Type{GNUPLOT, STRING};
-	
-	private String name;
-	
-	private String value;
-	
-	private boolean active = true;
 
-	public String getName() {
-		return name;
+import javax.swing.JComboBox;
+
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
+
+
+public class StyleComboBox extends JComboBox<PlottingStyle>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4300054880948406415L;
+
+	public StyleComboBox(){
+		
+        for (PlottingStyle s : PlottingStyle.values())
+        	this.addItem(s);
+            
+        this.setEditable(true);
+		
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-	
-	public abstract Type getType();
-	
-	public abstract Object[] getData();
-
-	public abstract void setData(int i, Object value);
 }

@@ -19,26 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
-
+package org.hopandfork.jgnuplot.gui.combobox;
 
 import javax.swing.JComboBox;
 
-import org.hopandfork.jgnuplot.model.style.PlottingStyle;
+public class FontComboBox extends JComboBox {
 
-
-public class StyleComboBox extends JComboBox<PlottingStyle>{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4300054880948406415L;
-
-	public StyleComboBox(){
-		
-        for (PlottingStyle s : PlottingStyle.values())
-        	this.addItem(s);
-            
-        this.setEditable(true);
-		
+	public FontComboBox() {
+		super();
+		this.addItem("Helvetica");
+		this.setEditable(true);
 	}
+
 }
