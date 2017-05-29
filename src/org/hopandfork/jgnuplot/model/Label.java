@@ -64,26 +64,15 @@ public class Label implements Plottable {
 		return y;
 	}
 
-	public void setY(double y) {
+	public Label(String text, double x, double y, RelativePosition relativePos) {
+		this.x = x;
 		this.y = y;
-	}
-	
-	public Object[] getData(){
-		Object data[] = new Object[5];
-		data[0] = this.text;
-		data[1] = this.x;
-		data[2] = this.y;
-		data[3] = this.relativePos;
-		data[4] = this.enabled;
-		return data;
+		this.text = text;
+		this.relativePos = relativePos;
 	}
 
-	public void setData(int i, Object value){
-		if (i == 0)			text = (String)value ;
-		else if (i == 1)	x = ((Double)value).doubleValue();
-		else if (i == 2)	y = ((Double)value).doubleValue();
-		else if (i == 3)	relativePos = (RelativePosition)value;
-		else if (i == 4)	enabled = ((Boolean) value).booleanValue();
+	public void setY(double y) {
+		this.y = y;
 	}
 
 	public RelativePosition getRelativePos() {
@@ -92,5 +81,33 @@ public class Label implements Plottable {
 
 	public void setRelativePos(RelativePosition relativePos) {
 		this.relativePos = relativePos;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Label label = (Label) o;
+
+		if (Double.compare(label.x, x) != 0) return false;
+		if (Double.compare(label.y, y) != 0) return false;
+		if (enabled != label.enabled) return false;
+		if (text != null ? !text.equals(label.text) : label.text != null) return false;
+		return relativePos == label.relativePos;
+	}
+
+	@Override
+	public int hashCode() {
+		int result;
+		long temp;
+		temp = Double.doubleToLongBits(x);
+		result = (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		result = 31 * result + (text != null ? text.hashCode() : 0);
+		result = 31 * result + (relativePos != null ? relativePos.hashCode() : 0);
+		result = 31 * result + (enabled ? 1 : 0);
+		return result;
 	}
 }

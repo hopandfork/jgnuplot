@@ -63,30 +63,10 @@ public class LabelTableModel  extends AbstractTableModel  {
 	}
 	
 	public Object getValueAt(int row, int col) {
-		return data.get(row).getData()[col];
+		return null;//data.get(row).getData()[col];
 	}
 	
-	/*
-	* Don't need to implement this method unless your table's
-	* data can change.
-	*/
-	public void setValueAt(Object value, int row, int col) {
-		boolean DEBUG = true;
-		
-		if (DEBUG) {
-		System.out.println("Setting value at " + row + "," + col
-		          + " to " + value
-		          + " (an instance of "
-		          + value.getClass() + ")");
-		}
-		
-		data.get(row).getData()[col] = value;
-		data.get(row).setData(col, value);
-		
-		fireTableCellUpdated(row, col);
-	}
-	
-	
+
 	/*
 	* JTable uses this method to determine the default renderer/
 	* editor for each cell.  If we didn't implement this method,
