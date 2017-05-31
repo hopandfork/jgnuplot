@@ -21,12 +21,36 @@
 
 package org.hopandfork.jgnuplot;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.hopandfork.jgnuplot.control.LabelController;
+import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.control.SettingsManager;
+import org.hopandfork.jgnuplot.control.project.ProjectManager;
+import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
+import org.hopandfork.jgnuplot.gui.JGPFileFilter;
+import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
+import org.hopandfork.jgnuplot.gui.dialog.*;
+import org.hopandfork.jgnuplot.gui.table.ColorEditor;
+import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
+import org.hopandfork.jgnuplot.gui.table.LabelsTableModel;
+import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
+import org.hopandfork.jgnuplot.gui.utility.TableUtils;
+import org.hopandfork.jgnuplot.model.*;
+import org.hopandfork.jgnuplot.model.Label;
+import org.hopandfork.jgnuplot.utility.UpdateChecker;
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -38,65 +62,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.table.TableColumn;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.hopandfork.jgnuplot.control.ConstantController;
-import org.hopandfork.jgnuplot.control.PlottableDataController;
-import org.hopandfork.jgnuplot.control.SettingsManager;
-import org.hopandfork.jgnuplot.control.project.ProjectManager;
-import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
-import org.hopandfork.jgnuplot.gui.JGPFileFilter;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
-import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
-import org.hopandfork.jgnuplot.gui.combobox.RelativePosComboBox;
-import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
-import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
-import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
-import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
-import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
-import org.hopandfork.jgnuplot.gui.table.ColorEditor;
-import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
-import org.hopandfork.jgnuplot.gui.table.LabelTableModel;
-import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
-import org.hopandfork.jgnuplot.gui.utility.TableUtils;
-import org.hopandfork.jgnuplot.model.DataFile;
-import org.hopandfork.jgnuplot.model.Function;
-import org.hopandfork.jgnuplot.model.Label;
-import org.hopandfork.jgnuplot.model.Plot;
-import org.hopandfork.jgnuplot.model.PlottableData;
-import org.hopandfork.jgnuplot.model.Project;
-import org.hopandfork.jgnuplot.utility.UpdateChecker;
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
 
 public class JGP extends JFrame implements ActionListener, ChangeListener {
 
@@ -116,7 +81,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public JTable dataSetTable;
 
-	public LabelTableModel labelTableModel;
+	public LabelsTableModel labelTableModel;
 	public JTable labelTable;
 
 	public JTextArea taShell;
@@ -175,9 +140,14 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
 
 	/**
-	 * Controller for PlottableData.
+	 * Controller for PlottableData management.
 	 */
 	private PlottableDataController plottableDataController = new PlottableDataController();
+
+	/**
+	 * Controller for Label management.
+	 */
+	private LabelController labelController = new LabelController();
 	
 	public JGP() {
 		this.setTitle("JGNUplot");
@@ -595,14 +565,11 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
 
-		labelTableModel = new LabelTableModel();
+		labelTableModel = new LabelsTableModel(labelController);
 		labelTable = new JTable(labelTableModel);
 		labelTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(labelTable);
-
-		TableColumn styleColumn = labelTable.getColumnModel().getColumn(3);
-		styleColumn.setCellEditor(new DefaultCellEditor(new RelativePosComboBox()));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -652,15 +619,11 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		plottableDataTableModel = new PlottableDataTableModel(plottableDataController);
 		dataSetTable = new JTable(plottableDataTableModel);
 		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
-		dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		//dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-		// TableColumn styleColumn = dataSetTable.getColumnModel().getColumn(4);
-		// styleColumn.setCellEditor(new DefaultCellEditor(new
-		// StyleComboBox()));
 
 		// Set up renderer and editor for the Favorite Color column.
 		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
@@ -706,17 +669,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("add_datafile")) {
-			int i = tp.getSelectedIndex();
-
-			switch (i) {
-				case 0:
 					acAdd();
-					break;
-				case 1: {
-					labelTableModel.addRow(new Label());
-				}
-				break;
-			}
 		} else if (e.getActionCommand().equals("add_function")) {
 			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
 			addFunctionDialog.setVisible(true);
@@ -785,8 +738,15 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void acAdd() {
-		DataFileDialog addDataFileDialog = new DataFileDialog(plottableDataController);
-		addDataFileDialog.setVisible(true);
+		if (tp.getSelectedIndex() == 0) {
+			/* Plottable data. */
+			DataFileDialog addDataFileDialog = new DataFileDialog(plottableDataController);
+			addDataFileDialog.setVisible(true);
+		} else if (tp.getSelectedIndex() == 1) {
+			/* Labels. */
+			LabelDialog addLabelDialog = new LabelDialog(labelController);
+			addLabelDialog.setVisible(true);
+		}
 	}
 
 	public void acShowConsole() {
@@ -875,28 +835,38 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	 * This method allows to edit the PlottableData object in the main table.
 	 */
 	public void acEdit() {
-		PlottableData plottableData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRow());
-		if (plottableData == null) {
-			LOG.info("Nothing to edit");
-			return;
-		}
+		if (tp.getSelectedIndex() == 0) {
+			PlottableData plottableData = plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRow());
+			if (plottableData == null) {
+				LOG.info("Nothing to edit");
+				return;
+			}
 
-		if (plottableData instanceof Function) {
-			try {
-				FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
-						plottableDataController);
-				functionDialog.setVisible(true);
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
+			if (plottableData instanceof Function) {
+				try {
+					FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
+							plottableDataController);
+					functionDialog.setVisible(true);
+				} catch (IOException e) {
+					LOG.error(e.getMessage());
+				}
+			} else {
+				try {
+					DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
+							plottableDataController);
+					dataFileDialog.setVisible(true);
+				} catch (IOException e) {
+					LOG.error(e.getMessage());
+				}
 			}
-		} else {
-			try {
-				DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
-						plottableDataController);
-				dataFileDialog.setVisible(true);
-			} catch (IOException e) {
-				LOG.error(e.getMessage());
-			}
+		} else if (tp.getSelectedIndex() == 1) {
+			/* Labels. */
+			Label label = labelTableModel.getSelectedLabel(labelTable.getSelectedRow());
+			if (label == null)
+				return;
+
+			LabelDialog labelDialog = new LabelDialog(label, labelController);
+			labelDialog.setVisible(true);
 		}
 	}
 
@@ -976,25 +946,21 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	public void acDelete() {
 		int i = tp.getSelectedIndex();
+		int[] selectedIndices;
 
 		switch (i) {
 			case 0:
-				int[] selectedIndices = dataSetTable.getSelectedRows();
+				selectedIndices = dataSetTable.getSelectedRows();
 				List<PlottableData> selectedData = plottableDataTableModel.getSelectedPlottableData(selectedIndices);
 				for (PlottableData plottableData : selectedData) {
 					plottableDataController.delete(plottableData);
 				}
 			break;
 			case 1: {
-				int[] r = labelTable.getSelectedRows();
-				if (r.length == 0) {
-					JOptionPane.showMessageDialog(this, "No label selected.", "Deleting labels",
-							JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
-				for (int j = 0; j < r.length; j++) {
-					this.labelTableModel.data.remove(r[j]);
-					labelTableModel.fireTableDataChanged();
+				selectedIndices = labelTable.getSelectedRows();
+				List<Label> selectedLabels = labelTableModel.getSelectedLabels(selectedIndices);
+				for (Label l : selectedLabels) {
+					labelController.delete(l);
 				}
 			}
 			break;
@@ -1029,12 +995,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void clearLabelTable() {
-		int count = labelTableModel.getRowCount();
-		for (int j = 0; j < count; j++) {
-			this.labelTableModel.data.remove(0);
-		}
-		labelTableModel.fireTableDataChanged();
-
+		labelController.deleteAll();
 	}
 
 	public void acPlot() throws IOException, InterruptedException {
@@ -1052,11 +1013,6 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		else
 			gp.setMode(Plot.Mode.PLOT_3D);
 
-		// TODO move this code when controllers are available!
-		for (int i = 0; i < labelTableModel.data.size(); i++) {
-			gp.addLabel(labelTableModel.data.get(i));
-		}
-		
 		gp.setTitle(tfTitle.getText());
 		try {
 			if (!tfMaxX.getText().trim().equals(""))
@@ -1157,14 +1113,16 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		if (e.getSource().equals(tp)) {
 			int i = tp.getSelectedIndex();
 			// Create the buttons.
-			bEdit.setEnabled(i == 0);
-			edit_menu_item.setEnabled(i == 0);
+			boolean editingEnabled = i <= 1;
+			bEdit.setEnabled(editingEnabled);
+			edit_menu_item.setEnabled(editingEnabled);
 
-			bDelete.setEnabled(i < 3);
-			delete_menu_item.setEnabled(i < 3);
+			boolean deleteEnabled = i <= 1;
+			bDelete.setEnabled(deleteEnabled);
+			delete_menu_item.setEnabled(deleteEnabled);
 
-			bAdd.setEnabled(i < 3);
-			add_datafile_menu_item.setEnabled(i < 3);
+			boolean addEnabled = i<=1;
+			bAdd.setEnabled(addEnabled);
 
 			bMoveUp.setEnabled(i == 0);
 			moveup_menu_item.setEnabled(i == 0);
