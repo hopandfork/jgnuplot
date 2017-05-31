@@ -3,6 +3,7 @@ package org.hopandfork.jgnuplot.utility;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@Deprecated
 public class XMLManager {
 
 	public void addTextNode(Document document, Element parent, String nodeName, String value) {

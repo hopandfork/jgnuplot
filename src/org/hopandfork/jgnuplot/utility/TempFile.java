@@ -2,6 +2,7 @@ package org.hopandfork.jgnuplot.utility;
 
 import java.io.File;
 
+@Deprecated // TODO use File.createTempFile()
 public class TempFile {
 
 	private static int tmpFilnameCounter = 0;
