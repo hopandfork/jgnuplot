@@ -68,8 +68,37 @@ public class JGPPanel extends JPanel{
 		gbc.gridx = gridx;		
 		gbc.gridy = gridy;		
 		gbc.gridwidth = gridwidth;		
-		gbc.gridheight = gridheight;		
+		gbc.gridheight = gridheight;
 		gbc.fill = fill;
+		gbc.anchor = anchor;
+		gbc.insets = new Insets(2,2,2,2);
+
+		add(comp, gbc);
+	}
+
+	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty, int fill) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		gbc.gridwidth = gridwidth;
+		gbc.gridheight = gridheight;
+		gbc.fill = fill;
+		gbc.weighty = weighty;
+		gbc.weightx = weightx;
+		gbc.insets = new Insets(2,2,2,2);
+
+		add(comp, gbc);
+	}
+
+	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty, int fill, int anchor) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		gbc.gridwidth = gridwidth;
+		gbc.gridheight = gridheight;
+		gbc.fill = fill;
+		gbc.weighty = weighty;
+		gbc.weightx = weightx;
 		gbc.anchor = anchor;
 		gbc.insets = new Insets(2,2,2,2);
 

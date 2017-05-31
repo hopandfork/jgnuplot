@@ -64,6 +64,11 @@ public class Label implements Plottable {
 		return y;
 	}
 
+	public Label ()
+	{
+
+	}
+
 	public Label(String text, double x, double y, RelativePosition relativePos) {
 		this.x = x;
 		this.y = y;

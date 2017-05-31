@@ -342,27 +342,8 @@ public class ProjectManager extends XMLManager {
 
 			mainWindow.plottableDataTableModel.fireTableDataChanged();
 		}
-		// load labels
-		NodeList labels = document.getElementsByTagName(LABEL);
+		// load labels // TODO
 
-		for (int i = 0; i < labels.getLength(); i++) {
-			Element n = (Element) labels.item(i);
-			Label l = new Label();
-			if (n.getElementsByTagName(TEXT).getLength() != 0)
-				l.setText(n.getElementsByTagName(TEXT).item(0).getTextContent());
-			if (n.getElementsByTagName(X_POS).getLength() != 0)
-				l.setX(Double.parseDouble(n.getElementsByTagName(X_POS).item(0).getTextContent()));
-			if (n.getElementsByTagName(Y_POS).getLength() != 0)
-				l.setY(Double.parseDouble(n.getElementsByTagName(Y_POS).item(0).getTextContent()));
-			if (n.getElementsByTagName(RELATIVE_POS).getLength() != 0)
-				l.setRelativePos(
-						RelativePosition.valueOf(n.getElementsByTagName(RELATIVE_POS).item(0).getTextContent()));
-			if (n.getElementsByTagName(DO_PLOT).getLength() != 0)
-				l.setEnabled(Boolean.parseBoolean(n.getElementsByTagName(DO_PLOT).item(0).getTextContent()));
-
-			mainWindow.labelTableModel.data.add(l);
-
-		}
 	}
 
 	/**
@@ -441,23 +422,7 @@ public class ProjectManager extends XMLManager {
 			}
 			root.appendChild(datasets);
 
-			// add labels
-			Element labels = (Element) document.createElement(LABEL_ITEMS);
-
-			for (int i = 0; i < mainWindow.labelTableModel.data.size(); i++) {
-				Label l = mainWindow.labelTableModel.data.get(i);
-				Element label = (Element) document.createElement(LABEL);
-				label.setAttribute(ID, i + "");
-
-				addTextNode(document, label, TEXT, l.getText() + "");
-				addTextNode(document, label, X_POS, l.getX() + "");
-				addTextNode(document, label, Y_POS, l.getY() + "");
-				addTextNode(document, label, RELATIVE_POS, l.getRelativePos() + "");
-				addTextNode(document, label, DO_PLOT, l.isEnabled() + "");
-
-				labels.appendChild(label);
-			}
-			root.appendChild(labels);
+			// add labels // TODO
 		} catch (ParserConfigurationException pce) {
 			// Parser with specified options can't be built
 			pce.printStackTrace();
