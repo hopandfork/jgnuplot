@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
+@Deprecated
 public class SettingsManager extends XMLManager {
 	
 	public static final String RECENT_PROJECTS = "recent_projects";

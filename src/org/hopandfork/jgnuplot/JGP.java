@@ -29,7 +29,7 @@ import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.dialog.*;
 import org.hopandfork.jgnuplot.gui.table.ColorEditor;

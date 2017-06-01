@@ -17,12 +17,11 @@ import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.ConstantController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.buttons.MinusButton;
 import org.hopandfork.jgnuplot.gui.buttons.PlusButton;
 import org.hopandfork.jgnuplot.gui.combobox.StyleComboBox;
 import org.hopandfork.jgnuplot.gui.table.ConstantsTableModel;
-import org.hopandfork.jgnuplot.model.Constant;
 import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 

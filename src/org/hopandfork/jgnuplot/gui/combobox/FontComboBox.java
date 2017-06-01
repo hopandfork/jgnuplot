@@ -23,6 +23,7 @@ package org.hopandfork.jgnuplot.gui.combobox;
 
 import javax.swing.JComboBox;
 
+@Deprecated
 public class FontComboBox extends JComboBox {
 
 	public FontComboBox() {
