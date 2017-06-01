@@ -32,6 +32,7 @@ import org.hopandfork.jgnuplot.gui.JGPFileFilter;
 import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.RecentProjectMenuItem;
 import org.hopandfork.jgnuplot.gui.dialog.*;
+import org.hopandfork.jgnuplot.gui.panel.PreviewPanel;
 import org.hopandfork.jgnuplot.gui.table.ColorEditor;
 import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
 import org.hopandfork.jgnuplot.gui.table.LabelsTableModel;
@@ -176,7 +177,20 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 
-		content_pane.add(createCenterPanel(), gbc);
+		/* Creates panels. */
+		JPanel overviewPanel = createCenterPanel(); // TODO
+		JPanel previewPanel = new PreviewPanel();
+
+		/* Sets minimum size for panels. */
+		Dimension minimumSize = new Dimension(100, 150); // TODO
+		previewPanel.setMinimumSize(minimumSize);
+		overviewPanel.setMinimumSize(minimumSize);
+
+		/* Creates split pane. */
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overviewPanel, previewPanel);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setResizeWeight(0.4);
+		content_pane.add(splitPane, gbc);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -191,6 +205,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 
 	}
 
+	@Deprecated
 	public static String getVersion() {
 		return "0.1.2"; // TODO
 	}
@@ -398,7 +413,7 @@ public class JGP extends JFrame implements ActionListener, ChangeListener {
 	private JPanel createCenterPanel() {
 		// Create the panel.
 		JGPPanel jp = new JGPPanel();
-		// jp.setPreferredSize(new Dimension(400, 400));
+		jp.setPreferredSize(new Dimension(700, 400));
 		jp.setBackground(new Color(0xf0f0f0));
 		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
