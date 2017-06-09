@@ -41,14 +41,15 @@ public class UpdateChecker implements Runnable {
 					// if dataset source file has changed, replot
 					File f = new File(ds.getFileName());
 					if (f.lastModified() > ds.getLastChanged()) {
-						try {
+						// TODO has to be redesign
+						/*try {
 							owner.acPlot();
 							ds.setLastChanged(f.lastModified());
 						} catch (IOException e) {
 							e.printStackTrace();
 						} catch (InterruptedException e) {
 							e.printStackTrace();
-						}
+						}*/
 					}
 				}
 				try {

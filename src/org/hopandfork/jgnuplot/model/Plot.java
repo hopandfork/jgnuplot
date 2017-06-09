@@ -416,4 +416,21 @@ public class Plot implements Plottable {
     public List<Label> getLabels() {
         return labels;
     }
+
+	public Double getZmin() {
+		return zmin;
+	}
+
+	public Double getZmax() {
+		return zmax;
+	}
+
+	public String getZlabel() {
+		return zlabel;
+	}
+
+	public boolean isLogScaleZ() {
+		return logScaleZ;
+	}
+    
 }
