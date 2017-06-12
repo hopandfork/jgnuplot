@@ -119,8 +119,8 @@ public class JGP extends JFrame implements MainInterface {
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setResizeWeight(0.4);
 
-		content_pane.add(splitPane, 0, 0, 1, 1, 1, 1, GridBagConstraints.HORIZONTAL);
-		content_pane.add(bottomPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+		content_pane.add(splitPane, 0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
+		content_pane.add(bottomPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.BOTH);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -163,57 +163,6 @@ public class JGP extends JFrame implements MainInterface {
 			error.initCause(e);
 			throw error;
 		}
-	}
-
-	public void acShowConsole() {
-		showConsole("", true);
-
-	}
-
-	public void println(String s) {
-		showConsole(s, true, false);
-	}
-
-	public void printerrln(String s) {
-		// for errors the console will be made visible
-		showConsole(s, true, true);
-	}
-
-	public void clearShell() {
-		showConsole("", false, false);
-	}
-
-	/**
-	 * Shows a console dialog. Calls showConsole(String text, boolean append,
-	 * boolean makeVisible) with makeVisible == true.
-	 *
-	 * @param text
-	 *            Text to display in the console.
-	 */
-	void showConsole(String text, boolean append) {
-		showConsole(text, append, true);
-	}
-
-	/**
-	 * Shows a console dialog.
-	 *
-	 * @param text
-	 *            Text to display in the console.
-	 * @param makeVisible
-	 *            Tells whether the console should be made visibile if not
-	 *            visible already.
-	 */
-	public void showConsole(String text, boolean append, boolean makeVisible) {
-
-		if (consoleDialog == null)
-			consoleDialog = new ConsoleDialog();
-		if (makeVisible)
-			consoleDialog.setVisible(true);
-
-		if (append)
-			text = consoleDialog.getText() + "\n" + text;
-		consoleDialog.setText(text);
-
 	}
 
 	@Override

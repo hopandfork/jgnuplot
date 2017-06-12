@@ -32,7 +32,6 @@ import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
 import org.hopandfork.jgnuplot.gui.panel.BottomInterface;
 import org.hopandfork.jgnuplot.gui.panel.MainInterface;
 import org.hopandfork.jgnuplot.gui.panel.MenuInterface;
-import org.hopandfork.jgnuplot.utility.UpdateChecker;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
@@ -51,8 +50,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
 
 	private JMenu file_menu;
-
-	private UpdateChecker updateChecker;
 
 	private JCheckBox cbUpdateCheck;
 
@@ -195,21 +192,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		help_menu.add(about_menu_item);
 	}
 
-	public void saveSettingst() {
-		LOG.info("Saving settings to: " + SETTINGS_FILE);
-		SettingsManager sm = new SettingsManager(this);
-
-		// check whether project already exist in the list,
-		// if yes, move it to the first position
-		for (int i = startRecentProjects; i < (startRecentProjects + nRecentProjects); i++) {
-			JMenuItem mi = (JMenuItem) file_menu.getItem(i);
-			if (!mi.getText().equals("-")) {
-				sm.projectFiles.add(mi.getText().trim());
-			}
-		}
-		sm.writeSettingsXML(SETTINGS_FILE);
-
-	}
 
 	/**
 	 * Add a project (its filename) to the recent project list in the file menu.
@@ -263,26 +245,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 
 	}
 
-	public void loadSettings() {
-		SettingsManager sm = new SettingsManager(this);
-
-		try {
-			sm.readSettingsXML(SETTINGS_FILE);
-		} catch (ParserConfigurationException e) {
-			LOG.error("No standard settings loaded:" + e.getMessage());
-		} catch (SAXException e) {
-			LOG.error("No standard settings loaded:" + e.getMessage());
-		} catch (IOException e) {
-			LOG.error("No standard settings loaded:" + e.getMessage());
-		}
-		// travers backwards to preserve order. addRecentProject will
-		// insert the projects at the beginning of the list, therfor oldest
-		// projects must be added first
-		for (int i = sm.projectFiles.size() - 1; i >= 0; i--) {
-			this.addRecentProject(sm.projectFiles.get(i));
-		}
-
-	}
 
 	public void loadProject()
 			throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -436,30 +398,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		}
 	}
 
-	public void loadStandardProject() {
-		/* Checks if a project already exists before load it */
-		if (Files.exists(Paths.get(STANDARD_PROJECT_FILE))) {
-			try {
-				new ProjectManager(plotController, plottableDataController).loadProjectFile(STANDARD_PROJECT_FILE);
-			} catch (RuntimeException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (ClassNotFoundException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (ParserConfigurationException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (SAXException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (IOException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (InstantiationException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (IllegalAccessException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			} catch (ProjectManagerException e) {
-				LOG.error("No standard project loaded:" + e.getMessage());
-			}
-		}
-	}
 
 	public void acNew() {
 		main.reset();
@@ -468,19 +406,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		this.projectFileName = null;
 	}
 
-	public void startCheckUpdates() {
-		System.out.println("Starting update checking ...");
-		updateChecker = new UpdateChecker(plottableDataController);
-		Thread t = new Thread(updateChecker);
-		t.start();
-
-	}
-
-	public void stopCheckUpdates() {
-		System.out.println("Stopping update checking ...");
-		if (updateChecker != null)
-			updateChecker.setCheckForUpdate(false);
-	}
 
 	private void exit() {
 		System.exit(0);
@@ -510,12 +435,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 			loadProject(e.getActionCommand().replace("load_recent_project:", "").trim());
 		else if (e.getActionCommand().equals("Load project..."))
 			acLoadProject();
-		else if (e.getActionCommand().equals("updatecheck")) {
-			if (cbUpdateCheck.isSelected())
-				startCheckUpdates();
-			else
-				stopCheckUpdates();
-		}
 
 	}
 

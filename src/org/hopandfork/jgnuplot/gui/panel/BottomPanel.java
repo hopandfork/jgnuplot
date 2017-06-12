@@ -49,8 +49,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	private JButton bEdit, bDelete, bAdd, bClear, bMoveUp, bMoveDown, bPlot, bPlotPs, bPrint, bPlotString;
 
-	private JCheckBox cbUpdateCheck;
-
 	private JTextField tfTitle;
 
 	private JRadioButton rb2D, rb3D;
@@ -128,10 +126,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		bMoveDown.setActionCommand("movedown");
 		bMoveDown.addActionListener(this);
 
-		cbUpdateCheck = new JCheckBox("automatic replot on file changes");
-		cbUpdateCheck.setActionCommand("updatecheck");
-		cbUpdateCheck.addActionListener(this);
-
 		rb2D = new JRadioButton("2D plot", true);
 		rb3D = new JRadioButton("3D plot");
 		rb2D.addChangeListener(this);
@@ -176,7 +170,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		int row = 0;
 		this.add(bMoveUp, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		this.add(bMoveDown, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(cbUpdateCheck, 2, row, 2, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
 		this.add(bEdit, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		this.add(bAdd, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
