@@ -120,7 +120,7 @@ public class JGP extends JFrame implements MainInterface {
 		splitPane.setResizeWeight(0.4);
 
 		content_pane.add(splitPane, 0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
-		content_pane.add(bottomPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.BOTH);
+		content_pane.add(bottomPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.NONE, GridBagConstraints.SOUTHWEST);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {

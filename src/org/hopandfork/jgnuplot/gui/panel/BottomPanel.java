@@ -1,13 +1,11 @@
 package org.hopandfork.jgnuplot.gui.panel;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,12 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -30,15 +24,8 @@ import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
-import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
-import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
-import org.hopandfork.jgnuplot.gui.dialog.LabelDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
-import org.hopandfork.jgnuplot.model.DataFile;
-import org.hopandfork.jgnuplot.model.Function;
-import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot;
-import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.model.Project;
 
 public class BottomPanel extends JGPPanel implements ActionListener, ChangeListener, BottomInterface, Observer {
@@ -46,8 +33,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	private static final long serialVersionUID = -7381866132142192657L;
 
 	private static Logger LOG = Logger.getLogger(BottomPanel.class);
-
-	private JButton bEdit, bDelete, bAdd, bClear, bMoveUp, bMoveDown, bPlot, bPlotPs, bPrint, bPlotString;
 
 	private JTextField tfTitle;
 
@@ -67,8 +52,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	private PlotController plotController;
 
-	private PlotDialog plotDialog;
-
 	private ConsoleDialog consoleDialog;
 
 	public BottomPanel(OverviewInterface overview, PlottableDataController plottableDataController,
@@ -84,47 +67,10 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	private void createButtonPanel() {
 
-		this.setPreferredSize(new Dimension(700, 400));
 		this.setBackground(new Color(0xf0f0f0));
 		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
-
-		// Create the panel border.
-		TitledBorder border = new TitledBorder(new EtchedBorder(), "");
-		border.setTitleColor(Color.blue);
-		this.setBorder(border);
-
-		// Create the buttons.
-		bEdit = new JButton("edit");
-		bEdit.setPreferredSize(new Dimension(80, 20));
-		bEdit.setActionCommand("edit");
-		bEdit.addActionListener(this);
-
-		bDelete = new JButton("delete");
-		bDelete.setPreferredSize(new Dimension(80, 20));
-		bDelete.setActionCommand("delete");
-		bDelete.addActionListener(this);
-
-		bAdd = new JButton("add");
-		bAdd.setPreferredSize(new Dimension(80, 20));
-		bAdd.setActionCommand("add_datafile");
-		bAdd.addActionListener(this);
-
-		bClear = new JButton("clear");
-		bClear.setPreferredSize(new Dimension(80, 20));
-		bClear.setActionCommand("clear");
-		bClear.addActionListener(this);
-
-		bMoveUp = new JButton("up");
-		bMoveUp.setPreferredSize(new Dimension(80, 20));
-		bMoveUp.setActionCommand("moveup");
-		bMoveUp.addActionListener(this);
-
-		bMoveDown = new JButton("down");
-		bMoveDown.setPreferredSize(new Dimension(80, 20));
-		bMoveDown.setActionCommand("movedown");
-		bMoveDown.addActionListener(this);
 
 		rb2D = new JRadioButton("2D plot", true);
 		rb3D = new JRadioButton("3D plot");
@@ -168,15 +114,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		cbLogScaleZ.setEnabled(false);
 
 		int row = 0;
-		this.add(bMoveUp, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(bMoveDown, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		row += 1;
-		this.add(bEdit, 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(bAdd, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(bDelete, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(bClear, 4, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		row += 1;
-		row += 3;
 		this.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfTitle, 1, row, 4, 1, GridBagConstraints.BOTH);
 		row += 1;
@@ -216,54 +153,27 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		row += 1;
 
 		// Create the buttons.
-		plotDialog = new PlotDialog(plotController);
-		JButton bPlot = new JButton("plot");
-		bPlot.setPreferredSize(new Dimension(60, 20));
+		JButton bPlot = new JButton("Plot");
 		bPlot.setActionCommand("plot");
 		bPlot.addActionListener(this);
 
 		// Create the buttons.
-		JButton bPlotPs = new JButton("save to file");
-		bPlotPs.setPreferredSize(new Dimension(160, 20));
+		JButton bPlotPs = new JButton("Export");
 		bPlotPs.setActionCommand("plotps");
 		bPlotPs.addActionListener(this);
 
-		// Create the buttons.
-		JButton bPrint = new JButton("print");
-		bPrint.setPreferredSize(new Dimension(80, 20));
-		bPrint.setActionCommand("print");
-		bPrint.addActionListener(this);
-
-		JButton bPlotString = new JButton("preview plotstring");
-		bPlotString.setPreferredSize(new Dimension(160, 20));
+		JButton bPlotString = new JButton("View script");
 		bPlotString.setActionCommand("genplotcmds");
 		bPlotString.addActionListener(this);
 
 		this.add(bPlot, 0, row, 1, 1, GridBagConstraints.NONE);
 		this.add(bPlotPs, 1, row, 1, 1, GridBagConstraints.NONE);
-		this.add(bPrint, 2, row, 1, 1, GridBagConstraints.NONE);
-		this.add(bPlotString, 3, row, 1, 1, GridBagConstraints.NONE);
+		this.add(bPlotString, 2, row, 1, 1, GridBagConstraints.NONE);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("add_datafile")) {
-			DataFileDialog dataFileDialog = new DataFileDialog(plottableDataController);
-			dataFileDialog.setVisible(true);
-		} else if (e.getActionCommand().equals("add_function")) {
-			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
-			addFunctionDialog.setVisible(true);
-		} else if (e.getActionCommand().equals("edit")) {
-			acEdit();
-		} else if (e.getActionCommand().equals("delete")) {
-			acDelete();
-		} else if (e.getActionCommand().equals("clear")) {
-			acClear();
-		} else if (e.getActionCommand().equals("moveup")) {
-			acMoveUp();
-		} else if (e.getActionCommand().equals("movedown")) {
-			acMoveDown();
-		} else if (e.getActionCommand().equals("plot")) {
+		if (e.getActionCommand().equals("plot")) {
 			try {
 				acPlot();
 			} catch (IOException e1) {
@@ -272,19 +182,9 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 				LOG.error("Plot failed:\n" + e1.getMessage());
 			}
 		} else if (e.getActionCommand().equals("plotps")) {
-			acPlotPS();
-		} else if (e.getActionCommand().equals("print")) {
-			acPrint();
+			new PlotDialog(plotController).setVisible(true);
 		} else if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
-		} else if (e.getActionCommand().equals("plot")) {
-			try {
-				acPlot();
-			} catch (IOException e1) {
-				LOG.error("Plot failed:\n" + e1.getMessage());
-			} catch (InterruptedException e1) {
-				LOG.error("Plot failed:\n" + e1.getMessage());
-			}
 		}
 
 	}
@@ -295,112 +195,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 			cl2Dor3D();
 	}
 
-	/**
-	 * This method allows to edit the PlottableData or Lable object selected.
-	 */
-	public void acEdit() {
-		if (overview.isPlottableDataSelected()) {
-			PlottableData plottableData = overview.getSelectedPlottableData();
-			if (plottableData == null) {
-				LOG.info("Nothing to edit");
-				return;
-			}
 
-			if (plottableData instanceof Function) {
-				try {
-					FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
-							plottableDataController);
-					functionDialog.setVisible(true);
-				} catch (IOException e) {
-					LOG.error(e.getMessage());
-				}
-			} else {
-				try {
-					DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
-							plottableDataController);
-					dataFileDialog.setVisible(true);
-				} catch (IOException e) {
-					LOG.error(e.getMessage());
-				}
-			}
-		} else if (overview.isLabelSelected()) {
-			/* Labels. */
-			Label label = overview.getSelectedLabel();
-			if (label == null)
-				return;
-
-			LabelDialog labelDialog = new LabelDialog(label, labelController);
-			labelDialog.setVisible(true);
-		}
-	}
-
-	/**
-	 * Moves the currently selected datasets one position further up in the
-	 * list.
-	 */
-	public void acMoveUp() {
-
-		if (overview.isPlottableDataSelected()) {
-			List<PlottableData> selectedData = overview.getSelectedPlottableDatas();
-			for (PlottableData plottableData : selectedData)
-				plottableDataController.moveUp(plottableData);
-		}
-	}
-
-	/**
-	 * Moves the currently selected datasets one position further down in the
-	 * list.
-	 */
-	public void acMoveDown() {
-		if (overview.isPlottableDataSelected()) {
-			List<PlottableData> selectedData = overview.getSelectedPlottableDatas();
-
-			for (PlottableData plottableData : selectedData)
-				plottableDataController.moveDown(plottableData);
-		}
-	}
-
-	public void acDelete() {
-		if (overview.isPlottableDataSelected()) {
-			List<PlottableData> selectedData = overview.getSelectedPlottableDatas();
-			for (PlottableData plottableData : selectedData) {
-				plottableDataController.delete(plottableData);
-			}
-		} else if (overview.isLabelSelected()) {
-			List<Label> selectedLabels = overview.getSelectedLabels();
-			for (Label l : selectedLabels) {
-				labelController.delete(l);
-			}
-		}
-	}
-
-	public void acPlotPS() {
-		plotDialog.setVisible(true);
-	}
-
-	public void acPrint() {
-		Plot gp = getGNUplot();
-		try {
-
-			gp.generatePostscriptFile("", "");
-		} catch (IOException e) {
-			LOG.error("Error printing: " + e.getMessage());
-		} catch (InterruptedException e) {
-			LOG.error("Error printing: " + e.getMessage());
-		}
-	}
-
-	public void acAdd() {
-		if (overview.isPlottableDataSelected()) {
-			/* Plottable data. */
-			DataFileDialog addDataFileDialog = new DataFileDialog(plottableDataController);
-			addDataFileDialog.setVisible(true);
-		} else if (overview.isLabelSelected()) {
-			/* Labels. */
-			LabelDialog addLabelDialog = new LabelDialog(labelController);
-			addLabelDialog.setVisible(true);
-		}
-	}
 
 	public void cl2Dor3D() {
 		tfMaxZ.setEnabled(!rb2D.isSelected());
@@ -474,7 +269,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		return gp;
 	}
 
-	public void acGenPlotCmds() {
+	private void acGenPlotCmds() {
 		Plot gp = getGNUplot();
 		String plotString = gp.toPlotString();
 		// taShell.setText( plotString );
@@ -489,7 +284,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	 * @param text
 	 *            Text to display in the console.
 	 */
-	public void showConsole(String text, boolean append) {
+	private void showConsole(String text, boolean append) {
 		showConsole(text, append, true);
 	}
 
@@ -502,7 +297,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	 *            Tells whether the console should be made visibile if not
 	 *            visible already.
 	 */
-	public void showConsole(String text, boolean append, boolean makeVisible) {
+	private void showConsole(String text, boolean append, boolean makeVisible) {
 
 		if (consoleDialog == null)
 			consoleDialog = new ConsoleDialog();
@@ -515,38 +310,12 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	}
 
-	public void acPlot() throws IOException, InterruptedException {
-		clearShell();
+	private void acPlot() throws IOException, InterruptedException {
 		LOG.info("calling GNUplot...");
 		Plot gp = getGNUplot();
 		gp.plotAndPreview();
 	}
 
-	public void clearShell() {
-		showConsole("", false, false);
-	}
-
-	public void acClear() {
-		if (overview.isPlottableDataSelected()) {
-			clearPlottableData();
-		} else if (overview.isLabelSelected()) {
-			clearLabelTable();
-		} else {
-			clearPrePlotString();
-		}
-	}
-
-	public void clearPlottableData() {
-		plottableDataController.deleteAll();
-	}
-
-	public void clearLabelTable() {
-		labelController.deleteAll();
-	}
-
-	public void clearPrePlotString() {
-
-	}
 
 	@Override
 	public void reset() {
@@ -561,30 +330,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		cbLogScaleX.setSelected(false);
 	}
 
-	@Override
-	public JButton getbEdit() {
-		return bEdit;
-	}
-
-	@Override
-	public JButton getbDelete() {
-		return bDelete;
-	}
-
-	@Override
-	public JButton getbAdd() {
-		return bAdd;
-	}
-
-	@Override
-	public JButton getbMoveUp() {
-		return bMoveUp;
-	}
-
-	@Override
-	public JButton getbMoveDown() {
-		return bMoveDown;
-	}
 
 	@Override
 	public void update(Observable o, Object arg) {

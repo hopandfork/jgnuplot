@@ -8,19 +8,13 @@ import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.PlottableData;
 
 public interface OverviewInterface {
-		public boolean isPlottableDataSelected();
+		List<Label> getSelectedLabels();
 
-		public boolean isLabelSelected();
+		PlottableData getSelectedPlottableData();
 
-		public List<Label> getSelectedLabels();
+		List<PlottableData> getAllSelectedPlottableData();
 
-		public PlottableData getSelectedPlottableData();
+		Label getSelectedLabel();
 
-		public List<PlottableData> getSelectedPlottableDatas();
-
-		public Label getSelectedLabel();
-
-		public void addPlottableData(PlottableData plottableData);
-
-		public JTextArea getPrePlotString();
+		JTextArea getPrePlotString();
 }

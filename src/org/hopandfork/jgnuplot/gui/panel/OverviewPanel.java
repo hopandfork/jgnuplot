@@ -1,31 +1,35 @@
 package org.hopandfork.jgnuplot.gui.panel;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
-import org.hopandfork.jgnuplot.gui.table.ColorEditor;
-import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
+import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
+import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
+import org.hopandfork.jgnuplot.gui.dialog.LabelDialog;
 import org.hopandfork.jgnuplot.gui.table.LabelsTableModel;
 import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
+import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.Function;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.PlottableData;
 
-public class OverviewPanel extends JGPPanel implements OverviewInterface, ChangeListener {
+import javax.swing.*;
+
+public class OverviewPanel extends JGPPanel implements OverviewInterface, ActionListener {
 
 	private static final long serialVersionUID = 3708875306419236700L;
+
+	static final Logger LOG = Logger.getLogger(OverviewPanel.class);
 
 	private JTabbedPane tp;
 
@@ -45,8 +49,22 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 
 	private MenuInterface menu;
 
+
+	/*
+	 * Actions.
+	 */
+	static private final String ACTION_ADD_DATAFILE = "add_datafile";
+	static private final String ACTION_ADD_FUNCTION = "add_function";
+	static private final String ACTION_EDIT_DATA = "edit_data";
+	static private final String ACTION_DELETE_DATA = "delete_data";
+	static private final String ACTION_MOVEUP_DATA = "up_data";
+	static private final String ACTION_MOVEDOWN_DATA = "down_data";
+	static private final String ACTION_ADD_LABEL = "add_label";
+	static private final String ACTION_EDIT_LABEL = "edit_label";
+	static private final String ACTION_DELETE_LABEL = "delete_label";
+
 	public OverviewPanel(MenuInterface menu, PlottableDataController plottableDataController,
-			LabelController labelController) {
+						 LabelController labelController) {
 		this.menu = menu;
 		this.plottableDataController = plottableDataController;
 		this.labelController = labelController;
@@ -55,43 +73,26 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 	}
 
 	private void createCenterPanel() {
-		// Create the panel.
-		this.setPreferredSize(new Dimension(700, 400));
-		this.setBackground(new Color(0xf0f0f0));
 		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
-
 		this.setLayout(gbl);
 
-		int row = 0;
-		GridBagConstraints gbc2 = new GridBagConstraints();
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 5;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
 
-		gbc2.gridx = 0;
-		gbc2.gridy = 0;
-		gbc2.gridwidth = 5;
-		gbc2.weightx = 1.0;
-		gbc2.weighty = 1.0;
-		gbc2.fill = GridBagConstraints.BOTH;
-
-		// this works, the other version does not...don't know why
-		this.add(create_tabbed_pane(), gbc2);
+		this.add(create_tabbed_pane(), gbc);
 	}
 
-	/**
-	 * 
-	 */
 	private JTabbedPane create_tabbed_pane() {
-		// Create a new tabbed pane and set the tabs to be on top.
 		tp = new JTabbedPane(JTabbedPane.TOP);
-
-		tp.addTab("Datasets", createDataSetPanel());
-
+		tp.addTab("Data", createDataSetPanel());
 		tp.addTab("Labels", createLabelSetPanel());
-
-		tp.addTab("Add. plot commands", createPrePlotStringPanel());
-
-		// Set the tab event listener.
-		tp.addChangeListener(this);
+		tp.addTab("Additional gnuplot commands", createPrePlotStringPanel());
 
 		return tp;
 	}
@@ -103,6 +104,7 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
+		GridBagConstraints gbc;
 
 		labelTableModel = new LabelsTableModel(labelController);
 		labelTable = new JTable(labelTableModel);
@@ -110,9 +112,28 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(labelTable);
 
-		GridBagConstraints gbc = new GridBagConstraints();
+		JButton btnAdd = new JButton("Add");
+		btnAdd.setActionCommand(ACTION_ADD_LABEL);
+		btnAdd.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnAdd, gbc);
+
+		JButton btnEdit = new JButton("Edit");
+		btnEdit.setActionCommand(ACTION_EDIT_LABEL);
+		btnEdit.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(1, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnEdit, gbc);
+
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setActionCommand(ACTION_DELETE_LABEL);
+		btnDelete.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(2, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnDelete, gbc);
+
+		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 3;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -123,31 +144,57 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 
 	private JPanel createDataSetPanel() {
 
-		// Create the panel.
 		JGPPanel jp = new JGPPanel();
-		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
 		jp.setLayout(gbl);
+		GridBagConstraints gbc;
 
 		plottableDataTableModel = new PlottableDataTableModel(plottableDataController);
 		plottableDataTable = new JTable(plottableDataTableModel);
 		plottableDataTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
-		// dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		// Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(plottableDataTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-		// Set up renderer and editor for the Favorite Color column.
-		plottableDataTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
-		plottableDataTable.setDefaultEditor(Color.class, new ColorEditor());
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		gbc.fill = GridBagConstraints.BOTH;
+		JButton btnAdd = new JButton("Add datafile");
+		btnAdd.setActionCommand(ACTION_ADD_DATAFILE);
+		btnAdd.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnAdd, gbc);
+
+		JButton btnAddFunction = new JButton("Add function");
+		btnAddFunction.setActionCommand(ACTION_ADD_FUNCTION);
+		btnAddFunction.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(1, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnAddFunction, gbc);
+
+		JButton btnEdit = new JButton("Edit");
+		btnEdit.setActionCommand(ACTION_EDIT_DATA);
+		btnEdit.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(2, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnEdit, gbc);
+
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setActionCommand(ACTION_DELETE_DATA);
+		btnDelete.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(3, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnDelete, gbc);
+
+		JButton btnMoveUp = new JButton("Up");
+		btnMoveUp.setActionCommand(ACTION_MOVEUP_DATA);
+		btnMoveUp.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(4, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnMoveUp, gbc);
+
+		JButton btnMoveDown = new JButton("Down");
+		btnMoveDown.setActionCommand(ACTION_MOVEDOWN_DATA);
+		btnMoveDown.addActionListener(this);
+		gbc = GridBagConstraintsFactory.create(5, 0, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		jp.add(btnMoveDown, gbc);
+
+		gbc = GridBagConstraintsFactory.create(0, 1, 6, 1, 1, 1, GridBagConstraints.BOTH);
 		jp.add(scrollPane, gbc);
 
 		return jp;
@@ -179,27 +226,6 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 
 	}
 
-	@Override
-	public boolean isPlottableDataSelected() {
-		boolean selected = false;
-
-		if (tp.getSelectedIndex() == 0) {
-			selected = true;
-		}
-
-		return selected;
-	}
-
-	@Override
-	public boolean isLabelSelected() {
-		boolean selected = false;
-
-		if (tp.getSelectedIndex() == 1) {
-			selected = true;
-		}
-
-		return selected;
-	}
 
 	@Override
 	public PlottableData getSelectedPlottableData() {
@@ -212,36 +238,7 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent e) {
-		if (e.getSource().equals(tp)) {
-			int i = tp.getSelectedIndex();
-			// TODO Create the buttons.
-			boolean editingEnabled = i <= 1;
-			// bottom.getbEdit().setEnabled(editingEnabled);
-			menu.getEdit_menu_item().setEnabled(editingEnabled);
-
-			boolean deleteEnabled = i <= 1;
-			// bottom.getbDelete().setEnabled(deleteEnabled);
-			menu.getDelete_menu_item().setEnabled(deleteEnabled);
-
-			boolean addEnabled = i <= 1;
-			// bottom.getbAdd().setEnabled(addEnabled);
-
-			// bottom.getbMoveUp().setEnabled(i == 0);
-			menu.getMoveup_menu_item().setEnabled(i == 0);
-
-			// bottom.getbMoveDown().setEnabled(i == 0);
-			menu.getMovedown_menu_item().setEnabled(i == 0);
-		}
-	}
-
-	@Override
-	public void addPlottableData(PlottableData plottableData) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<PlottableData> getSelectedPlottableDatas() {
+	public List<PlottableData> getAllSelectedPlottableData() {
 		return plottableDataTableModel.getSelectedPlottableData(plottableDataTable.getSelectedRows());
 	}
 
@@ -253,5 +250,108 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Change
 	@Override
 	public JTextArea getPrePlotString() {
 		return prePlotString;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+
+		if (cmd.equals(ACTION_ADD_DATAFILE)) {
+			DataFileDialog dataFileDialog = new DataFileDialog(plottableDataController);
+			dataFileDialog.setVisible(true);
+		} else if (cmd.equals(ACTION_ADD_FUNCTION)) {
+			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
+			addFunctionDialog.setVisible(true);
+		} else if (cmd.equals(ACTION_EDIT_DATA)) {
+			editPlottableData();
+		} else if (cmd.equals(ACTION_MOVEUP_DATA)) {
+			moveUpPlottableData();
+		} else if (cmd.equals(ACTION_MOVEDOWN_DATA)) {
+			moveDownPlottableData();
+		} else if (cmd.equals(ACTION_DELETE_DATA)) {
+			deletePlottableData();
+		} else if (cmd.equals(ACTION_ADD_LABEL)) {
+			addLabel();
+		} else if (cmd.equals(ACTION_EDIT_LABEL)) {
+			editLabel();
+		} else if (cmd.equals(ACTION_DELETE_LABEL)) {
+			deleteLabel();
+		}
+	}
+
+	private void editPlottableData() {
+		PlottableData plottableData = getSelectedPlottableData();
+		if (plottableData == null) {
+			LOG.info("Nothing to edit");
+			return;
+		}
+
+		if (plottableData instanceof Function) {
+			try {
+				FunctionDialog functionDialog = new FunctionDialog((Function) plottableData,
+						plottableDataController);
+				functionDialog.setVisible(true);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
+		} else {
+			try {
+				DataFileDialog dataFileDialog = new DataFileDialog((DataFile) plottableData,
+						plottableDataController);
+				dataFileDialog.setVisible(true);
+			} catch (IOException e) {
+				LOG.error(e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * Moves the currently selected datasets one position further up in the
+	 * list.
+	 */
+	public void moveUpPlottableData() {
+		List<PlottableData> selectedData = getAllSelectedPlottableData();
+		for (PlottableData plottableData : selectedData)
+			plottableDataController.moveUp(plottableData);
+	}
+
+	/**
+	 * Moves the currently selected datasets one position further down in the
+	 * list.
+	 */
+	public void moveDownPlottableData() {
+		List<PlottableData> selectedData = getAllSelectedPlottableData();
+		for (PlottableData plottableData : selectedData)
+			plottableDataController.moveDown(plottableData);
+	}
+
+	public void deletePlottableData() {
+		List<PlottableData> selectedData = getAllSelectedPlottableData();
+		for (PlottableData plottableData : selectedData) {
+			plottableDataController.delete(plottableData);
+		}
+	}
+
+	public void addLabel()
+	{
+		LabelDialog labelDialog = new LabelDialog(labelController);
+		labelDialog.setVisible(true);
+	}
+
+	public void editLabel() {
+		Label label = getSelectedLabel();
+		if (label == null)
+			return;
+
+		LabelDialog labelDialog = new LabelDialog(label, labelController);
+		labelDialog.setVisible(true);
+	}
+
+
+	public void deleteLabel() {
+		List<Label> selectedLabels = getSelectedLabels();
+		for (Label l : selectedLabels) {
+			labelController.delete(l);
+		}
 	}
 }
