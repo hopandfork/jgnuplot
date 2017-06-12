@@ -21,7 +21,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
-import org.hopandfork.jgnuplot.control.SettingsManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManager;
 import org.hopandfork.jgnuplot.control.project.ProjectManagerException;
 import org.hopandfork.jgnuplot.gui.JGPFileFilter;
@@ -41,11 +40,9 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 
 	private String projectFileName;
 
-	public static final int nRecentProjects = 8;
+	public static final int nRecentProjects = 5;
 
-	public static final int startRecentProjects = 7;
-
-	private static final String SETTINGS_FILE = ".JGP";
+	public static final int startRecentProjects = 4;
 
 	private static final String STANDARD_PROJECT_FILE = ".JGP.project";
 
@@ -53,8 +50,7 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 
 	private JCheckBox cbUpdateCheck;
 
-	private JMenuItem add_datafile_menu_item, add_function_menu_item, delete_menu_item, clear_menu_item, edit_menu_item,
-			moveup_menu_item, movedown_menu_item;
+	private JMenuItem add_datafile_menu_item, add_function_menu_item, delete_menu_item, clear_menu_item, edit_menu_item;
 
 	private BottomInterface bottom;
 
@@ -144,6 +140,11 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		add_function_menu_item.setActionCommand("add_function");
 		edit_menu.add(add_function_menu_item);
 
+		edit_menu_item = new JMenuItem("Edit");
+		edit_menu_item.addActionListener(this);
+		edit_menu_item.setActionCommand("edit");
+		edit_menu.add(edit_menu_item);
+
 		delete_menu_item = new JMenuItem("Delete");
 		delete_menu_item.addActionListener(this);
 		delete_menu_item.setActionCommand("delete");
@@ -153,33 +154,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		clear_menu_item.addActionListener(this);
 		clear_menu_item.setActionCommand("clear");
 		edit_menu.add(clear_menu_item);
-
-		edit_menu.addSeparator();
-
-		edit_menu_item = new JMenuItem("Edit dataset");
-		edit_menu_item.addActionListener(this);
-		edit_menu_item.setActionCommand("edit");
-		edit_menu.add(edit_menu_item);
-
-		moveup_menu_item = new JMenuItem("Move dataset(s) up");
-		moveup_menu_item.addActionListener(this);
-		moveup_menu_item.setActionCommand("moveup");
-		edit_menu.add(moveup_menu_item);
-
-		movedown_menu_item = new JMenuItem("Move dataset(s) down");
-		movedown_menu_item.addActionListener(this);
-		movedown_menu_item.setActionCommand("movedown");
-		edit_menu.add(movedown_menu_item);
-
-		// Add the view menu the menu bar.
-		JMenu view_menu = new JMenu("View");
-		view_menu.setBorderPainted(false);
-		this.add(view_menu);
-
-		JMenuItem console_menu_item = new JMenuItem("Show console");
-		console_menu_item.addActionListener(this);
-		console_menu_item.setActionCommand("showconsole");
-		view_menu.add(console_menu_item);
 
 		// Add the file menu the menu bar.
 		JMenu help_menu = new JMenu("Help");
@@ -448,13 +422,4 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		return delete_menu_item;
 	}
 
-	@Override
-	public JMenuItem getMoveup_menu_item() {
-		return moveup_menu_item;
-	}
-
-	@Override
-	public JMenuItem getMovedown_menu_item() {
-		return movedown_menu_item;
-	}
 }
