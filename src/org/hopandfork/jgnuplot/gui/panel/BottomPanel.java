@@ -41,26 +41,7 @@ import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.PlottableData;
 import org.hopandfork.jgnuplot.model.Project;
 
-public class BottomPanel extends JGPPanel implements ActionListener, ChangeListener,
-		org.hopandfork.jgnuplot.gui.panel.OverviewPanel.BottomDisplay, Observer {
-
-	public interface Display {
-		public boolean isPlottableDataSelected();
-
-		public boolean isLabelSelected();
-
-		public List<Label> getSelectedLabels();
-
-		public PlottableData getSelectedPlottableData();
-
-		public List<PlottableData> getSelectedPlottableDatas();
-
-		public Label getSelectedLabel();
-
-		public void addPlottableData(PlottableData plottableData);
-
-		public JTextArea getPrePlotString();
-	}
+public class BottomPanel extends JGPPanel implements ActionListener, ChangeListener, BottomInterface, Observer {
 
 	private static final long serialVersionUID = -7381866132142192657L;
 
@@ -80,7 +61,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	private JCheckBox cbLogScaleX, cbLogScaleY, cbLogScaleZ;
 
-	private BottomPanel.Display display;
+	private OverviewInterface overview;
 
 	private PlottableDataController plottableDataController;
 
@@ -92,9 +73,9 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	private ConsoleDialog consoleDialog;
 
-	public BottomPanel(BottomPanel.Display display, PlottableDataController plottableDataController,
+	public BottomPanel(OverviewInterface overview, PlottableDataController plottableDataController,
 			LabelController labelController, PlotController plotController) {
-		this.display = display;
+		this.overview = overview;
 		this.plottableDataController = plottableDataController;
 		this.labelController = labelController;
 		this.plotController = plotController;
@@ -325,8 +306,8 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	 * This method allows to edit the PlottableData or Lable object selected.
 	 */
 	public void acEdit() {
-		if (display.isPlottableDataSelected()) {
-			PlottableData plottableData = display.getSelectedPlottableData();
+		if (overview.isPlottableDataSelected()) {
+			PlottableData plottableData = overview.getSelectedPlottableData();
 			if (plottableData == null) {
 				LOG.info("Nothing to edit");
 				return;
@@ -349,9 +330,9 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 					LOG.error(e.getMessage());
 				}
 			}
-		} else if (display.isLabelSelected()) {
+		} else if (overview.isLabelSelected()) {
 			/* Labels. */
-			Label label = display.getSelectedLabel();
+			Label label = overview.getSelectedLabel();
 			if (label == null)
 				return;
 
@@ -366,8 +347,8 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	 */
 	public void acMoveUp() {
 
-		if (display.isPlottableDataSelected()) {
-			List<PlottableData> selectedData = display.getSelectedPlottableDatas();
+		if (overview.isPlottableDataSelected()) {
+			List<PlottableData> selectedData = overview.getSelectedPlottableDatas();
 			for (PlottableData plottableData : selectedData)
 				plottableDataController.moveUp(plottableData);
 		}
@@ -378,8 +359,8 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	 * list.
 	 */
 	public void acMoveDown() {
-		if (display.isPlottableDataSelected()) {
-			List<PlottableData> selectedData = display.getSelectedPlottableDatas();
+		if (overview.isPlottableDataSelected()) {
+			List<PlottableData> selectedData = overview.getSelectedPlottableDatas();
 
 			for (PlottableData plottableData : selectedData)
 				plottableDataController.moveDown(plottableData);
@@ -387,13 +368,13 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	}
 
 	public void acDelete() {
-		if (display.isPlottableDataSelected()) {
-			List<PlottableData> selectedData = display.getSelectedPlottableDatas();
+		if (overview.isPlottableDataSelected()) {
+			List<PlottableData> selectedData = overview.getSelectedPlottableDatas();
 			for (PlottableData plottableData : selectedData) {
 				plottableDataController.delete(plottableData);
 			}
-		} else if (display.isLabelSelected()) {
-			List<Label> selectedLabels = display.getSelectedLabels();
+		} else if (overview.isLabelSelected()) {
+			List<Label> selectedLabels = overview.getSelectedLabels();
 			for (Label l : selectedLabels) {
 				labelController.delete(l);
 			}
@@ -417,11 +398,11 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	}
 
 	public void acAdd() {
-		if (display.isPlottableDataSelected()) {
+		if (overview.isPlottableDataSelected()) {
 			/* Plottable data. */
 			DataFileDialog addDataFileDialog = new DataFileDialog(plottableDataController);
 			addDataFileDialog.setVisible(true);
-		} else if (display.isLabelSelected()) {
+		} else if (overview.isLabelSelected()) {
 			/* Labels. */
 			LabelDialog addLabelDialog = new LabelDialog(labelController);
 			addLabelDialog.setVisible(true);
@@ -495,7 +476,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		gp.setYlabel(tfYLabel.getText());
 		gp.setZlabel(tfZLabel.getText());
 
-		gp.setPrePlotString(display.getPrePlotString().getText() + "\n");
+		gp.setPrePlotString(overview.getPrePlotString().getText() + "\n");
 
 		return gp;
 	}
@@ -553,9 +534,9 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 	}
 
 	public void acClear() {
-		if (display.isPlottableDataSelected()) {
+		if (overview.isPlottableDataSelected()) {
 			clearPlottableData();
-		} else if (display.isLabelSelected()) {
+		} else if (overview.isLabelSelected()) {
 			clearLabelTable();
 		} else {
 			clearPrePlotString();
@@ -574,6 +555,7 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	}
 
+	@Override
 	public void reset() {
 		tfTitle.setText("");
 		tfMaxX.setText("");

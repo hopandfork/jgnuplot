@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -18,7 +16,6 @@ import javax.swing.event.ChangeListener;
 
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
-import org.hopandfork.jgnuplot.gui.panel.BottomPanel.Display;
 import org.hopandfork.jgnuplot.gui.table.ColorEditor;
 import org.hopandfork.jgnuplot.gui.table.ColorRenderer;
 import org.hopandfork.jgnuplot.gui.table.LabelsTableModel;
@@ -26,28 +23,7 @@ import org.hopandfork.jgnuplot.gui.table.PlottableDataTableModel;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.PlottableData;
 
-public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
-	public interface BottomDisplay {
-		public JButton getbEdit();
-
-		public JButton getbDelete();
-
-		public JButton getbAdd();
-
-		public JButton getbMoveUp();
-
-		public JButton getbMoveDown();
-	}
-
-	public interface MenuDisplay {
-		public JMenuItem getEdit_menu_item();
-
-		public JMenuItem getDelete_menu_item();
-
-		public JMenuItem getMoveup_menu_item();
-
-		public JMenuItem getMovedown_menu_item();
-	}
+public class OverviewPanel extends JGPPanel implements OverviewInterface, ChangeListener {
 
 	private static final long serialVersionUID = 3708875306419236700L;
 
@@ -55,7 +31,7 @@ public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
 
 	private PlottableDataTableModel plottableDataTableModel;
 
-	private JTable dataSetTable;
+	private JTable plottableDataTable;
 
 	private LabelsTableModel labelTableModel;
 
@@ -67,17 +43,14 @@ public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
 
 	private LabelController labelController;
 
-	private BottomDisplay bottomDisplay;
+	private MenuInterface menu;
 
-	private MenuDisplay menuDisplay;
-
-	public OverviewPanel(MenuDisplay menuDisplay, BottomDisplay bottomDisplay,
-			PlottableDataController plottableDataController, LabelController labelController) {
-		this.menuDisplay = menuDisplay;
-		this.bottomDisplay = bottomDisplay;
+	public OverviewPanel(MenuInterface menu, PlottableDataController plottableDataController,
+			LabelController labelController) {
+		this.menu = menu;
 		this.plottableDataController = plottableDataController;
 		this.labelController = labelController;
-		
+
 		createCenterPanel();
 	}
 
@@ -157,17 +130,17 @@ public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
 		jp.setLayout(gbl);
 
 		plottableDataTableModel = new PlottableDataTableModel(plottableDataController);
-		dataSetTable = new JTable(plottableDataTableModel);
-		dataSetTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
+		plottableDataTable = new JTable(plottableDataTableModel);
+		plottableDataTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
 		// dataSetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		// Create the scroll pane and add the table to it.
-		JScrollPane scrollPane = new JScrollPane(dataSetTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		JScrollPane scrollPane = new JScrollPane(plottableDataTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		// Set up renderer and editor for the Favorite Color column.
-		dataSetTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
-		dataSetTable.setDefaultEditor(Color.class, new ColorEditor());
+		plottableDataTable.setDefaultRenderer(Color.class, new ColorRenderer(true));
+		plottableDataTable.setDefaultEditor(Color.class, new ColorEditor());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -230,7 +203,7 @@ public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
 
 	@Override
 	public PlottableData getSelectedPlottableData() {
-		return plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRow());
+		return plottableDataTableModel.getSelectedPlottableData(plottableDataTable.getSelectedRow());
 	}
 
 	@Override
@@ -242,23 +215,23 @@ public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource().equals(tp)) {
 			int i = tp.getSelectedIndex();
-			// Create the buttons.
+			// TODO Create the buttons.
 			boolean editingEnabled = i <= 1;
-			bottomDisplay.getbEdit().setEnabled(editingEnabled);
-			menuDisplay.getEdit_menu_item().setEnabled(editingEnabled);
+			// bottom.getbEdit().setEnabled(editingEnabled);
+			menu.getEdit_menu_item().setEnabled(editingEnabled);
 
 			boolean deleteEnabled = i <= 1;
-			bottomDisplay.getbDelete().setEnabled(deleteEnabled);
-			menuDisplay.getDelete_menu_item().setEnabled(deleteEnabled);
+			// bottom.getbDelete().setEnabled(deleteEnabled);
+			menu.getDelete_menu_item().setEnabled(deleteEnabled);
 
 			boolean addEnabled = i <= 1;
-			bottomDisplay.getbAdd().setEnabled(addEnabled);
+			// bottom.getbAdd().setEnabled(addEnabled);
 
-			bottomDisplay.getbMoveUp().setEnabled(i == 0);
-			menuDisplay.getMoveup_menu_item().setEnabled(i == 0);
+			// bottom.getbMoveUp().setEnabled(i == 0);
+			menu.getMoveup_menu_item().setEnabled(i == 0);
 
-			bottomDisplay.getbMoveDown().setEnabled(i == 0);
-			menuDisplay.getMovedown_menu_item().setEnabled(i == 0);
+			// bottom.getbMoveDown().setEnabled(i == 0);
+			menu.getMovedown_menu_item().setEnabled(i == 0);
 		}
 	}
 
@@ -269,7 +242,7 @@ public class OverviewPanel extends JGPPanel implements Display, ChangeListener {
 
 	@Override
 	public List<PlottableData> getSelectedPlottableDatas() {
-		return plottableDataTableModel.getSelectedPlottableData(dataSetTable.getSelectedRows());
+		return plottableDataTableModel.getSelectedPlottableData(plottableDataTable.getSelectedRows());
 	}
 
 	@Override

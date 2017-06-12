@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
+import org.hopandfork.jgnuplot.gui.bar.Menu;
 import org.hopandfork.jgnuplot.utility.XMLManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,7 +38,7 @@ public class SettingsManager extends XMLManager {
 	
 	private  JGP jgnuplot;
 
-	public SettingsManager(JGP jgnuplot) {
+	public SettingsManager(Menu menu) {
 		this.jgnuplot = jgnuplot;
 		projectFiles = new ArrayList<String>();
 	}
