@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -153,11 +152,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		row += 1;
 
 		// Create the buttons.
-		JButton bPlot = new JButton("Plot");
-		bPlot.setActionCommand("plot");
-		bPlot.addActionListener(this);
-
-		// Create the buttons.
 		JButton bPlotPs = new JButton("Export");
 		bPlotPs.setActionCommand("plotps");
 		bPlotPs.addActionListener(this);
@@ -166,22 +160,13 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		bPlotString.setActionCommand("genplotcmds");
 		bPlotString.addActionListener(this);
 
-		this.add(bPlot, 0, row, 1, 1, GridBagConstraints.NONE);
-		this.add(bPlotPs, 1, row, 1, 1, GridBagConstraints.NONE);
-		this.add(bPlotString, 2, row, 1, 1, GridBagConstraints.NONE);
+		this.add(bPlotPs, 0, row, 1, 1, GridBagConstraints.NONE);
+		this.add(bPlotString, 1, row, 1, 1, GridBagConstraints.NONE);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("plot")) {
-			try {
-				acPlot();
-			} catch (IOException e1) {
-				LOG.error("Plot failed:\n" + e1.getMessage());
-			} catch (InterruptedException e1) {
-				LOG.error("Plot failed:\n" + e1.getMessage());
-			}
-		} else if (e.getActionCommand().equals("plotps")) {
+		if (e.getActionCommand().equals("plotps")) {
 			new PlotDialog(plotController).setVisible(true);
 		} else if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
@@ -205,7 +190,9 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	}
 
-	public Plot getGNUplot() {
+	// TODO
+	@Deprecated
+	private Plot getGNUplot() {
 		Plot gp = Project.currentProject().getPlot();
 
 		if (rb2D.isSelected())
@@ -310,11 +297,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	}
 
-	private void acPlot() throws IOException, InterruptedException {
-		LOG.info("calling GNUplot...");
-		Plot gp = getGNUplot();
-		gp.plotAndPreview();
-	}
 
 
 	@Override

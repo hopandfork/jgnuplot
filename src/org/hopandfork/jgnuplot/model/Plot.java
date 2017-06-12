@@ -80,7 +80,8 @@ public class Plot implements Plottable {
         StringBuilder sb = new StringBuilder();
 
 		/* Adds pre-plot commands. */
-        sb.append(prePlotString);
+		if (prePlotString != null)
+            sb.append(prePlotString);
 
 		/* Adds various settings. */
         if (title == null)

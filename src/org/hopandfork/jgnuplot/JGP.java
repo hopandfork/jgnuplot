@@ -106,7 +106,7 @@ public class JGP extends JFrame implements MainInterface {
 		/* Creates panels. */
 		overviewPanel = new OverviewPanel(menu, plottableDataController, labelController);
 		bottomPanel = new BottomPanel(overviewPanel, plottableDataController, labelController, plotController);
-		previewPanel = new PreviewPanel();
+		previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
 
 		/* Sets minimum size for panels. */
 		Dimension minimumSize = new Dimension(100, 150);

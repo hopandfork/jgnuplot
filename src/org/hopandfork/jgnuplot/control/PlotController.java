@@ -10,8 +10,6 @@ public class PlotController extends Observable {
 	
 	/**
 	 * This method allows to update an existing plot.
-	 * @param plot
-	 * @return
 	 */
 	public Plot updatePlot(String title){
 		Plot plot = Project.currentProject().getPlot();
