@@ -279,7 +279,7 @@ public class Plot implements Plottable {
         return xmax;
     }
 
-    public void setXmax(double xmax) {
+    public void setXmax(Double xmax) {
         this.xmax = xmax;
     }
 
@@ -287,7 +287,7 @@ public class Plot implements Plottable {
         return xmin;
     }
 
-    public void setXmin(double xmin) {
+    public void setXmin(Double xmin) {
         this.xmin = xmin;
     }
 
@@ -327,7 +327,7 @@ public class Plot implements Plottable {
         return ymax;
     }
 
-    public void setYmax(double ymax) {
+    public void setYmax(Double ymax) {
         this.ymax = ymax;
     }
 
@@ -335,7 +335,7 @@ public class Plot implements Plottable {
         return ymin;
     }
 
-    public void setYmin(double ymin) {
+    public void setYmin(Double ymin) {
         this.ymin = ymin;
     }
 

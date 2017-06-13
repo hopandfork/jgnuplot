@@ -36,13 +36,11 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.bar.Menu;
-import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.panel.BottomPanel;
 import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.panel.MainInterface;
@@ -51,11 +49,11 @@ import org.hopandfork.jgnuplot.gui.panel.PreviewPanel;
 
 public class JGP extends JFrame implements MainInterface {
 
-	private static Logger LOG = Logger.getLogger(JGP.class);
+//	private static Logger LOG = Logger.getLogger(JGP.class);
 
 	public static final boolean debug = true;
 
-	private ConsoleDialog consoleDialog;
+//	private ConsoleDialog consoleDialog;
 
 	public JTextArea taShell;
 
@@ -105,7 +103,7 @@ public class JGP extends JFrame implements MainInterface {
 
 		/* Creates panels. */
 		overviewPanel = new OverviewPanel(menu, plottableDataController, labelController);
-		bottomPanel = new BottomPanel(overviewPanel, plottableDataController, labelController, plotController);
+		bottomPanel = new BottomPanel(overviewPanel, plotController);
 		previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
 
 		/* Sets minimum size for panels. */

@@ -1,6 +1,15 @@
 package org.hopandfork.jgnuplot.gui.panel;
 
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
@@ -8,17 +17,14 @@ import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.Observable;
-import java.util.Observer;
-
 /**
  * Panel containing components for plot preview.
  */
 public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.ImageConsumer {
 
-    private PlotController plotController;
+	private static final long serialVersionUID = 824126200434468835L;
+
+	private PlotController plotController;
 
     public PreviewPanel(PlotController plotController, PlottableDataController plottableDataController, LabelController labelController)
     {
@@ -40,7 +46,7 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
     private void refreshPlot() {
         Plot plot = plotController.getCurrent();
         String plotScript = plot.toPlotString();
-        plotScript = "set terminal pngcairo size 800,600\n" + plotScript; // TODO size
+        plotScript = "set terminal pngcairo size 600,400\n" + plotScript; // TODO size
         GnuplotRunner pr = new GnuplotRunner(plotScript, this);
         new Thread(pr).start();
     }

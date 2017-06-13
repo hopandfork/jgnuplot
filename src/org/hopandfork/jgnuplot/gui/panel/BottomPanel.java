@@ -5,6 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -15,23 +19,20 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import org.apache.log4j.Logger;
-import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
-import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
 import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.model.Plot.Mode;
 import org.hopandfork.jgnuplot.model.Project;
 
-public class BottomPanel extends JGPPanel implements ActionListener, ChangeListener, BottomInterface, Observer {
+public class BottomPanel extends JGPPanel
+		implements ActionListener, KeyListener, ItemListener, BottomInterface, Observer {
 
 	private static final long serialVersionUID = -7381866132142192657L;
 
-	private static Logger LOG = Logger.getLogger(BottomPanel.class);
+//	private static Logger LOG = Logger.getLogger(BottomPanel.class);
 
 	private JTextField tfTitle;
 
@@ -45,19 +46,12 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	private OverviewInterface overview;
 
-	private PlottableDataController plottableDataController;
-
-	private LabelController labelController;
-
 	private PlotController plotController;
 
 	private ConsoleDialog consoleDialog;
 
-	public BottomPanel(OverviewInterface overview, PlottableDataController plottableDataController,
-			LabelController labelController, PlotController plotController) {
+	public BottomPanel(OverviewInterface overview, PlotController plotController) {
 		this.overview = overview;
-		this.plottableDataController = plottableDataController;
-		this.labelController = labelController;
 		this.plotController = plotController;
 		plotController.addObserver(this);
 
@@ -71,12 +65,11 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
 
-		rb2D = new JRadioButton("2D plot", true);
-		rb3D = new JRadioButton("3D plot");
-		rb2D.addChangeListener(this);
-		rb3D.addChangeListener(this);
-		rb3D.setActionCommand("2dplot");
-		rb3D.setActionCommand("3dplot");
+		/* Inits with default values */
+		Plot plot = plotController.getCurrent();
+		
+		rb2D = new JRadioButton("2D plot", plot.getMode()==Mode.PLOT_2D?true:false);
+		rb3D = new JRadioButton("3D plot", plot.getMode()==Mode.PLOT_3D?true:false);
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(rb2D);
@@ -84,21 +77,21 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 		tfTitle = new JTextField("", 16);
 
-		tfMaxX = new JTextField("", 8);
+		tfMaxX = new JTextField("" + plot.getXmax(), 8);
 
-		tfMaxY = new JTextField("", 8);
+		tfMaxY = new JTextField("" + plot.getYmax(), 8);
 
 		tfXLabel = new JTextField("", 10);
 
-		tfMinX = new JTextField("", 8);
+		tfMinX = new JTextField("" + plot.getXmin(), 8);
 
-		tfMinY = new JTextField("", 8);
+		tfMinY = new JTextField("" + plot.getYmin(), 8);
 
 		tfYLabel = new JTextField("", 10);
 
-		tfMaxZ = new JTextField("", 8);
+		tfMaxZ = new JTextField("" + plot.getZmax(), 8);
 
-		tfMinZ = new JTextField("", 8);
+		tfMinZ = new JTextField("" + plot.getZmin(), 8);
 
 		tfZLabel = new JTextField("", 10);
 
@@ -115,38 +108,49 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		int row = 0;
 		this.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfTitle, 1, row, 4, 1, GridBagConstraints.BOTH);
+		tfTitle.addKeyListener(this);
 		row += 1;
 		this.add(new JLabel("Plottype:"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(rb2D, 1, row, 1, 1, GridBagConstraints.NONE);
 		this.add(rb3D, 2, row, 1, 1, GridBagConstraints.NONE);
+		rb2D.addItemListener(this);
 		row += 1;
 		this.add(new JLabel("min X"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMinX, 1, row, 1, 1, GridBagConstraints.NONE);
+		tfMinX.addKeyListener(this);
 		this.add(new JLabel("x axis label"), 2, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfXLabel, 3, row, 2, 1, GridBagConstraints.BOTH);
+		tfXLabel.addKeyListener(this);
 		row += 1;
 		this.add(new JLabel("max X"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMaxX, 1, row, 1, 1, GridBagConstraints.NONE);
+		tfMaxX.addKeyListener(this);
 		this.add(new JLabel("logscale x axis"), 2, row, 1, 1, GridBagConstraints.WEST);
 		this.add(cbLogScaleX, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
 		this.add(new JLabel("min Y"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMinY, 1, row, 1, 1, GridBagConstraints.NONE);
+		tfMinY.addKeyListener(this);
 		this.add(new JLabel("y axis label"), 2, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfYLabel, 3, row, 2, 1, GridBagConstraints.BOTH);
+		tfYLabel.addKeyListener(this);
 		row += 1;
 		this.add(new JLabel("max Y"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMaxY, 1, row, 1, 1, GridBagConstraints.NONE);
+		tfMaxY.addKeyListener(this);
 		this.add(new JLabel("logscale y axis"), 2, row, 1, 1, GridBagConstraints.WEST);
 		this.add(cbLogScaleY, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
 		this.add(new JLabel("min Z"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMinZ, 1, row, 1, 1, GridBagConstraints.NONE);
+		tfMinZ.addKeyListener(this);
 		this.add(new JLabel("z axis label"), 2, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfZLabel, 3, row, 2, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		tfZLabel.addKeyListener(this);
 		row += 1;
 		this.add(new JLabel("max Z"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMaxZ, 1, row, 1, 1, GridBagConstraints.NONE);
+		tfMaxZ.addKeyListener(this);
 		this.add(new JLabel("logscale z axis"), 2, row, 1, 1, GridBagConstraints.WEST);
 		this.add(cbLogScaleZ, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		row += 1;
@@ -171,23 +175,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		} else if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
 		}
-
-	}
-
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		if (e.getSource().equals(rb2D))
-			cl2Dor3D();
-	}
-
-
-
-	public void cl2Dor3D() {
-		tfMaxZ.setEnabled(!rb2D.isSelected());
-		tfMinZ.setEnabled(!rb2D.isSelected());
-		tfZLabel.setEnabled(!rb2D.isSelected());
-		cbLogScaleZ.setEnabled(!rb2D.isSelected());
-
 	}
 
 	// TODO
@@ -297,8 +284,6 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 
 	}
 
-
-
 	@Override
 	public void reset() {
 		tfTitle.setText("");
@@ -312,10 +297,41 @@ public class BottomPanel extends JGPPanel implements ActionListener, ChangeListe
 		cbLogScaleX.setSelected(false);
 	}
 
-
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO has to be updated
 
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		plotController.updatePlot(rb2D.isSelected() ? Mode.PLOT_2D : Mode.PLOT_3D, tfTitle.getText(), tfMaxX.getText(),
+				tfMinX.getText(), tfMaxY.getText(), tfMinY.getText(), tfMaxZ.getText(), tfMinZ.getText(),
+				tfXLabel.getText(), tfYLabel.getText(), tfZLabel.getText());
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		tfMaxZ.setEnabled(!rb2D.isSelected());
+		tfMinZ.setEnabled(!rb2D.isSelected());
+		tfZLabel.setEnabled(!rb2D.isSelected());
+		cbLogScaleZ.setEnabled(!rb2D.isSelected());
+		
+		Mode mode = rb2D.isSelected() ? Mode.PLOT_2D : Mode.PLOT_3D;
+		plotController.updatePlot(mode, tfTitle.getText(), tfMaxX.getText(), tfMinX.getText(), tfMaxY.getText(),
+				tfMinY.getText(), tfMaxZ.getText(), tfMinZ.getText(), tfXLabel.getText(), tfYLabel.getText(),
+				tfZLabel.getText());
 	}
 }
