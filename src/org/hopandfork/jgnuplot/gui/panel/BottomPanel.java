@@ -98,21 +98,24 @@ public class BottomPanel extends JGPPanel
 
 
 		int row = 0;
-		this.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfTitle, 1, row, 4, 1, GridBagConstraints.BOTH);
+		this.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfTitle, 1, row, 4, 1, GridBagConstraints.HORIZONTAL);
 		tfTitle.addKeyListener(this);
+
 		row += 1;
-		this.add(new JLabel("Plottype:"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(rb2D, 1, row, 1, 1, GridBagConstraints.NONE);
-		this.add(rb3D, 2, row, 1, 1, GridBagConstraints.NONE);
+		this.add(new JLabel("Plottype:"), 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(rb2D, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(rb3D, 2, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		rb2D.addItemListener(this);
+
 		row += 1;
-		this.add(new JLabel("min X"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfMinX, 1, row, 1, 1, GridBagConstraints.NONE);
+		this.add(new JLabel("min X"), 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMinX, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		tfMinX.addKeyListener(this);
-		this.add(new JLabel("x axis label"), 2, row, 1, 1, GridBagConstraints.WEST);
+		this.add(new JLabel("x axis label"), 2, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
 		this.add(tfXLabel, 3, row, 2, 1, GridBagConstraints.BOTH);
 		tfXLabel.addKeyListener(this);
+
 		row += 1;
 		this.add(new JLabel("max X"), 0, row, 1, 1, GridBagConstraints.WEST);
 		this.add(tfMaxX, 1, row, 1, 1, GridBagConstraints.NONE);
