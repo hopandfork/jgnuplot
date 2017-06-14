@@ -29,7 +29,7 @@ public class PlottableDataController extends Observable {
 		return function;
 	}
 
-	public DataFile addDataFile(String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
+	public DataFile addDataFile(String filename, String title, PlottingStyle style, DataSelection dataSelection) {
 		Plot plot = Project.currentProject().getPlot();
 
 		DataFile dataFile = new DataFile();
@@ -37,8 +37,6 @@ public class PlottableDataController extends Observable {
 		dataFile.setTitle(title);
 		dataFile.setStyle(style);
 		dataFile.setDataSelection(dataSelection);
-		dataFile.setPreProcessProgram(preProcessProgram);
-
 
 		plot.addPlottableData(dataFile);
 
@@ -58,14 +56,13 @@ public class PlottableDataController extends Observable {
 		return function;
 	}
 
-	public DataFile updateDataFile(DataFile dataFile, String filename, String title, PlottingStyle style, DataSelection dataSelection, String preProcessProgram) {
+	public DataFile updateDataFile(DataFile dataFile, String filename, String title, PlottingStyle style, DataSelection dataSelection) {
 	
 	/* Updates dataFile */
 		dataFile.setFileName(filename);
 		dataFile.setTitle(title);
 		dataFile.setStyle(style);
 		dataFile.setDataSelection(dataSelection);
-		dataFile.setPreProcessProgram(preProcessProgram);
 
 		notifyObservers(dataFile);
 		return dataFile;
