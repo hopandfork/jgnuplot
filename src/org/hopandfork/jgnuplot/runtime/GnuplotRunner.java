@@ -4,7 +4,10 @@ import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Runnable used to asynchronously run Gnuplot.
@@ -32,6 +35,7 @@ public class GnuplotRunner implements Runnable {
 
 	public interface ImageConsumer {
 		void readImage(Image image);
+		void onImageGenerationError (String errorMessage);
 	}
 
 	/**
@@ -41,7 +45,7 @@ public class GnuplotRunner implements Runnable {
 		try {
 			/* Spawns a new process to execute gnuplot */
 			Process p = Runtime.getRuntime().exec(GNUPLOT_CMD);
-			LOG.debug("Initialized process...");
+			LOG.info("Running gnuplot...");
 
 			/* Writes plot script to stdin */
 			OutputStream stdin = p.getOutputStream();
@@ -61,11 +65,20 @@ public class GnuplotRunner implements Runnable {
 			stdout.close();
 
 			if (p.exitValue() != 0) {
-				String errorMsg = "";
-				while (stderr.available() > 0) {
-					errorMsg += (char)stderr.read();
+				LOG.error("GNUplot exited with value: " + p.exitValue());
+
+				/*
+				 * Reads error message.
+				 */
+				if (imageConsumer != null) {
+					StringBuilder errorMsgBuilder = new StringBuilder();
+					while (stderr.available() > 0) {
+						errorMsgBuilder.append((char) stderr.read());
+					}
+
+					imageConsumer.onImageGenerationError(errorMsgBuilder.toString());
 				}
-				LOG.error("GNUplot exited with value: " + p.exitValue() + " - " + errorMsg);
+
 				return;
 			}
 
@@ -73,9 +86,13 @@ public class GnuplotRunner implements Runnable {
 				imageConsumer.readImage(image);
 
 		} catch (IOException e) {
-			e.printStackTrace(); // TODO display an error message?
+			e.printStackTrace();
+			if (imageConsumer != null)
+				imageConsumer.onImageGenerationError("Could not run 'gnuplot'!");
 		} catch (InterruptedException e) {
-			e.printStackTrace(); // TODO display an error message?
+			e.printStackTrace();
+			if (imageConsumer != null)
+				imageConsumer.onImageGenerationError("'gnuplot' execution failed!");
 		}
 
 	}

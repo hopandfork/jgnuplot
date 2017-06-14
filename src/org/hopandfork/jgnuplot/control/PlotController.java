@@ -15,7 +15,7 @@ public class PlotController extends Observable {
 	 * This method allows to update an existing plot.
 	 */
 	public void updatePlot(Mode mode, String title, String xMax, String xMin, String yMax, String yMin, String zMax,
-			String zMin, String xLabel, String yLabel, String zLabel, boolean xLogScale, boolean yLogScale, boolean zLogScale) {
+						   String zMin, String xLabel, String yLabel, String zLabel, boolean xLogScale, boolean yLogScale, boolean zLogScale) {
 		Plot plot = Project.currentProject().getPlot();
 
 		Double xmin = plot.getXmin();
@@ -24,33 +24,40 @@ public class PlotController extends Observable {
 		Double ymax = plot.getYmax();
 		Double zmin = plot.getZmin();
 		Double zmax = plot.getZmax();
+
 		try {
-			xmin = Double.parseDouble(xMin);
+			if (!xMin.isEmpty())
+				xmin = Double.parseDouble(xMin);
 		} catch (NumberFormatException e) {
 			LOG.error("Skips invalid values");
 		}
 		try {
-			xmax = Double.parseDouble(xMax);
+			if (!xMax.isEmpty())
+				xmax = Double.parseDouble(xMax);
 		} catch (NumberFormatException e) {
 			LOG.error("Skips invalid values");
 		}
 		try {
-			ymin = Double.parseDouble(yMin);
+			if (!yMin.isEmpty())
+				ymin = Double.parseDouble(yMin);
 		} catch (NumberFormatException e) {
 			LOG.error("Skips invalid values");
 		}
 		try {
-			ymax = Double.parseDouble(yMax);
+			if (!yMax.isEmpty())
+				ymax = Double.parseDouble(yMax);
 		} catch (NumberFormatException e) {
 			LOG.error("Skips invalid values");
 		}
 		try {
-			zmin = Double.parseDouble(zMin);
+			if (!zMin.isEmpty())
+				zmin = Double.parseDouble(zMin);
 		} catch (NumberFormatException e) {
 			LOG.error("Skips invalid values");
 		}
 		try {
-			zmax = Double.parseDouble(zMax);
+			if (!zMax.isEmpty())
+				zmax = Double.parseDouble(zMax);
 		} catch (NumberFormatException e) {
 			LOG.error("Skips invalid values");
 		}
@@ -75,8 +82,7 @@ public class PlotController extends Observable {
 		notifyObservers(plot);
 	}
 
-	public void updatePreplotScript (String preplotScript)
-	{
+	public void updatePreplotScript(String preplotScript) {
 		Plot plot = Project.currentProject().getPlot();
 		plot.setPrePlotString(preplotScript);
 		//notifyObservers(plot); TODO preview would fail if user is still digiting the commands!

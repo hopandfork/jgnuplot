@@ -10,6 +10,7 @@ import java.util.Observer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
@@ -25,6 +26,8 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
 	private static final long serialVersionUID = 824126200434468835L;
 
 	private PlotController plotController;
+
+	static final private Logger LOG = Logger.getLogger(PreviewPanel.class);
 
     public PreviewPanel(PlotController plotController, PlottableDataController plottableDataController, LabelController labelController)
     {
@@ -46,6 +49,7 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
     private void refreshPlot() {
         Plot plot = plotController.getCurrent();
         String plotScript = plot.toPlotString();
+
         plotScript = "set terminal pngcairo size 600,400\n" + plotScript; // TODO size
         GnuplotRunner pr = new GnuplotRunner(plotScript, this);
         new Thread(pr).start();
@@ -59,6 +63,19 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         	return;
 
         label = new JLabel(new ImageIcon(image));
+
+        GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
+        this.removeAll();
+        this.add(label, gbc);
+        this.revalidate();
+
+		LOG.info("Refreshed preview");
+    }
+
+    @Override
+    public void onImageGenerationError(String errorMessage) {
+        JLabel label;
+        label = new JLabel(errorMessage);
 
         GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
         this.removeAll();
