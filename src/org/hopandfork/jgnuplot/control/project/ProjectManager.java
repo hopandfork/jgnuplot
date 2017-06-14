@@ -41,12 +41,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.hopandfork.jgnuplot.JGP;
+import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.gui.panel.BottomPanel;
+import org.hopandfork.jgnuplot.gui.panel.OverviewPanel;
 import org.hopandfork.jgnuplot.model.DataFile;
-import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.model.Plot.Mode;
 import org.hopandfork.jgnuplot.model.PlottableData;
-import org.hopandfork.jgnuplot.model.RelativePosition;
 import org.hopandfork.jgnuplot.model.style.GnuplotColor;
 import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 import org.hopandfork.jgnuplot.utility.XMLManager;
@@ -68,7 +70,8 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  */
 public class ProjectManager extends XMLManager {
 
-	private JGP mainWindow;
+	private OverviewPanel overviewPanel;
+	private BottomPanel bottomPanel;
 
 	protected File file;
 
@@ -143,14 +146,16 @@ public class ProjectManager extends XMLManager {
 
 	private PlottableDataController plottableDataController;
 
+	private PlotController plotController;
+
 	/**
 	 * ****************************************************************************
 	 * Default Constructor.
 	 * ****************************************************************************
 	 */
-	public ProjectManager(JGP mainWindow, PlottableDataController plottableDataController) {
-		this.mainWindow = mainWindow;
+	public ProjectManager(PlotController plotController, PlottableDataController plottableDataController) {
 		this.plottableDataController = plottableDataController;
+		this.plotController = plotController;
 		file = new File(".");
 	}
 
@@ -193,20 +198,11 @@ public class ProjectManager extends XMLManager {
 	 */
 	public void patch(Document document, String old_version) throws ProjectManagerException {
 		if (old_version.equals("0.0")) {
-			this.mainWindow.showConsole(
-					"Project file was created with version 0.0. Patch will be applied. File will not be touched!",
-					false, false);
 			// version 0.0 needs same patching as version 0.1
 			patch_0_1(document);
 		} else if (old_version.equals("0.1")) {
-			this.mainWindow.showConsole(
-					"Project file was created with version 0.1. Patch will be applied. File will not be touched!",
-					false, false);
 			patch_0_1(document);
 		} else if (old_version.equals("0.1.1")) {
-			this.mainWindow.showConsole(
-					"Project file was created with version 0.1.1. Patch will be applied. File will not be touched!",
-					false, false);
 			patch_0_1(document);
 		} else {
 			throw new ProjectManagerException(
@@ -228,6 +224,9 @@ public class ProjectManager extends XMLManager {
 
 	public void loadProjectXML(Document document) throws ProjectManagerException, DOMException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException {
+
+		Plot plot = plotController.getCurrent();
+
 		// patch project file so that this version of jgp can deal with it.
 		if (document.getElementsByTagName(VERSION) != null) {
 			Node n = document.getElementsByTagName(VERSION).item(0);
@@ -245,51 +244,48 @@ public class ProjectManager extends XMLManager {
 		}
 
 		if (document.getElementsByTagName(TITLE).item(0) != null)
-			mainWindow.tfTitle.setText(document.getElementsByTagName(TITLE).item(0).getTextContent());
+			plot.setTitle(document.getElementsByTagName(TITLE).item(0).getTextContent());
 		if (document.getElementsByTagName(PLOT_TYPE).item(0) != null) {
 			String splotType;
 			splotType = document.getElementsByTagName(PLOT_TYPE).item(0).getTextContent();
 			if (splotType.equals(Plot.Mode.PLOT_2D.name()))
-				mainWindow.rb2D.setSelected(true);
+				plot.setMode(Mode.PLOT_2D);
 			else
-				mainWindow.rb3D.setSelected(true);
+				plot.setMode(Mode.PLOT_3D);
 
 		}
 
 		if (document.getElementsByTagName(MAX_X).item(0) != null)
-			mainWindow.tfMaxX.setText(document.getElementsByTagName(MAX_X).item(0).getTextContent());
+			plot.setXmax(Double.parseDouble(document.getElementsByTagName(MAX_X).item(0).getTextContent()));
 		if (document.getElementsByTagName(MIN_X).item(0) != null)
-			mainWindow.tfMinX.setText(document.getElementsByTagName(MIN_X).item(0).getTextContent());
+			plot.setXmin(Double.parseDouble(document.getElementsByTagName(MIN_X).item(0).getTextContent()));
 		if (document.getElementsByTagName(MAX_Y).item(0) != null)
-			mainWindow.tfMaxY.setText(document.getElementsByTagName(MAX_Y).item(0).getTextContent());
+			plot.setYmax(Double.parseDouble(document.getElementsByTagName(MAX_Y).item(0).getTextContent()));
 		if (document.getElementsByTagName(MIN_Y).item(0) != null)
-			mainWindow.tfMinY.setText(document.getElementsByTagName(MIN_Y).item(0).getTextContent());
+			plot.setYmin(Double.parseDouble(document.getElementsByTagName(MIN_Y).item(0).getTextContent()));
 		if (document.getElementsByTagName(MAX_Z).item(0) != null)
-			mainWindow.tfMaxZ.setText(document.getElementsByTagName(MAX_Z).item(0).getTextContent());
+			plot.setZmax(Double.parseDouble(document.getElementsByTagName(MAX_Z).item(0).getTextContent()));
 		if (document.getElementsByTagName(MIN_Z).item(0) != null)
-			mainWindow.tfMinZ.setText(document.getElementsByTagName(MIN_Z).item(0).getTextContent());
+			plot.setZmin(Double.parseDouble(document.getElementsByTagName(MIN_Z).item(0).getTextContent()));
 		if (document.getElementsByTagName(XLABEL).item(0) != null)
-			mainWindow.tfXLabel.setText(document.getElementsByTagName(XLABEL).item(0).getTextContent());
+			plot.setXlabel(document.getElementsByTagName(XLABEL).item(0).getTextContent());
 		if (document.getElementsByTagName(YLABEL).item(0) != null)
-			mainWindow.tfYLabel.setText(document.getElementsByTagName(YLABEL).item(0).getTextContent());
+			plot.setYlabel(document.getElementsByTagName(YLABEL).item(0).getTextContent());
 		if (document.getElementsByTagName(ZLABEL).item(0) != null)
-			mainWindow.tfZLabel.setText(document.getElementsByTagName(ZLABEL).item(0).getTextContent());
+			plot.setZlabel(document.getElementsByTagName(ZLABEL).item(0).getTextContent());
 
 		if (document.getElementsByTagName(PRE_PLOT_STRING) != null
 				&& document.getElementsByTagName(PRE_PLOT_STRING).item(0) != null)
-			mainWindow.prePlotString.setText(document.getElementsByTagName(PRE_PLOT_STRING).item(0).getTextContent());
+			plot.setPrePlotString(document.getElementsByTagName(PRE_PLOT_STRING).item(0).getTextContent());
 
 		if (document.getElementsByTagName(XLOGSCALE).item(0) != null)
-			mainWindow.cbLogScaleX.setSelected(
-					Boolean.parseBoolean(document.getElementsByTagName(XLOGSCALE).item(0).getTextContent()));
+			plot.setLogScaleX(Boolean.parseBoolean(document.getElementsByTagName(XLOGSCALE).item(0).getTextContent()));
 
 		if (document.getElementsByTagName(YLOGSCALE).item(0) != null)
-			mainWindow.cbLogScaleX.setSelected(
-					Boolean.parseBoolean(document.getElementsByTagName(YLOGSCALE).item(0).getTextContent()));
+			plot.setLogScaleY(Boolean.parseBoolean(document.getElementsByTagName(YLOGSCALE).item(0).getTextContent()));
 
 		if (document.getElementsByTagName(ZLOGSCALE).item(0) != null)
-			mainWindow.cbLogScaleX.setSelected(
-					Boolean.parseBoolean(document.getElementsByTagName(ZLOGSCALE).item(0).getTextContent()));
+			plot.setLogScaleZ(Boolean.parseBoolean(document.getElementsByTagName(ZLOGSCALE).item(0).getTextContent()));
 
 		// if (document.getElementsByTagName(PS_FILENAME) != null &&
 		// document.getElementsByTagName(PS_FILENAME).item(0) != null)
@@ -316,8 +312,8 @@ public class ProjectManager extends XMLManager {
 
 				if (n.getElementsByTagName(FILENAME).getLength() != 0)
 					ds.setFileName(n.getElementsByTagName(FILENAME).item(0).getTextContent());
-				//if (n.getElementsByTagName(DATASTRING).getLength() != 0)
-				//	ds.setDataString(n.getElementsByTagName(DATASTRING).item(0).getTextContent());
+				// if (n.getElementsByTagName(DATASTRING).getLength() != 0)
+				// ds.setDataString(n.getElementsByTagName(DATASTRING).item(0).getTextContent());
 				if (n.getElementsByTagName(DATASET_TITLE).getLength() != 0)
 					ds.setTitle(n.getElementsByTagName(DATASET_TITLE).item(0).getTextContent());
 				if (n.getElementsByTagName(COLOR).getLength() != 0) {
@@ -337,10 +333,8 @@ public class ProjectManager extends XMLManager {
 				if (n.getElementsByTagName(PRE_PROCESS_PROGRAM).getLength() != 0)
 					ds.setPreProcessProgram(n.getElementsByTagName(PRE_PROCESS_PROGRAM).item(0).getTextContent());
 
-				//mainWindow.plottableDataTableModel.data.add(ds); TODO
+				// mainWindow.plottableDataTableModel.data.add(ds); TODO
 			}
-
-			mainWindow.plottableDataTableModel.fireTableDataChanged();
 		}
 		// load labels // TODO
 
@@ -353,6 +347,8 @@ public class ProjectManager extends XMLManager {
 	 * @return XML document.
 	 */
 	public Document saveProjectXML() {
+		Plot plot = plotController.getCurrent();
+		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		Document document = null;
 		try {
@@ -363,28 +359,24 @@ public class ProjectManager extends XMLManager {
 			document.appendChild(root);
 
 			addTextNode(document, root, VERSION, JGP.getVersion());
-			addTextNode(document, root, TITLE, mainWindow.tfTitle.getText());
+			addTextNode(document, root, TITLE, plot.getTitle());
 
-			String plotType;
-			if (mainWindow.rb2D.isSelected())
-				plotType = Plot.Mode.PLOT_2D.name();
-			else
-				plotType = Plot.Mode.PLOT_3D.name();
-			addTextNode(document, root, PLOT_TYPE, plotType.toString());
+			addTextNode(document, root, PLOT_TYPE, plot.getMode().name());
 
-			addTextNode(document, root, MAX_X, mainWindow.tfMaxX.getText());
-			addTextNode(document, root, MIN_X, mainWindow.tfMinX.getText());
-			addTextNode(document, root, MAX_Y, mainWindow.tfMaxY.getText());
-			addTextNode(document, root, MIN_Y, mainWindow.tfMinY.getText());
-			addTextNode(document, root, MAX_Z, mainWindow.tfMaxZ.getText());
-			addTextNode(document, root, MIN_Z, mainWindow.tfMinZ.getText());
-			addTextNode(document, root, XLABEL, mainWindow.tfXLabel.getText());
-			addTextNode(document, root, YLABEL, mainWindow.tfYLabel.getText());
-			addTextNode(document, root, ZLABEL, mainWindow.tfYLabel.getText());
-			addTextNode(document, root, XLOGSCALE, mainWindow.cbLogScaleX.isSelected() + "");
-			addTextNode(document, root, YLOGSCALE, mainWindow.cbLogScaleY.isSelected() + "");
-			addTextNode(document, root, ZLOGSCALE, mainWindow.cbLogScaleY.isSelected() + "");
-			addTextNode(document, root, PRE_PLOT_STRING, mainWindow.prePlotString.getText() + "");
+			addTextNode(document, root, MAX_X, ""+plot.getXmax());
+			addTextNode(document, root, MIN_X, ""+plot.getXmin());
+			addTextNode(document, root, MAX_Y, ""+plot.getYmax());
+			addTextNode(document, root, MIN_Y, ""+plot.getYmin());
+			
+			addTextNode(document, root, MAX_Z, ""+plot.getZmax());
+			addTextNode(document, root, MIN_Z, ""+plot.getZmin());
+			addTextNode(document, root, XLABEL, plot.getXlabel());
+			addTextNode(document, root, YLABEL, plot.getYlabel());
+			addTextNode(document, root, ZLABEL, plot.getZlabel());
+			addTextNode(document, root, XLOGSCALE, ""+plot.isLogScaleX());
+			addTextNode(document, root, YLOGSCALE, ""+plot.isLogScaleY());
+			addTextNode(document, root, ZLOGSCALE, ""+plot.isLogScaleZ());
+			addTextNode(document, root, PRE_PLOT_STRING, plot.getPrePlotString());
 			// addTextNode(document, root, PS_FILENAME, mainWindow.psFileName);
 			// addTextNode(document, root, SETTINGS_FILENAME,
 			// mainWindow.settingsFileName);
@@ -406,7 +398,8 @@ public class ProjectManager extends XMLManager {
 					preProcessProgram = ((DataFile) ds).getPreProcessProgram();
 				}
 				addTextNode(document, dataset, FILENAME, fname + "");
-				//addTextNode(document, dataset, DATASTRING, ds.getDataString() + "");
+				// addTextNode(document, dataset, DATASTRING, ds.getDataString()
+				// + "");
 				addTextNode(document, dataset, DATASET_TITLE, ds.getTitle() + "");
 				Color c = ds.getColor();
 				String sc = "auto";

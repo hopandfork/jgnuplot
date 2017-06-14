@@ -39,6 +39,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.apache.log4j.Logger;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.utility.TableUtils;
 import org.hopandfork.jgnuplot.model.DataSelection;
 import org.hopandfork.jgnuplot.model.DataSelection2D;

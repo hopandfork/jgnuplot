@@ -40,33 +40,35 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.JGP;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.gui.combobox.FileFormatComboBox;
 import org.hopandfork.jgnuplot.gui.combobox.FontComboBox;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.model.OutputFileFormat;
 import org.hopandfork.jgnuplot.model.Plot;
 
 
 public class PlotDialog extends JGPDialog implements ActionListener {
 	
-	JGP owner;
+	private static Logger LOG = Logger.getLogger(PlotDialog.class);
 	
-	JTextField tfFileName;
+	private JTextField tfFileName;
 	
-	FontComboBox cbFontName;
+	private FontComboBox cbFontName;
 	
-	JTextField tfFontSize;
+	private JTextField tfFontSize;
 	
-	JCheckBox cbColor;
+	private JCheckBox cbColor;
 	
-	FileFormatComboBox cbFileFormat;
+	private FileFormatComboBox cbFileFormat;
 	
+	private PlotController plotController;
 	
-
-	public PlotDialog(JGP owner) {
-		super(owner);
-		this.owner = owner;
+	public PlotDialog(PlotController plotController) {
+		super();
+		this.plotController = plotController;
 		add(createMainPanel());
 		pack();
 	}
@@ -176,11 +178,11 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 	public void acOk() {
 		String psFileName = this.tfFileName.getText();
 
-		owner.clearShell();
+		//owner.clearShell();
 
-		owner.println("calling GNUplot...");
+		//owner.println("calling GNUplot...");
 
-		Plot gp = owner.getGNUplot();
+		Plot gp = plotController.getCurrent();
 		
 		gp.setPsColor(this.cbColor.isSelected());
 		
@@ -190,15 +192,15 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 			try {
 				gp.setPsFontSize(Integer.parseInt(tfFontSize.getText()));
 			} catch (NumberFormatException e1) {
-				owner.taShell.setText("Invalid font size: " + tfFontSize.getText());
+				LOG.error(e1.getMessage());
 			}
 		
 		try {
 			gp.plotToFile(psFileName, (OutputFileFormat) cbFileFormat.getSelectedItem() );
 		} catch (IOException e) {
-			owner.taShell.setText(e.getMessage());
+			LOG.error(e.getMessage());
 		} catch (InterruptedException e) {
-			owner.taShell.setText(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		
 		this.setVisible(false);

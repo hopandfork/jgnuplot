@@ -28,6 +28,7 @@ import javax.swing.JComboBox;
 import org.hopandfork.jgnuplot.model.OutputFileFormat;
 
 
+@Deprecated
 public class FileFormatComboBox extends JComboBox {
 
 	/**

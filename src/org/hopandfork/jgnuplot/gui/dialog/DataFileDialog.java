@@ -39,7 +39,7 @@ import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.DataSelector;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.combobox.StyleComboBox;
 import org.hopandfork.jgnuplot.model.DataFile;
 import org.hopandfork.jgnuplot.model.DataSelection;

@@ -4,6 +4,7 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 
+@Deprecated
 public class RecentProjectMenuItem extends JMenuItem {
 	
 	private String recentProject;

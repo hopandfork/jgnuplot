@@ -80,7 +80,8 @@ public class Plot implements Plottable {
         StringBuilder sb = new StringBuilder();
 
 		/* Adds pre-plot commands. */
-        sb.append(prePlotString);
+		if (prePlotString != null)
+            sb.append(prePlotString);
 
 		/* Adds various settings. */
         if (title == null)
@@ -278,7 +279,7 @@ public class Plot implements Plottable {
         return xmax;
     }
 
-    public void setXmax(double xmax) {
+    public void setXmax(Double xmax) {
         this.xmax = xmax;
     }
 
@@ -286,7 +287,7 @@ public class Plot implements Plottable {
         return xmin;
     }
 
-    public void setXmin(double xmin) {
+    public void setXmin(Double xmin) {
         this.xmin = xmin;
     }
 
@@ -326,7 +327,7 @@ public class Plot implements Plottable {
         return ymax;
     }
 
-    public void setYmax(double ymax) {
+    public void setYmax(Double ymax) {
         this.ymax = ymax;
     }
 
@@ -334,7 +335,7 @@ public class Plot implements Plottable {
         return ymin;
     }
 
-    public void setYmin(double ymin) {
+    public void setYmin(Double ymin) {
         this.ymin = ymin;
     }
 
@@ -416,4 +417,21 @@ public class Plot implements Plottable {
     public List<Label> getLabels() {
         return labels;
     }
+
+	public Double getZmin() {
+		return zmin;
+	}
+
+	public Double getZmax() {
+		return zmax;
+	}
+
+	public String getZlabel() {
+		return zlabel;
+	}
+
+	public boolean isLogScaleZ() {
+		return logScaleZ;
+	}
+    
 }

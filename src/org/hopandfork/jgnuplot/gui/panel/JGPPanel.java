@@ -19,39 +19,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.hopandfork.jgnuplot.gui;
+package org.hopandfork.jgnuplot.gui.panel;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.LayoutManager;
+import org.apache.log4j.Logger;
+
+import java.awt.*;
 
 import javax.swing.JPanel;
 
+/**
+ * A JPanel with a default GridBagLayout.
+ *
+ * This class provides helper methods for using GBL, but
+ * it is possible to use a different layout anyway.
+ */
 public class JGPPanel extends JPanel{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
+	private static Logger LOG = Logger.getLogger(JGPPanel.class);
+
 	public JGPPanel() {
-		super();
+	    this.setLayout(new GridBagLayout());
 	}
 
-	public JGPPanel(boolean isDoubleBuffered) {
-		super(isDoubleBuffered);
-	}
+	private boolean hasGridBagLayout()
+	{
+		if (this.getLayout() instanceof GridBagLayout)
+			return true;
 
-	public JGPPanel(LayoutManager layout, boolean isDoubleBuffered) {
-		super(layout, isDoubleBuffered);
-	}
-
-	public JGPPanel(LayoutManager layout) {
-		super(layout);
+		LOG.error("Trying to use GridBagConstraints on a layout which is not GridBaglayout!");
+		return false;
 	}
 
 	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int fill) {
+		if (!hasGridBagLayout())
+			return;
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gridx;		
 		gbc.gridy = gridy;		
@@ -64,6 +68,9 @@ public class JGPPanel extends JPanel{
 	}
 	
 	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int fill, int anchor) {
+		if (!hasGridBagLayout())
+			return;
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gridx;		
 		gbc.gridy = gridy;		
@@ -77,6 +84,9 @@ public class JGPPanel extends JPanel{
 	}
 
 	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty, int fill) {
+		if (!hasGridBagLayout())
+			return;
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
@@ -91,6 +101,9 @@ public class JGPPanel extends JPanel{
 	}
 
 	public void add(Component comp, int gridx, int gridy, int gridwidth, int gridheight, int weightx, int weighty, int fill, int anchor) {
+		if (!hasGridBagLayout())
+			return;
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;

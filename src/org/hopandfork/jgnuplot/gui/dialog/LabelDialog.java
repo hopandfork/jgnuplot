@@ -3,7 +3,7 @@ package org.hopandfork.jgnuplot.gui.dialog;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.ConstantController;
 import org.hopandfork.jgnuplot.control.LabelController;
-import org.hopandfork.jgnuplot.gui.JGPPanel;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.RelativePosition;
 
@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class LabelDialog extends JGPDialog implements ActionListener {
 
