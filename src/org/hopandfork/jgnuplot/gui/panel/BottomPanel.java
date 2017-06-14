@@ -19,16 +19,19 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
 import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
+import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.Plot.Mode;
 import org.hopandfork.jgnuplot.model.Project;
 
 public class BottomPanel extends JGPPanel
-		implements ActionListener, KeyListener, ItemListener, BottomInterface, Observer {
+		implements ActionListener, KeyListener, ItemListener, ChangeListener, BottomInterface, Observer {
 
 	private static final long serialVersionUID = -7381866132142192657L;
 
@@ -96,58 +99,99 @@ public class BottomPanel extends JGPPanel
 		cbLogScaleY = new JCheckBox();
 		cbLogScaleZ = new JCheckBox();
 
+		GridBagConstraints gbc;
 
 		int row = 0;
-		this.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(tfTitle, 1, row, 4, 1, GridBagConstraints.HORIZONTAL);
+		gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("Title:"), gbc);
+		gbc = GridBagConstraintsFactory.create(1, row, 4, 1, 1, 0, GridBagConstraints.HORIZONTAL);
+		this.add(tfTitle, gbc);
 		tfTitle.addKeyListener(this);
 
 		row += 1;
-		this.add(new JLabel("Plottype:"), 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(rb2D, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(rb3D, 2, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("Type:"), gbc);
+		gbc = GridBagConstraintsFactory.create(1, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(rb2D, gbc);
+		gbc = GridBagConstraintsFactory.create(2, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(rb3D, gbc);
 		rb2D.addItemListener(this);
 
 		row += 1;
-		this.add(new JLabel("min X"), 0, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(tfMinX, 1, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		tfMinX.addKeyListener(this);
-		this.add(new JLabel("x axis label"), 2, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
-		this.add(tfXLabel, 3, row, 2, 1, GridBagConstraints.BOTH);
+		gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("X label"), gbc);
+		gbc = GridBagConstraintsFactory.create(1, row, 2, 1, 1, 0, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
+		this.add(tfXLabel, gbc);
 		tfXLabel.addKeyListener(this);
 
-		row += 1;
-		this.add(new JLabel("max X"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfMaxX, 1, row, 1, 1, GridBagConstraints.NONE);
+		gbc = GridBagConstraintsFactory.create(3, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("min X"), gbc);
+		gbc = GridBagConstraintsFactory.create(4, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMinX, gbc);
+		tfMinX.addKeyListener(this);
+
+		gbc = GridBagConstraintsFactory.create(5, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("max X"), gbc);
+		gbc = GridBagConstraintsFactory.create(6, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMaxX, gbc);
 		tfMaxX.addKeyListener(this);
-		this.add(new JLabel("logscale x axis"), 2, row, 1, 1, GridBagConstraints.WEST);
-		this.add(cbLogScaleX, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+
+		gbc = GridBagConstraintsFactory.create(7, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("logscale X"), gbc);
+		gbc = GridBagConstraintsFactory.create(8, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(cbLogScaleX, gbc);
+		cbLogScaleX.addChangeListener(this);
+
 		row += 1;
-		this.add(new JLabel("min Y"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfMinY, 1, row, 1, 1, GridBagConstraints.NONE);
-		tfMinY.addKeyListener(this);
-		this.add(new JLabel("y axis label"), 2, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfYLabel, 3, row, 2, 1, GridBagConstraints.BOTH);
+		gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("Y label"), gbc);
+		gbc = GridBagConstraintsFactory.create(1, row, 2, 1, 1, 0, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
+		this.add(tfYLabel, gbc);
 		tfYLabel.addKeyListener(this);
-		row += 1;
-		this.add(new JLabel("max Y"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfMaxY, 1, row, 1, 1, GridBagConstraints.NONE);
+
+		gbc = GridBagConstraintsFactory.create(3, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("min Y"), gbc);
+		gbc = GridBagConstraintsFactory.create(4, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMinY, gbc);
+		tfMinY.addKeyListener(this);
+
+		gbc = GridBagConstraintsFactory.create(5, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("max Y"), gbc);
+		gbc = GridBagConstraintsFactory.create(6, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMaxY, gbc);
 		tfMaxY.addKeyListener(this);
-		this.add(new JLabel("logscale y axis"), 2, row, 1, 1, GridBagConstraints.WEST);
-		this.add(cbLogScaleY, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+
+		gbc = GridBagConstraintsFactory.create(7, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("logscale Y"), gbc);
+		gbc = GridBagConstraintsFactory.create(8, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(cbLogScaleY, gbc);
+		cbLogScaleY.addChangeListener(this);
+
 		row += 1;
-		this.add(new JLabel("min Z"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfMinZ, 1, row, 1, 1, GridBagConstraints.NONE);
-		tfMinZ.addKeyListener(this);
-		this.add(new JLabel("z axis label"), 2, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfZLabel, 3, row, 2, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("Z label"), gbc);
+		gbc = GridBagConstraintsFactory.create(1, row, 2, 1, 1, 0, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
+		this.add(tfZLabel, gbc);
 		tfZLabel.addKeyListener(this);
-		row += 1;
-		this.add(new JLabel("max Z"), 0, row, 1, 1, GridBagConstraints.WEST);
-		this.add(tfMaxZ, 1, row, 1, 1, GridBagConstraints.NONE);
+
+		gbc = GridBagConstraintsFactory.create(3, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("min Z"), gbc);
+		gbc = GridBagConstraintsFactory.create(4, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMinZ, gbc);
+		tfMinZ.addKeyListener(this);
+
+		gbc = GridBagConstraintsFactory.create(5, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("max Z"), gbc);
+		gbc = GridBagConstraintsFactory.create(6, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(tfMaxZ, gbc);
 		tfMaxZ.addKeyListener(this);
-		this.add(new JLabel("logscale z axis"), 2, row, 1, 1, GridBagConstraints.WEST);
-		this.add(cbLogScaleZ, 3, row, 1, 1, GridBagConstraints.NONE, GridBagConstraints.WEST);
+
+		gbc = GridBagConstraintsFactory.create(7, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(new JLabel("logscale Z"), gbc);
+		gbc = GridBagConstraintsFactory.create(8, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+		this.add(cbLogScaleZ, gbc);
+		cbLogScaleZ.addChangeListener(this);
+
 		row += 1;
 
 		// Create the buttons.
@@ -313,5 +357,10 @@ public class BottomPanel extends JGPPanel
 		plotController.updatePlot(mode, tfTitle.getText(), tfMaxX.getText(), tfMinX.getText(), tfMaxY.getText(),
 				tfMinY.getText(), tfMaxZ.getText(), tfMinZ.getText(), tfXLabel.getText(), tfYLabel.getText(),
 				tfZLabel.getText(), cbLogScaleX.isSelected(), cbLogScaleY.isSelected(), cbLogScaleZ.isSelected());
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent changeEvent) {
+		updatePlot();
 	}
 }
