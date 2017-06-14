@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.LabelController;
+import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
 import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
@@ -24,6 +25,8 @@ import org.hopandfork.jgnuplot.model.Label;
 import org.hopandfork.jgnuplot.model.PlottableData;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class OverviewPanel extends JGPPanel implements OverviewInterface, ActionListener {
 
@@ -45,6 +48,8 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Action
 
 	private PlottableDataController plottableDataController;
 
+	private PlotController plotController;
+
 	private LabelController labelController;
 
 	private MenuInterface menu;
@@ -63,9 +68,10 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Action
 	static private final String ACTION_EDIT_LABEL = "edit_label";
 	static private final String ACTION_DELETE_LABEL = "delete_label";
 
-	public OverviewPanel(MenuInterface menu, PlottableDataController plottableDataController,
+	public OverviewPanel(MenuInterface menu, PlotController plotController, PlottableDataController plottableDataController,
 						 LabelController labelController) {
 		this.menu = menu;
+		this.plotController = plotController;
 		this.plottableDataController = plottableDataController;
 		this.labelController = labelController;
 
@@ -210,6 +216,22 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Action
 		prePlotString = new JTextArea(100, 20);
 		prePlotString.setWrapStyleWord(true);
 		prePlotString.setLineWrap(true);
+		prePlotString.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent documentEvent) {
+				plotController.updatePreplotScript(prePlotString.getText());
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent documentEvent) {
+				plotController.updatePreplotScript(prePlotString.getText());
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent documentEvent) {
+				plotController.updatePreplotScript(prePlotString.getText());
+			}
+		});
 
 		JScrollPane scrollPane = new JScrollPane(prePlotString);
 		scrollPane.setPreferredSize(new Dimension(520, 240));
@@ -245,11 +267,6 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Action
 	@Override
 	public List<Label> getSelectedLabels() {
 		return labelTableModel.getSelectedLabels(labelTable.getSelectedRows());
-	}
-
-	@Override
-	public JTextArea getPrePlotString() {
-		return prePlotString;
 	}
 
 	@Override

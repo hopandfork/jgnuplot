@@ -14,8 +14,8 @@ public class PlotController extends Observable {
 	/**
 	 * This method allows to update an existing plot.
 	 */
-	public Plot updatePlot(Mode mode, String title, String xMax, String xMin, String yMax, String yMin, String zMax,
-			String zMin, String xLabel, String yLabel, String zLabel) {
+	public void updatePlot(Mode mode, String title, String xMax, String xMin, String yMax, String yMin, String zMax,
+			String zMin, String xLabel, String yLabel, String zLabel, boolean xLogScale, boolean yLogScale, boolean zLogScale) {
 		Plot plot = Project.currentProject().getPlot();
 
 		Double xmin = plot.getXmin();
@@ -68,9 +68,18 @@ public class PlotController extends Observable {
 		plot.setZmin(zmin);
 		plot.setZmax(zmax);
 		plot.setZlabel(zLabel);
+		plot.setLogScaleX(xLogScale);
+		plot.setLogScaleY(yLogScale);
+		plot.setLogScaleZ(zLogScale);
 
 		notifyObservers(plot);
-		return plot;
+	}
+
+	public void updatePreplotScript (String preplotScript)
+	{
+		Plot plot = Project.currentProject().getPlot();
+		plot.setPrePlotString(preplotScript);
+		//notifyObservers(plot); TODO preview would fail if user is still digiting the commands!
 	}
 
 	public Plot getCurrent() {

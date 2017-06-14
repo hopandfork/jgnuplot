@@ -102,7 +102,7 @@ public class JGP extends JFrame implements MainInterface {
 		content_pane.setLayout(gbl);
 
 		/* Creates panels. */
-		overviewPanel = new OverviewPanel(menu, plottableDataController, labelController);
+		overviewPanel = new OverviewPanel(menu, plotController, plottableDataController, labelController);
 		bottomPanel = new BottomPanel(overviewPanel, plotController);
 		previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
 

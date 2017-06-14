@@ -16,5 +16,4 @@ public interface OverviewInterface {
 
 		Label getSelectedLabel();
 
-		JTextArea getPrePlotString();
 }

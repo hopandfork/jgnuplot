@@ -65,11 +65,8 @@ public class BottomPanel extends JGPPanel
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
 
-		/* Inits with default values */
-		Plot plot = plotController.getCurrent();
-		
-		rb2D = new JRadioButton("2D plot", plot.getMode()==Mode.PLOT_2D?true:false);
-		rb3D = new JRadioButton("3D plot", plot.getMode()==Mode.PLOT_3D?true:false);
+		rb2D = new JRadioButton("2D plot");
+		rb3D = new JRadioButton("3D plot");
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(rb2D);
@@ -77,21 +74,21 @@ public class BottomPanel extends JGPPanel
 
 		tfTitle = new JTextField("", 16);
 
-		tfMaxX = new JTextField("" + plot.getXmax(), 8);
+		tfMaxX = new JTextField("", 8);
 
-		tfMaxY = new JTextField("" + plot.getYmax(), 8);
+		tfMaxY = new JTextField("", 8);
 
 		tfXLabel = new JTextField("", 10);
 
-		tfMinX = new JTextField("" + plot.getXmin(), 8);
+		tfMinX = new JTextField("", 8);
 
-		tfMinY = new JTextField("" + plot.getYmin(), 8);
+		tfMinY = new JTextField("", 8);
 
 		tfYLabel = new JTextField("", 10);
 
-		tfMaxZ = new JTextField("" + plot.getZmax(), 8);
+		tfMaxZ = new JTextField("", 8);
 
-		tfMinZ = new JTextField("" + plot.getZmin(), 8);
+		tfMinZ = new JTextField("", 8);
 
 		tfZLabel = new JTextField("", 10);
 
@@ -99,11 +96,6 @@ public class BottomPanel extends JGPPanel
 		cbLogScaleY = new JCheckBox();
 		cbLogScaleZ = new JCheckBox();
 
-		// disable 3d until user selects 3d plot
-		tfMaxZ.setEnabled(false);
-		tfMinZ.setEnabled(false);
-		tfZLabel.setEnabled(false);
-		cbLogScaleZ.setEnabled(false);
 
 		int row = 0;
 		this.add(new JLabel("Title"), 0, row, 1, 1, GridBagConstraints.WEST);
@@ -166,6 +158,12 @@ public class BottomPanel extends JGPPanel
 
 		this.add(bPlotPs, 0, row, 1, 1, GridBagConstraints.NONE);
 		this.add(bPlotString, 1, row, 1, 1, GridBagConstraints.NONE);
+
+		/* Inits with default values */
+		Plot plot = plotController.getCurrent();
+		if (plot != null)
+			initialize(plot);
+
 	}
 
 	@Override
@@ -177,74 +175,9 @@ public class BottomPanel extends JGPPanel
 		}
 	}
 
-	// TODO
-	@Deprecated
-	private Plot getGNUplot() {
-		Plot gp = Project.currentProject().getPlot();
-
-		if (rb2D.isSelected())
-			gp.setMode(Plot.Mode.PLOT_2D);
-		else
-			gp.setMode(Plot.Mode.PLOT_3D);
-
-		gp.setTitle(tfTitle.getText());
-		try {
-			if (!tfMaxX.getText().trim().equals(""))
-				gp.setXmax(Double.parseDouble(tfMaxX.getText()));
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Check max x value!" + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		try {
-			if (!tfMaxY.getText().trim().equals(""))
-				gp.setYmax(Double.parseDouble(tfMaxY.getText()));
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Check max y value!" + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		try {
-			if (!tfMinX.getText().trim().equals(""))
-				gp.setXmin(Double.parseDouble(tfMinX.getText()));
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Check min x value!" + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		try {
-			if (!tfMinY.getText().trim().equals(""))
-				gp.setYmin(Double.parseDouble(tfMinY.getText()));
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Check min y value!" + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		try {
-			if (!tfMaxZ.getText().trim().equals(""))
-				gp.setZmax(Double.parseDouble(tfMaxZ.getText()));
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Check max z value!" + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		try {
-			if (!tfMinZ.getText().trim().equals(""))
-				gp.setXmin(Double.parseDouble(tfMinZ.getText()));
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Check min z value!" + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-
-		gp.setLogScaleX(cbLogScaleX.isSelected());
-		gp.setLogScaleY(cbLogScaleY.isSelected());
-		gp.setLogScaleZ(cbLogScaleZ.isSelected());
-		gp.setXlabel(tfXLabel.getText());
-		gp.setYlabel(tfYLabel.getText());
-		gp.setZlabel(tfZLabel.getText());
-
-		gp.setPrePlotString(overview.getPrePlotString().getText() + "\n");
-
-		return gp;
-	}
 
 	private void acGenPlotCmds() {
-		Plot gp = getGNUplot();
+		Plot gp = plotController.getCurrent();
 		String plotString = gp.toPlotString();
 		// taShell.setText( plotString );
 
@@ -284,17 +217,58 @@ public class BottomPanel extends JGPPanel
 
 	}
 
+	/**
+	 * Utility function which returns a string representation of an object, if not null.
+	 */
+	static private String str (Object value) {
+		if (value != null) {
+			return "" + value.toString();
+		} else {
+			return "";
+		}
+	}
+
+	@Override
+	public void initialize (Plot plot)
+	{
+		rb2D.setSelected(plot.getMode().equals(Mode.PLOT_2D));
+		rb3D.setSelected(plot.getMode().equals(Mode.PLOT_3D));
+
+		tfTitle.setText(str(plot.getTitle()));
+
+		tfMaxX.setText(str(plot.getXmax()));
+		tfMaxY.setText(str(plot.getYmax()));
+		tfMinX.setText(str(plot.getXmin()));
+		tfMinY.setText(str(plot.getYmin()));
+
+		tfXLabel.setText(str(plot.getXlabel()));
+		tfYLabel.setText(str(plot.getYlabel()));
+		tfZLabel.setText(str(plot.getZlabel()));
+
+		cbLogScaleX.setSelected(plot.isLogScaleX());
+		cbLogScaleY.setSelected(plot.isLogScaleY());
+		cbLogScaleZ.setSelected(plot.isLogScaleZ());
+	}
+
 	@Override
 	public void reset() {
+		rb2D.setSelected(true);
+		rb3D.setSelected(false);
+
 		tfTitle.setText("");
+
 		tfMaxX.setText("");
 		tfMinX.setText("");
 		tfMaxY.setText("");
 		tfMinY.setText("");
+
 		tfXLabel.setText("");
 		tfYLabel.setText("");
+		tfZLabel.setText("");
+
 		cbLogScaleX.setSelected(false);
 		cbLogScaleX.setSelected(false);
+		cbLogScaleZ.setSelected(false);
 	}
 
 	@Override
@@ -317,9 +291,7 @@ public class BottomPanel extends JGPPanel
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		plotController.updatePlot(rb2D.isSelected() ? Mode.PLOT_2D : Mode.PLOT_3D, tfTitle.getText(), tfMaxX.getText(),
-				tfMinX.getText(), tfMaxY.getText(), tfMinY.getText(), tfMaxZ.getText(), tfMinZ.getText(),
-				tfXLabel.getText(), tfYLabel.getText(), tfZLabel.getText());
+		updatePlot();
 	}
 
 	@Override
@@ -328,10 +300,15 @@ public class BottomPanel extends JGPPanel
 		tfMinZ.setEnabled(!rb2D.isSelected());
 		tfZLabel.setEnabled(!rb2D.isSelected());
 		cbLogScaleZ.setEnabled(!rb2D.isSelected());
-		
+
+		updatePlot();
+	}
+
+	private void updatePlot()
+	{
 		Mode mode = rb2D.isSelected() ? Mode.PLOT_2D : Mode.PLOT_3D;
 		plotController.updatePlot(mode, tfTitle.getText(), tfMaxX.getText(), tfMinX.getText(), tfMaxY.getText(),
 				tfMinY.getText(), tfMaxZ.getText(), tfMinZ.getText(), tfXLabel.getText(), tfYLabel.getText(),
-				tfZLabel.getText());
+				tfZLabel.getText(), cbLogScaleX.isSelected(), cbLogScaleY.isSelected(), cbLogScaleZ.isSelected());
 	}
 }
