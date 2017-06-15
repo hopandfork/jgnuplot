@@ -21,14 +21,6 @@
 
 package org.hopandfork.jgnuplot.model;
 
-import java.awt.Color;
-import java.io.IOException;
-
-import org.hopandfork.jgnuplot.model.style.GnuplotColor;
-import org.hopandfork.jgnuplot.model.style.PlottingStyle;
-import org.hopandfork.jgnuplot.runtime.PreProcessPlugin;
-import org.hopandfork.jgnuplot.utility.TempFile;
-
 public class DataFile extends PlottableData {
 
 	/** Columns selection. */
@@ -36,15 +28,6 @@ public class DataFile extends PlottableData {
 	
 	/** DataFile filename. */
 	private String fileName;
-
-	/** Last modified flag/timestamp (?) */
-	private long lastChanged = 0; // TODO check this field
-
-	/** Optional plugin for preprocessing. */
-	private PreProcessPlugin preProcessPlugin;
-
-	/** Optional external command for preprocessing. */
-	private String preProcessProgram;
 
 	public String toPlotString() {
 
@@ -55,17 +38,7 @@ public class DataFile extends PlottableData {
 			return s;
 		}
 
-		if (preProcessProgram != null && !preProcessProgram.trim().equals("")
-				&& !preProcessProgram.trim().equals("null")) {
-			// call prepocess program
-			String tmpFileName = TempFile.getTempFileName();
-			callPreProcessProgram(preProcessProgram.trim(), fileName, tmpFileName);
-			// and plot the tmp output
-			s += "'" + tmpFileName + "'";
-		} else {
-			s += "'" + fileName + "'";
-		}
-
+		s += "'" + fileName + "'";
 		s += " using " + dataSelection.toPlotString() + " ";
 
 		if (style != null || addStyleOpt != null || color != null) {
@@ -86,25 +59,6 @@ public class DataFile extends PlottableData {
 		return s;
 	}
 
-	public void callPreProcessProgram(String program, String inputFileName, String outputFileName) {
-		// TODO poor implementation without feedback (by M.H.F.)
-		String cmdline = "";
-		cmdline = program.replaceAll("\\$if", inputFileName);
-		cmdline = cmdline.replaceAll("\\$of", outputFileName);
-
-		System.out.println("Calling preprocess program: " + cmdline);
-		try {
-			Process p = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", cmdline });
-			p.waitFor();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println("done");
-
-	}
-
 	public String getFileName() {
 		return fileName;
 	}
@@ -112,34 +66,6 @@ public class DataFile extends PlottableData {
 	public void setFileName(String s) {
 		this.fileName = s;
 	};
-
-	public long getLastChanged() {
-		return lastChanged;
-	}
-
-	public void setLastChanged(long lastChanged) {
-		this.lastChanged = lastChanged;
-	}
-
-	public PreProcessPlugin getPreProcessPlugin() {
-		return preProcessPlugin;
-	}
-
-	public void setPreProcessPlugin(PreProcessPlugin preProcessPlugin) {
-		this.preProcessPlugin = preProcessPlugin;
-	}
-
-	public String getPreProcessProgram() {
-		return preProcessProgram;
-	}
-
-	public void setPreProcessProgram(String preProcessProgram) {
-		if (preProcessProgram.equals("null"))
-			preProcessProgram = null;
-		else
-			this.preProcessProgram = preProcessProgram;
-	}
-
 
 	public DataSelection getDataSelection() {
 		return dataSelection;

@@ -5,6 +5,9 @@ public class Project {
 	/** Created plot. */
 	private Plot plot;
 
+	/** File name for this project on disk. */
+	private String filename;
+
 	/** Current project. */
 	static private Project currentProject = new Project();
 
@@ -29,4 +32,13 @@ public class Project {
 	public void setPlot(Plot plot) {
 		this.plot = plot;
 	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
 }
