@@ -24,8 +24,6 @@ package org.hopandfork.jgnuplot;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +46,8 @@ import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.panel.MainInterface;
 import org.hopandfork.jgnuplot.gui.panel.OverviewPanel;
 import org.hopandfork.jgnuplot.gui.panel.PreviewPanel;
+import org.hopandfork.jgnuplot.gui.presenter.panel.BottomPresenter;
+import org.hopandfork.jgnuplot.model.Plot;
 
 public class JGP extends JFrame implements MainInterface {
 
@@ -68,6 +68,8 @@ public class JGP extends JFrame implements MainInterface {
 	private JPanel previewPanel;
 
 	private BottomPanel bottomPanel;
+	
+	private BottomPresenter bottomPresenter;
 
 	private static final long serialVersionUID = 1L;
 
@@ -100,9 +102,17 @@ public class JGP extends JFrame implements MainInterface {
 
 		/* Creates panels. */
 		overviewPanel = new OverviewPanel(menu, plotController, plottableDataController, labelController);
-		bottomPanel = new BottomPanel(overviewPanel, plotController);
+		bottomPanel = new BottomPanel();
 		previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
 
+		/* Adds presenter */
+		bottomPresenter = new BottomPresenter(bottomPanel, plotController);
+		
+		/* Inits with default values */
+		Plot plot = plotController.getCurrent();
+		if (plot != null)
+			bottomPresenter.initialize(plot);
+		
 		/* Creates split pane. */
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overviewPanel, previewPanel);
 		splitPane.setOneTouchExpandable(true);
@@ -161,6 +171,6 @@ public class JGP extends JFrame implements MainInterface {
 
 	@Override
 	public void reset() {
-		bottomPanel.reset();
+		bottomPresenter.reset();
 	}
 }
