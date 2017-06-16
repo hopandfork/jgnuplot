@@ -1,8 +1,6 @@
 package org.hopandfork.jgnuplot.gui.panel;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -370,5 +368,12 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface, Action
 		for (Label l : selectedLabels) {
 			labelController.delete(l);
 		}
+	}
+
+	@Override
+	public Dimension getMinimumSize() {
+		int height = 100;
+		int width = 100 + tp.getMinimumSize().width;
+		return new Dimension(width,height);
 	}
 }
