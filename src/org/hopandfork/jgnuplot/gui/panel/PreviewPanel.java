@@ -4,6 +4,8 @@ package org.hopandfork.jgnuplot.gui.panel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,11 +23,15 @@ import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
 /**
  * Panel containing components for plot preview.
  */
-public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.ImageConsumer {
+public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.ImageConsumer, ComponentListener {
 
 	private static final long serialVersionUID = 824126200434468835L;
 
 	private PlotController plotController;
+	private Image image = null;
+	static private final double WIDTH_HEIGHT_RATIO = 4.0/3.0;
+
+    private boolean refreshEnabled = true;
 
 	static final private Logger LOG = Logger.getLogger(PreviewPanel.class);
 
@@ -39,6 +45,8 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
 
         GridBagLayout gbl = new GridBagLayout();
         this.setLayout(gbl);
+
+        this.addComponentListener(this);
     }
 
     @Override
@@ -47,29 +55,58 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
     }
 
     private void refreshPlot() {
+        if (!refreshEnabled)
+            return;
+
+        int previewWidth, previewHeight;
+        double panelRatio = (double)getWidth()/(double)getHeight();
+        if (panelRatio > WIDTH_HEIGHT_RATIO) {
+            previewHeight = Math.max(900,getHeight());
+            previewWidth = (int)((double)previewHeight*WIDTH_HEIGHT_RATIO);
+        } else {
+            previewWidth = Math.max(1200, getWidth());
+            previewHeight = (int)((double)previewWidth/WIDTH_HEIGHT_RATIO);
+        }
+
         Plot plot = plotController.getCurrent();
         String plotScript = plot.toPlotString();
-
-        plotScript = "set terminal pngcairo size 600,400\n" + plotScript; // TODO size
+        plotScript = "set terminal pngcairo size " + previewWidth +  "," + previewHeight + "\n" + plotScript;
         GnuplotRunner pr = new GnuplotRunner(plotScript, this);
         new Thread(pr).start();
     }
 
     @Override
     public void readImage(Image image) {
-        JLabel label;
+        this.image = image;
+        renderImage();
+    }
 
+    private void renderImage ()
+    {
         if (image == null)
-        	return;
+            return;
 
-        label = new JLabel(new ImageIcon(image));
+        int width, height;
+        double panelRatio = (double)getWidth()/(double)getHeight();
+        if (panelRatio > WIDTH_HEIGHT_RATIO) {
+            height = getHeight();
+            width = (int)((double)height*WIDTH_HEIGHT_RATIO);
+        } else {
+            width = getWidth();
+            height = (int)((double)width/WIDTH_HEIGHT_RATIO);
+        }
+
+        if (height < 1 || width < 1)
+            return; /* panel hidden */
+
+        Image _image = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        JLabel label = new JLabel(new ImageIcon(_image));
 
         GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
         this.removeAll();
         this.add(label, gbc);
         this.revalidate();
 
-		LOG.info("Refreshed preview");
     }
 
     @Override
@@ -81,5 +118,27 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         this.removeAll();
         this.add(label, gbc);
         this.revalidate();
+    }
+
+    @Override
+    public void componentResized(ComponentEvent componentEvent) {
+        renderImage();
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent componentEvent) {
+        // nothing to do here
+    }
+
+    @Override
+    public void componentShown(ComponentEvent componentEvent) {
+    	refreshEnabled = true;
+        LOG.info("Enabled preview refreshing");
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent componentEvent) {
+        refreshEnabled = false;
+        LOG.info("Disabled preview refreshing");
     }
 }
