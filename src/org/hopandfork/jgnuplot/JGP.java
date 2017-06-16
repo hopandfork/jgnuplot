@@ -24,6 +24,8 @@ package org.hopandfork.jgnuplot;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -83,12 +85,7 @@ public class JGP extends JFrame implements MainInterface {
 
 	public JGP() {
 		this.setTitle("JGNUplot");
-
 		this.setLocationByPlatform(true);
-
-		// Set the dialog box size.
-		setSize(550, 750);
-		this.setMinimumSize(new Dimension(550, 750));
 
 		// Create the menu bar and add it to the dialog box.
 		menu = new Menu(this, plotController, plottableDataController);
@@ -106,16 +103,10 @@ public class JGP extends JFrame implements MainInterface {
 		bottomPanel = new BottomPanel(overviewPanel, plotController);
 		previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
 
-		/* Sets minimum size for panels. */
-		Dimension minimumSize = new Dimension(100, 150);
-		previewPanel.setMinimumSize(minimumSize);
-		overviewPanel.setMinimumSize(minimumSize);
-		bottomPanel.setMinimumSize(minimumSize);
-
 		/* Creates split pane. */
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overviewPanel, previewPanel);
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setResizeWeight(0.4);
+		splitPane.setResizeWeight(0.0);
 
 		content_pane.add(splitPane, 0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
 		content_pane.add(bottomPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.NONE, GridBagConstraints.SOUTHWEST);
@@ -125,7 +116,12 @@ public class JGP extends JFrame implements MainInterface {
 				exit();
 			}
 		}); // ignore event itself
+
+		int width = Math.max(overviewPanel.getMinimumSize().width + previewPanel.getMinimumSize().width, bottomPanel.getMinimumSize().width)+10;
+		int height = overviewPanel.getMinimumSize().height + bottomPanel.getMinimumSize().height;
+		setMinimumSize(new Dimension(width, height));
 	}
+
 
 	private void exit() {
 		System.exit(0);
