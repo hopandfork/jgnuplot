@@ -55,9 +55,11 @@ public class Plot implements Plottable {
     private boolean logScaleY = false;
     private boolean logScaleZ = false;
 
+    @Deprecated
     private boolean psColor = false;
+    @Deprecated
     private int psFontSize = 18;
-
+    @Deprecated
     private String psFontName = "";
 
 
@@ -156,15 +158,7 @@ public class Plot implements Plottable {
             sb.append(" \n");
         }
 
-        // TODO constants is directly in Function
-		/* Now replaces all string variables with their value. */
         String s = sb.toString();
-        // for (Constants var : variables) {
-        // if (var.getType() == Constants.Type.STRING) {
-        // if (var.isActive())
-        // s = ((Constants) var).apply(s);
-        // }
-        // }
 
         return s;
     }
@@ -199,36 +193,7 @@ public class Plot implements Plottable {
         return s;
     }
 
-    public void plotAndPreview() throws IOException, InterruptedException {
-        String s = "";
-        s += "set terminal X11 \n";
-        s += toPlotString();
-        // we have to add this to keep the plot window open
-        s += ("pause -1\n");
-
-        System.out.println("Calling GnuplotRunner...");
-        GnuplotRunner pr = new GnuplotRunner(s);
-        new Thread(pr).start();
-
-    }
-
-    public void generatePostscriptFile(String printCmd, String printFile) throws IOException, InterruptedException {
-        String s = "";
-
-        s += "set output '" + printFile + ".ps' \n";
-        s += "set terminal postscript \n";
-
-        s += toPlotString();
-
-        s += "set output '|" + printCmd + " " + printFile + "' \n";
-
-        s += ("pause -1 'Press ENTER to continue...' \n");
-
-        System.out.println("Calling GnuplotRunner...");
-        GnuplotRunner pr = new GnuplotRunner(s);
-        new Thread(pr).start();
-    }
-
+    @Deprecated
     public void plotToFile(String psFileName, OutputFileFormat format) throws IOException, InterruptedException {
 
         String s = "";

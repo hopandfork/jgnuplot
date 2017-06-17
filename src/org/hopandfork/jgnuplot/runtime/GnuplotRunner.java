@@ -82,8 +82,7 @@ public class GnuplotRunner implements Runnable {
 				return;
 			}
 
-			if (imageConsumer != null)
-				imageConsumer.readImage(image);
+			imageConsumer.readImage(image);
 
 		} catch (IOException e) {
 			e.printStackTrace();
