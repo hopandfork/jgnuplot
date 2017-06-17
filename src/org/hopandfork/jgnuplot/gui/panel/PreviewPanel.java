@@ -83,8 +83,14 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
 
     private void renderImage ()
     {
-        if (image == null)
+        this.removeAll();
+
+        if (image == null) {
+            LOG.debug("Image is null!");
+            this.revalidate();
+            this.repaint();
             return;
+        }
 
         int width, height;
         double panelRatio = (double)getWidth()/(double)getHeight();
@@ -103,10 +109,9 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         JLabel label = new JLabel(new ImageIcon(_image));
 
         GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
-        this.removeAll();
         this.add(label, gbc);
         this.revalidate();
-
+        this.repaint();
     }
 
     @Override
