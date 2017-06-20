@@ -22,14 +22,15 @@
 package org.hopandfork.jgnuplot.gui.combobox;
 
 import javax.swing.JComboBox;
+import java.awt.*;
 
-@Deprecated
-public class FontComboBox extends JComboBox {
+public class FontComboBox extends JComboBox<String> {
 
 	public FontComboBox() {
-		super();
-		this.addItem("Helvetica");
-		this.setEditable(true);
+		setEditable(false);
+
+		for (String font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
+			addItem(font);
 	}
 
 }
