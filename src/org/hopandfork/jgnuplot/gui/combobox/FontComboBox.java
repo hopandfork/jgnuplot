@@ -31,7 +31,6 @@ public class FontComboBox extends JComboBox<String> {
 			addItem(font);
 
 		setEditable(true);
-		setSelectedItem(null);
 	}
 
 }

@@ -28,11 +28,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.gui.combobox.FontComboBox;
 import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
+import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
 import org.hopandfork.jgnuplot.model.OutputFileFormat;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
@@ -54,6 +57,7 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
     private SpinnerNumberModel spinnerWidthModel;
     private SpinnerNumberModel spinnerHeightModel;
     private JComboBox<OutputFileFormat> cbFileFormat;
+    private JCheckBox chkAutomaticFont;
 
     private PlotController plotController;
 
@@ -88,10 +92,22 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
 
         tfFileName = new JTextField("", 20);
 
+        chkAutomaticFont = new JCheckBox("Auto", true);
         cbFontName = new FontComboBox();
+        cbFontName.setEnabled(!chkAutomaticFont.isSelected());
 
         spinnerFontSizeModel = new SpinnerNumberModel(18, 1, 999, 1);
-        JSpinner tfFontSize = new JSpinner(spinnerFontSizeModel);
+
+        final JSpinner tfFontSize = new JSpinner(spinnerFontSizeModel);
+        tfFontSize.setEnabled(!chkAutomaticFont.isSelected());
+
+        chkAutomaticFont.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                cbFontName.setEnabled(!chkAutomaticFont.isSelected());
+                tfFontSize.setEnabled(!chkAutomaticFont.isSelected());
+            }
+        });
 
         spinnerWidthModel = new SpinnerNumberModel(1200, 1, 9999, 5);
         JSpinner spinnerWidth = new JSpinner(spinnerWidthModel);
@@ -102,27 +118,50 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
         for (OutputFileFormat format : OutputFileFormat.values())
             cbFileFormat.addItem(format);
 
+        GridBagConstraints gbc;
         int row = 0;
-        jp.add(new JLabel("File format"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(cbFileFormat, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
+        gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(new JLabel("Format"), gbc);
+        gbc = GridBagConstraintsFactory.create(1, row, 3, 1, 10, 0, GridBagConstraints.HORIZONTAL);
+        jp.add(cbFileFormat, gbc);
+
         row += 1;
-        jp.add(new JLabel("Width (px)"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(spinnerWidth, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(new JLabel("Height (px)"), 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(spinnerHeight, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(new JLabel("Width (px)"), gbc);
+        gbc = GridBagConstraintsFactory.create(1, row, 1, 1, 10, 0, GridBagConstraints.HORIZONTAL);
+        jp.add(spinnerWidth, gbc);
+        gbc = GridBagConstraintsFactory.create(2, row, 1, 1, 10, 0, GridBagConstraints.NONE, GridBagConstraints.EAST);
+        jp.add(new JLabel("Height (px)"), gbc);
+        gbc = GridBagConstraintsFactory.create(3, row, 1, 1, 10, 0, GridBagConstraints.HORIZONTAL);
+        jp.add(spinnerHeight, gbc);
+
         row += 1;
-        jp.add(new JLabel("Font"), 0, row, 3, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(cbFontName, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(new JLabel("Font"), gbc);
+        gbc = GridBagConstraintsFactory.create(1, row, 2, 1, 10, 0, GridBagConstraints.HORIZONTAL);
+        jp.add(cbFontName, gbc);
+        gbc = GridBagConstraintsFactory.create(3, row, 1, 1, 10, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(chkAutomaticFont, gbc);
+
         row += 1;
-        jp.add(new JLabel("Font size"), 0, row, 3, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(tfFontSize, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(new JLabel("Font size"), gbc);
+        gbc = GridBagConstraintsFactory.create(1, row, 1, 1, 10, 0, GridBagConstraints.HORIZONTAL);
+        jp.add(tfFontSize, gbc);
+
         row += 1;
-        jp.add(new JLabel("Filename"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(tfFileName, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(bFileChose, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(new JLabel("Filename"), gbc);
+        gbc = GridBagConstraintsFactory.create(1, row, 2, 1, 10, 0, GridBagConstraints.HORIZONTAL);
+        jp.add(tfFileName, gbc);
+        gbc = GridBagConstraintsFactory.create(3, row, 1, 1, 10, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(bFileChose, gbc);
+
         row += 1;
-        jp.add(bOk, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
-        jp.add(bCancel, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        gbc = GridBagConstraintsFactory.create(0, row, 1, 1, 0, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(bOk, gbc);
+        gbc = GridBagConstraintsFactory.create(1, row, 1, 1, 10, 0, GridBagConstraints.NONE, GridBagConstraints.WEST);
+        jp.add(bCancel, gbc);
 
         return jp;
     }
