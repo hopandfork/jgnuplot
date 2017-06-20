@@ -36,6 +36,7 @@ import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.gui.combobox.FontComboBox;
 import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
+import org.hopandfork.jgnuplot.gui.utility.JOptionPaneUtils;
 import org.hopandfork.jgnuplot.model.OutputFileFormat;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
@@ -172,7 +173,6 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
             acFileBrowse();
         else if (e.getActionCommand().equals("ok")) {
             acOk();
-            this.setVisible(false);
         } else if (e.getActionCommand().equals("cancel")) {
             this.setVisible(false);
         }
@@ -180,11 +180,14 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
 
     public void acOk() {
         String outputFileName = this.tfFileName.getText();
+        if (outputFileName.isEmpty()) {
+            JOptionPaneUtils.showWarning(this, "Export", "A valid output filename must be provided.");
+            return;
+        }
         File outputFile = new File(outputFileName);
-        Plot plot = plotController.getCurrent();
 
         String fontName = null;
-        if (cbFontName.getSelectedItem() != null)
+        if (chkAutomaticFont.isSelected() && cbFontName.getSelectedItem() != null)
             fontName = cbFontName.getSelectedItem().toString();
         int fontSize = spinnerFontSizeModel.getNumber().intValue();
 
@@ -217,8 +220,8 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
         }
 
         if (terminal != null) {
+            Plot plot = plotController.getCurrent();
             GnuplotRunner.runGnuplot(terminal, plot, this);
-            this.setVisible(false);
         }
     }
 
@@ -258,14 +261,14 @@ public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRu
 
     @Override
     public void onImageGenerated(File output) {
+        LOG.info("Exported plot.");
         setVisible(false);
     }
 
     @Override
     public void onImageGenerationError(String errorMessage) {
         /* Something went wrong! */
-        LOG.error("Failed plot export...");
-        // TODO
-        setVisible(false);
+        LOG.error("Failed plot export: " + errorMessage);
+        JOptionPaneUtils.showError(this, "Export", "An error occurred during export:\n"  + errorMessage);
     }
 }
