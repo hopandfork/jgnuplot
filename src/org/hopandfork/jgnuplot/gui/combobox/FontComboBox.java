@@ -27,10 +27,11 @@ import java.awt.*;
 public class FontComboBox extends JComboBox<String> {
 
 	public FontComboBox() {
-		setEditable(false);
-
 		for (String font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
 			addItem(font);
+
+		setEditable(true);
+		setSelectedItem(null);
 	}
 
 }

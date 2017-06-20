@@ -31,7 +31,7 @@ public class PostscriptTerminal extends Terminal {
 	private String fontString()
 	{
 		if (fontName != null) {
-			return String.format("font '%s, %d'", fontName, fontSize);
+			return String.format("font \"%s, %d\"", fontName, fontSize);
 		}
 
 		return "";

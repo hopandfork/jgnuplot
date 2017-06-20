@@ -29,7 +29,7 @@ public class SvgTerminal extends Terminal {
 	private String fontString()
 	{
 		if (fontName != null) {
-			return String.format("fname '%s' fsize %d", fontName, fontSize);
+			return String.format("fname \"%s\" fsize %d", fontName, fontSize);
 		}
 
 		return "";

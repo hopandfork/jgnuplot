@@ -1,0 +1,232 @@
+/*
+ * JGNUplot is a GUI for gnuplot (http://www.gnuplot.info/)
+ * The GUI is build on JAVA wrappers for gnuplot alos provided in this package.
+ * 
+ * Copyright (C) 2006  Maximilian H. Fabricius 
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package org.hopandfork.jgnuplot.gui.dialog;
+
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.*;
+
+import org.apache.log4j.Logger;
+import org.hopandfork.jgnuplot.control.PlotController;
+import org.hopandfork.jgnuplot.gui.combobox.FontComboBox;
+import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
+import org.hopandfork.jgnuplot.model.OutputFileFormat;
+import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
+import org.hopandfork.jgnuplot.runtime.terminal.PngcairoTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.PostscriptTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.SvgTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.Terminal;
+
+
+public class ExportDialog extends JGPDialog implements ActionListener, GnuplotRunner.ImageConsumer {
+
+    private static Logger LOG = Logger.getLogger(ExportDialog.class);
+
+    private static final long serialVersionUID = 1L;
+
+    private JTextField tfFileName;
+    private FontComboBox cbFontName;
+    private SpinnerNumberModel spinnerFontSizeModel;
+    private SpinnerNumberModel spinnerWidthModel;
+    private SpinnerNumberModel spinnerHeightModel;
+    private JComboBox<OutputFileFormat> cbFileFormat;
+
+    private PlotController plotController;
+
+    public ExportDialog(PlotController plotController) {
+        super();
+        this.plotController = plotController;
+        add(createMainPanel());
+        pack();
+    }
+
+    private JPanel createMainPanel() {
+        // Create the panel.
+        JGPPanel jp = new JGPPanel();
+
+        // Set the default panel layout.
+        GridBagLayout gbl = new GridBagLayout();
+        jp.setLayout(gbl);
+
+        // Create the buttons.
+        JButton bFileChose = new JButton("...");
+        bFileChose.setActionCommand("...");
+        bFileChose.addActionListener(this);
+
+        JButton bOk = new JButton("ok");
+        bOk.setActionCommand("ok");
+        bOk.addActionListener(this);
+
+        JButton bCancel = new JButton("cancel");
+        bCancel.setActionCommand("cancel");
+        bCancel.addActionListener(this);
+
+
+        tfFileName = new JTextField("", 20);
+
+        cbFontName = new FontComboBox();
+
+        spinnerFontSizeModel = new SpinnerNumberModel(18, 1, 999, 1);
+        JSpinner tfFontSize = new JSpinner(spinnerFontSizeModel);
+
+        spinnerWidthModel = new SpinnerNumberModel(1200, 1, 9999, 5);
+        JSpinner spinnerWidth = new JSpinner(spinnerWidthModel);
+        spinnerHeightModel = new SpinnerNumberModel(800, 1, 9999, 5);
+        JSpinner spinnerHeight = new JSpinner(spinnerHeightModel);
+
+        cbFileFormat = new JComboBox<>();
+        for (OutputFileFormat format : OutputFileFormat.values())
+            cbFileFormat.addItem(format);
+
+        int row = 0;
+        jp.add(new JLabel("File format"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(cbFileFormat, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
+        row += 1;
+        jp.add(new JLabel("Width (px)"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(spinnerWidth, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(new JLabel("Height (px)"), 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(spinnerHeight, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        row += 1;
+        jp.add(new JLabel("Font"), 0, row, 3, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(cbFontName, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        row += 1;
+        jp.add(new JLabel("Font size"), 0, row, 3, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(tfFontSize, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        row += 1;
+        jp.add(new JLabel("Filename"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(tfFileName, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(bFileChose, 2, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        row += 1;
+        jp.add(bOk, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
+        jp.add(bCancel, 3, row, 1, 1, GridBagConstraints.HORIZONTAL);
+
+        return jp;
+    }
+
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("..."))
+            acFileBrowse();
+        else if (e.getActionCommand().equals("ok")) {
+            acOk();
+            this.setVisible(false);
+        } else if (e.getActionCommand().equals("cancel")) {
+            this.setVisible(false);
+        }
+    }
+
+    public void acOk() {
+        String outputFileName = this.tfFileName.getText();
+        File outputFile = new File(outputFileName);
+        Plot plot = plotController.getCurrent();
+
+        String fontName = null;
+        if (cbFontName.getSelectedItem() != null)
+            fontName = cbFontName.getSelectedItem().toString();
+        int fontSize = spinnerFontSizeModel.getNumber().intValue();
+
+        int widthPixels = spinnerWidthModel.getNumber().intValue();
+        int heightPixels = spinnerHeightModel.getNumber().intValue();
+
+        Terminal terminal = null;
+        OutputFileFormat outputFileFormat = (OutputFileFormat) cbFileFormat.getSelectedItem();
+
+        switch (outputFileFormat) {
+            case EPS:
+                PostscriptTerminal postscriptTerminal = new PostscriptTerminal(widthPixels, heightPixels, outputFile);
+                if (fontName != null)
+                    postscriptTerminal.setFont(fontName, fontSize);
+                terminal = postscriptTerminal;
+                break;
+            case PNG:
+                PngcairoTerminal pngTerminal = new PngcairoTerminal(widthPixels, heightPixels, outputFile);
+                if (fontName != null)
+                    pngTerminal.setFont(fontName, fontSize);
+                terminal = pngTerminal;
+                break;
+            case SVG:
+                SvgTerminal svgTerminal = new SvgTerminal(widthPixels, heightPixels, outputFile);
+                if (fontName != null)
+                    svgTerminal.setFont(fontName, fontSize);
+                terminal = svgTerminal;
+                break;
+            default:
+        }
+
+        if (terminal != null) {
+            GnuplotRunner.runGnuplot(terminal, plot, this);
+            this.setVisible(false);
+        }
+    }
+
+    public void acFileBrowse() {
+
+        File f;
+
+        if (!this.tfFileName.getText().trim().equals("")) {
+            f = new File(tfFileName.getText().trim());
+            if (!f.exists()) f = new File(f.getPath());
+        } else {
+            f = new File(".");
+        }
+
+        // Open a file chooser that points to the current dir.
+        JFileChooser file_chooser = new JFileChooser(f.getPath());
+
+        // Set to select directory
+        file_chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+        // Show the Open dialog box (returns the option selected)
+        int selected = file_chooser.showOpenDialog(this);
+
+        // If the Open button is pressed.
+        if (selected == JFileChooser.APPROVE_OPTION) {
+            // Get the selected file.
+            tfFileName.setText(file_chooser.getSelectedFile().toString());
+            tfFileName.setToolTipText(file_chooser.getSelectedFile().toString());
+        }
+    }
+
+
+    @Override
+    public void onImageGenerated(Image image) {
+        /* should never be called */
+    }
+
+    @Override
+    public void onImageGenerated(File output) {
+        setVisible(false);
+    }
+
+    @Override
+    public void onImageGenerationError(String errorMessage) {
+        /* Something went wrong! */
+        LOG.error("Failed plot export...");
+        // TODO
+        setVisible(false);
+    }
+}

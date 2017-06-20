@@ -45,10 +45,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		// Set the panel layout.
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		// Set the menubar's border.
-		this.setBorder(new BevelBorder(BevelBorder.RAISED));
-		this.setBorderPainted(true);
-
 		// Add the file menu the menu bar.
 		file_menu = new JMenu("File");
 		file_menu.setBorderPainted(false);
