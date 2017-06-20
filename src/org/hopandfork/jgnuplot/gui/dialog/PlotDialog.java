@@ -31,38 +31,36 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
-import org.hopandfork.jgnuplot.JGP;
 import org.hopandfork.jgnuplot.control.PlotController;
-import org.hopandfork.jgnuplot.gui.combobox.FileFormatComboBox;
 import org.hopandfork.jgnuplot.gui.combobox.FontComboBox;
 import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
 import org.hopandfork.jgnuplot.model.OutputFileFormat;
 import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
+import org.hopandfork.jgnuplot.runtime.terminal.PngcairoTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.PostscriptTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.SvgTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.Terminal;
 
 
 public class PlotDialog extends JGPDialog implements ActionListener {
 	
 	private static Logger LOG = Logger.getLogger(PlotDialog.class);
-	
+
+	private static final long serialVersionUID = 1L;
+
 	private JTextField tfFileName;
 	
 	private FontComboBox cbFontName;
 	
 	private JTextField tfFontSize;
 	
-	private JCheckBox cbColor;
-	
-	private FileFormatComboBox cbFileFormat;
+	private JComboBox<OutputFileFormat> cbFileFormat;
 	
 	private PlotController plotController;
 	
@@ -73,11 +71,6 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 		pack();
 	}
 
-	PlotDialog(){
-		add(createMainPanel());
-		this.pack();
-	}
-	
 	private JPanel createMainPanel(){
 		// Create the panel.
 		JGPPanel jp = new JGPPanel();
@@ -118,12 +111,9 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 		tfFontSize = new JTextField("18",2);
 		bFileChose.setPreferredSize(new Dimension(20, 20));
 		
-		cbColor = new JCheckBox();
-		//I summon most people will want colored plots.
-		cbColor.setSelected(true);
-		//tfUpDown.setFont(new Font("Courier", Font.PLAIN, 32));
-		
-		cbFileFormat = new FileFormatComboBox();
+		cbFileFormat = new JComboBox<>();
+		for (OutputFileFormat format : OutputFileFormat.values())
+			cbFileFormat.addItem(format);
 
 		int row = 0;
 		jp.add(new JLabel("Filename"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
@@ -137,9 +127,6 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 		jp.add(new JLabel("Font size"), 0, row, 3, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(tfFontSize, 1, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		row += 1;
-		jp.add(new JLabel("Color print"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
-		jp.add(cbColor, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
-		row += 1;
 		jp.add(new JLabel("File format"), 0, row, 1, 1, GridBagConstraints.HORIZONTAL);
 		jp.add(cbFileFormat, 1, row, 3, 1, GridBagConstraints.HORIZONTAL);
 		row += 1;
@@ -150,18 +137,7 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 	}
 	
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("..."))
@@ -176,33 +152,46 @@ public class PlotDialog extends JGPDialog implements ActionListener {
 	}
 	
 	public void acOk() {
-		String psFileName = this.tfFileName.getText();
+		String outputFileName = this.tfFileName.getText();
+		File outputFile = new File(outputFileName);
+		Plot plot = plotController.getCurrent();
 
-		//owner.clearShell();
+		String fontName = null;
+		if (cbFontName.getSelectedItem() != null)
+			fontName = cbFontName.getSelectedItem().toString();
+		int fontSize = Integer.parseInt(tfFontSize.getText()); // TODO check errors
 
-		//owner.println("calling GNUplot...");
+		int widthPixels = 1200; // TODO
+		int heightPixels = 800; // TODO
 
-		Plot gp = plotController.getCurrent();
-		
-		gp.setPsColor(this.cbColor.isSelected());
-		
-		gp.setPsFontName(this.cbFontName.getSelectedItem().toString());
-		
-		if (!this.tfFontSize.equals(""))
-			try {
-				gp.setPsFontSize(Integer.parseInt(tfFontSize.getText()));
-			} catch (NumberFormatException e1) {
-				LOG.error(e1.getMessage());
-			}
-		
-		try {
-			gp.plotToFile(psFileName, (OutputFileFormat) cbFileFormat.getSelectedItem() );
-		} catch (IOException e) {
-			LOG.error(e.getMessage());
-		} catch (InterruptedException e) {
-			LOG.error(e.getMessage());
+		Terminal terminal = null;
+		OutputFileFormat outputFileFormat = (OutputFileFormat)cbFileFormat.getSelectedItem();
+
+		switch (outputFileFormat) {
+			case EPS:
+				PostscriptTerminal postscriptTerminal = new PostscriptTerminal(widthPixels, heightPixels, outputFile);
+				if (fontName != null)
+					postscriptTerminal.setFont(fontName, fontSize);
+				terminal = postscriptTerminal;
+				break;
+			case PNG:
+				PngcairoTerminal pngTerminal = new PngcairoTerminal(widthPixels, heightPixels, outputFile);
+				if (fontName != null)
+					pngTerminal.setFont(fontName, fontSize);
+				terminal = pngTerminal;
+				break;
+			case SVG:
+				SvgTerminal svgTerminal = new SvgTerminal(widthPixels, heightPixels, outputFile);
+				if (fontName != null)
+					svgTerminal.setFont(fontName, fontSize);
+				terminal = svgTerminal;
+				break;
+			default:
+				// TODO error
 		}
-		
+
+		GnuplotRunner.runGnuplot(terminal, plot, null); // TODO provide a ImageConsumer for checking return value
+
 		this.setVisible(false);
 		
 	}

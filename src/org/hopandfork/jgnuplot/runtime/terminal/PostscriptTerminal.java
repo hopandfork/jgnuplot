@@ -2,28 +2,30 @@ package org.hopandfork.jgnuplot.runtime.terminal;
 
 import java.io.File;
 
-public class PngcairoTerminal extends Terminal {
+public class PostscriptTerminal extends Terminal {
 
 	private int fontSize;
 	private String fontName = null;
 	private int width;
 	private int height;
 
-	public PngcairoTerminal (int width, int height)
+	public PostscriptTerminal(int width, int height)
 	{
 		this(width, height, null);
 	}
 
-	public PngcairoTerminal (int width, int height, File outputFile)
+	public PostscriptTerminal(int widthPixels, int heightPixels, File outputFile)
 	{
 		super(outputFile);
-		this.width = width;
-		this.height = height;
+
+		/* Postscript terminal accepts size in inches (1/100 of pixels size) */
+		this.width = widthPixels/100;
+		this.height = heightPixels/100;
 	}
 
 	@Override
 	protected String getTerminalString() {
-		return String.format("set terminal pngcairo size %d,%d enhanced %s\n", width, height, fontString());
+		return String.format("set terminal postscript eps size %d,%d enhanced color %s\n", width, height, fontString());
 	}
 
 	private String fontString()

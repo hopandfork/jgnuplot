@@ -1,6 +1,6 @@
 /*
  * JGNUplot is a GUI for gnuplot (http://www.gnuplot.info/)
- * The GUI is build on JAVA wrappers for gnuplot alos provided in this package.
+ * The GUI is build on JAVA wrappers for gnuplot also provided in this package.
  * 
  * Copyright (C) 2006  Maximilian H. Fabricius 
  * 
@@ -24,8 +24,6 @@ package org.hopandfork.jgnuplot;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +32,6 @@ import java.net.MalformedURLException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -52,14 +49,6 @@ import org.hopandfork.jgnuplot.gui.panel.PreviewPanel;
 public class JGP extends JFrame implements MainInterface {
 
 //	private static Logger LOG = Logger.getLogger(JGP.class);
-
-	public static final boolean debug = true;
-
-//	private ConsoleDialog consoleDialog;
-
-	public JTextArea taShell;
-
-	public JTextArea prePlotString;
 
 	private Menu menu;
 

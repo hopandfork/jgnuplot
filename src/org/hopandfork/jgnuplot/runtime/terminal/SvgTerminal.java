@@ -2,19 +2,19 @@ package org.hopandfork.jgnuplot.runtime.terminal;
 
 import java.io.File;
 
-public class PngcairoTerminal extends Terminal {
+public class SvgTerminal extends Terminal {
 
 	private int fontSize;
 	private String fontName = null;
 	private int width;
 	private int height;
 
-	public PngcairoTerminal (int width, int height)
+	public SvgTerminal(int width, int height)
 	{
 		this(width, height, null);
 	}
 
-	public PngcairoTerminal (int width, int height, File outputFile)
+	public SvgTerminal(int width, int height, File outputFile)
 	{
 		super(outputFile);
 		this.width = width;
@@ -23,13 +23,13 @@ public class PngcairoTerminal extends Terminal {
 
 	@Override
 	protected String getTerminalString() {
-		return String.format("set terminal pngcairo size %d,%d enhanced %s\n", width, height, fontString());
+		return String.format("set terminal svg size %d,%d enhanced %s\n", width, height, fontString());
 	}
 
 	private String fontString()
 	{
 		if (fontName != null) {
-			return String.format("font '%s, %d'", fontName, fontSize);
+			return String.format("fname '%s' fsize %d", fontName, fontSize);
 		}
 
 		return "";

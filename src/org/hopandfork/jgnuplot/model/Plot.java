@@ -55,14 +55,6 @@ public class Plot implements Plottable {
     private boolean logScaleY = false;
     private boolean logScaleZ = false;
 
-    @Deprecated
-    private boolean psColor = false;
-    @Deprecated
-    private int psFontSize = 18;
-    @Deprecated
-    private String psFontName = "";
-
-
     public enum Mode {
         PLOT_2D, PLOT_3D;
     }
@@ -193,37 +185,6 @@ public class Plot implements Plottable {
         return s;
     }
 
-    @Deprecated
-    public void plotToFile(String psFileName, OutputFileFormat format) throws IOException, InterruptedException {
-
-        String s = "";
-        s += "set output '" + psFileName + "' \n";
-
-        if (format == OutputFileFormat.POSTSCRIPT) {
-            s += "set terminal " + format;
-            s += " enhanced ";
-            if (psColor)
-                s += " color ";
-            s += "solid defaultplex ";
-            s += "'" + psFontName + "' ";
-            s += psFontSize + " ";
-            s += " \n";
-        } else if (format == OutputFileFormat.SVG) {
-            s += "set terminal " + format;
-            s += " \n";
-        } else {
-            s += "set terminal " + format;
-            s += " \n";
-        }
-
-        s += toPlotString();
-        s += "set terminal X11 \n";
-
-        System.out.println("Calling GnuplotRunner...");
-        //GnuplotRunner pr = new GnuplotRunner(s); // TODO use terminals
-        //new Thread(pr).start();
-    }
-
     public String getTitle() {
         return title;
     }
@@ -254,30 +215,6 @@ public class Plot implements Plottable {
 
     public void setXmin(Double xmin) {
         this.xmin = xmin;
-    }
-
-    public boolean isPsColor() {
-        return psColor;
-    }
-
-    public void setPsColor(boolean psColor) {
-        this.psColor = psColor;
-    }
-
-    public String getPsFontName() {
-        return psFontName;
-    }
-
-    public void setPsFontName(String psFontName) {
-        this.psFontName = psFontName;
-    }
-
-    public void setPsFontSize(int psFontSize) {
-        this.psFontSize = psFontSize;
-    }
-
-    public int getPsFontSize() {
-        return psFontSize;
     }
 
     public String getYlabel() {

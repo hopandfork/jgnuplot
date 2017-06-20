@@ -99,13 +99,15 @@ public class GnuplotRunner implements Runnable {
 			if (p.exitValue() != 0) {
 				LOG.error("gnuplot exited with value: " + p.exitValue());
 
-				if (imageConsumer != null) {
-					/* Reads error message. */
-					StringBuilder errorMsgBuilder = new StringBuilder();
-					while (stderr.available() > 0) {
-						errorMsgBuilder.append((char) stderr.read());
-					}
+				/* Reads error message. */
+				StringBuilder errorMsgBuilder = new StringBuilder();
+				while (stderr.available() > 0) {
+					errorMsgBuilder.append((char) stderr.read());
+				}
 
+				LOG.error("Gnuplot: " + errorMsgBuilder.toString());
+
+				if (imageConsumer != null) {
 					imageConsumer.onImageGenerationError(errorMsgBuilder.toString());
 				}
 			} else if (imageConsumer != null) {

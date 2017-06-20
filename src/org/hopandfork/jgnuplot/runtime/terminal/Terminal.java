@@ -34,7 +34,7 @@ public abstract class Terminal implements Plottable {
 	private String getOutputString()
 	{
 		if (outputFile != null)
-			return String.format("set output %s\n", outputFile.getAbsolutePath());
+			return String.format("set output \"%s\"\n", outputFile.getAbsolutePath());
 
 		return "";
 	}
