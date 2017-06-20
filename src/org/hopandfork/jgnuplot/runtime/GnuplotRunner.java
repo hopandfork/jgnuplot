@@ -1,42 +1,69 @@
 package org.hopandfork.jgnuplot.runtime;
 
 import org.apache.log4j.Logger;
+import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.runtime.terminal.Terminal;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * Runnable used to asynchronously run Gnuplot.
  */
 public class GnuplotRunner implements Runnable {
 
-	/** Plot string. */
-	private String gpPlotString;
+	/**
+	 * Plot.
+	 */
+	private Plot plot;
 
-	/** Command to use for running gnuplot. */
+	/**
+	 * Gnuplot terminal.
+	 */
+	private Terminal terminal;
+
+	/**
+	 * Command to use for running gnuplot.
+	 */
 	private static final String GNUPLOT_CMD = "gnuplot";
 
+	/**
+	 * Consumer of the generated plot.
+	 */
 	private ImageConsumer imageConsumer = null;
 
+	/**
+	 * Logger.
+	 */
 	static final private Logger LOG = Logger.getLogger(GnuplotRunner.class);
 
-	public GnuplotRunner(String plotString) {
-		this.gpPlotString = plotString;
+	/**
+	 * Callback interface for receiving gnuplot output.
+	 */
+	public interface ImageConsumer {
+		void onImageGenerated(Image image);
+
+		void onImageGenerated(File output);
+
+		void onImageGenerationError(String errorMessage);
 	}
 
-	public GnuplotRunner(String plotString, ImageConsumer imageConsumer) {
-		this.gpPlotString = plotString;
+	private GnuplotRunner(Plot plot, Terminal terminal, ImageConsumer imageConsumer) {
+		this.plot = plot;
+		this.terminal = terminal;
 		this.imageConsumer = imageConsumer;
 	}
 
-	public interface ImageConsumer {
-		void readImage(Image image);
-		void onImageGenerationError (String errorMessage);
+	public static void runGnuplot(Terminal terminal, Plot plot) {
+		runGnuplot(terminal, plot, null);
 	}
+
+	public static void runGnuplot(Terminal terminal, Plot plot, ImageConsumer imageConsumer) {
+		GnuplotRunner gnuplotRunner = new GnuplotRunner(plot, terminal, imageConsumer);
+		new Thread(gnuplotRunner).start();
+	}
+
 
 	/**
 	 * Entry point for GnuplotRunner.
@@ -50,14 +77,19 @@ public class GnuplotRunner implements Runnable {
 			/* Writes plot script to stdin */
 			OutputStream stdin = p.getOutputStream();
 			BufferedOutputStream bw = new BufferedOutputStream(stdin);
-			bw.write(gpPlotString.getBytes());
+			bw.write(terminal.toPlotString().getBytes());
+			bw.write(plot.toPlotString().getBytes());
 			bw.flush();
 			bw.close();
 			stdin.close();
 
 			/* Reads from stdoutput of the process. */
 			InputStream stdout = p.getInputStream();
-			Image image = ImageIO.read(stdout);
+
+			Image image = null;
+			if (terminal.getOutputFile() == null)
+				image = ImageIO.read(stdout);
+
 			InputStream stderr = p.getErrorStream();
 
 			/* Waits for gnuplot process termination */
@@ -65,12 +97,10 @@ public class GnuplotRunner implements Runnable {
 			stdout.close();
 
 			if (p.exitValue() != 0) {
-				LOG.error("GNUplot exited with value: " + p.exitValue());
+				LOG.error("gnuplot exited with value: " + p.exitValue());
 
-				/*
-				 * Reads error message.
-				 */
 				if (imageConsumer != null) {
+					/* Reads error message. */
 					StringBuilder errorMsgBuilder = new StringBuilder();
 					while (stderr.available() > 0) {
 						errorMsgBuilder.append((char) stderr.read());
@@ -78,11 +108,13 @@ public class GnuplotRunner implements Runnable {
 
 					imageConsumer.onImageGenerationError(errorMsgBuilder.toString());
 				}
-
-				return;
+			} else if (imageConsumer != null) {
+				if (terminal.getOutputFile() == null)
+					imageConsumer.onImageGenerated(image);
+				else
+					imageConsumer.onImageGenerated(terminal.getOutputFile());
 			}
 
-			imageConsumer.readImage(image);
 
 		} catch (IOException e) {
 			e.printStackTrace();

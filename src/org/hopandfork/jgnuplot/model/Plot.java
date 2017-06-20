@@ -220,8 +220,8 @@ public class Plot implements Plottable {
         s += "set terminal X11 \n";
 
         System.out.println("Calling GnuplotRunner...");
-        GnuplotRunner pr = new GnuplotRunner(s);
-        new Thread(pr).start();
+        //GnuplotRunner pr = new GnuplotRunner(s); // TODO use terminals
+        //new Thread(pr).start();
     }
 
     public String getTitle() {
