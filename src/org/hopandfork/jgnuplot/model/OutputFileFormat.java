@@ -22,6 +22,7 @@
 package org.hopandfork.jgnuplot.model;
 
 public enum OutputFileFormat {
-	POSTSCRIPT,
-	SVG
+	EPS,
+	SVG,
+	PNG
 }

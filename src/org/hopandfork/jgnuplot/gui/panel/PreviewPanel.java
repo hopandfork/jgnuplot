@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -19,6 +20,8 @@ import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
+import org.hopandfork.jgnuplot.runtime.terminal.PngcairoTerminal;
+import org.hopandfork.jgnuplot.runtime.terminal.Terminal;
 
 /**
  * Panel containing components for plot preview.
@@ -69,16 +72,19 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         }
 
         Plot plot = plotController.getCurrent();
-        String plotScript = plot.toPlotString();
-        plotScript = "set terminal pngcairo size " + previewWidth +  "," + previewHeight + "\n" + plotScript;
-        GnuplotRunner pr = new GnuplotRunner(plotScript, this);
-        new Thread(pr).start();
+        Terminal terminal = new PngcairoTerminal(previewWidth, previewHeight);
+        GnuplotRunner.runGnuplot(terminal, plot, this);
     }
 
     @Override
-    public void readImage(Image image) {
+    public void onImageGenerated (Image image) {
         this.image = image;
         renderImage();
+    }
+
+    @Override
+    public void onImageGenerated (File outputFile) {
+        /* nothing to do */
     }
 
     private void renderImage ()

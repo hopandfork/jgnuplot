@@ -16,7 +16,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -24,11 +23,10 @@ import javax.swing.event.ChangeListener;
 
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
-import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
+import org.hopandfork.jgnuplot.gui.dialog.ExportDialog;
 import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.Plot.Mode;
-import org.hopandfork.jgnuplot.model.Project;
 
 public class BottomPanel extends JGPPanel
 		implements ActionListener, KeyListener, ItemListener, ChangeListener, BottomInterface, Observer {
@@ -216,7 +214,7 @@ public class BottomPanel extends JGPPanel
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("plotps")) {
-			new PlotDialog(plotController).setVisible(true);
+			new ExportDialog(plotController).setVisible(true);
 		} else if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
 		}
