@@ -27,13 +27,11 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerFactory;
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
@@ -46,7 +44,7 @@ import org.hopandfork.jgnuplot.gui.panel.PreviewPanel;
 
 public class JGP extends JFrame implements MainInterface {
 
-//	private static Logger LOG = Logger.getLogger(JGP.class);
+	private static Logger LOG = Logger.getLogger(JGP.class);
 
 	private Menu menu;
 
@@ -119,6 +117,15 @@ public class JGP extends JFrame implements MainInterface {
 		return "0.1.2"; // TODO
 	}
 
+	private static void initializeLookAndFeel()
+	{
+		try {
+			UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel");
+		} catch (Exception e) {
+		    LOG.error("Failed to load Substance look and feel!");
+		}
+	}
+
 	public static void main(String[] args) throws MalformedURLException {
 		/* Log4j initialization */
 		PropertyConfigurator.configure(
@@ -127,6 +134,7 @@ public class JGP extends JFrame implements MainInterface {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
+					initializeLookAndFeel();
 					JGP m = new JGP();
 					m.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 					m.pack();

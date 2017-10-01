@@ -106,14 +106,19 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         /* nothing to do */
     }
 
+    protected void renderEmptyPreview()
+    {
+        // TODO
+    }
+
     private void renderImage ()
     {
         this.removeAll();
 
         if (image == null) {
-            LOG.debug("Image is null!");
-            this.revalidate();
-            this.repaint();
+            renderEmptyPreview();
+            revalidate();
+            repaint();
             return;
         }
 
