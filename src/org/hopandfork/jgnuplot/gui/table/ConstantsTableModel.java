@@ -93,22 +93,11 @@ public class ConstantsTableModel extends AbstractTableModel implements Observer 
 		}
 	}
 
-	/*
-	 * JTable uses this method to determine the default renderer/ editor for
-	 * each cell. If we didn't implement this method, then the last column would
-	 * contain text ("true"/"false"), rather than a check box.
-	 */
-	@SuppressWarnings("unchecked")
 	public Class getColumnClass(int c) {
-		Object o = getValueAt(0, c);
-		Class cl;
-		if (o != null)
-			cl = o.getClass();
+		if (c == 0)
+			return String.class;
 		else
-			cl = String.class;
-
-		// System.out.println(cl);
-		return cl;
+			return Double.class;
 	}
 
 	/*
