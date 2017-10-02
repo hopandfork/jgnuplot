@@ -26,11 +26,11 @@ import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import javax.swing.*;
 
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.LabelController;
@@ -111,9 +111,30 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         // TODO
     }
 
+    private void safeRemoveAllComponents() {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    @Override
+                    public void run() {
+                        PreviewPanel.this.removeAll();
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        } else {
+            removeAll();
+        }
+    }
+
+
+
     private void renderImage ()
     {
-        this.removeAll();
+        safeRemoveAllComponents();
 
         if (image == null) {
             renderEmptyPreview();
@@ -135,13 +156,18 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         if (height < 1 || width < 1)
             return; /* panel hidden */
 
-        Image _image = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        JLabel label = new JLabel(new ImageIcon(_image));
+        final Image _image = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
-        GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
-        this.add(label, gbc);
-        this.revalidate();
-        this.repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JLabel label = new JLabel(new ImageIcon(_image));
+                GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
+                PreviewPanel.this.add(label, gbc);
+                PreviewPanel.this.revalidate();
+                PreviewPanel.this.repaint();
+            }
+        });
     }
 
     @Override
