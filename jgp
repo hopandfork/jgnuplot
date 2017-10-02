@@ -1,2 +1,9 @@
-#!/bin/bash
-java -jar ./target/JGNUplot-0.2.1-jar-with-dependencies.jar
+JGNUPLOT_VERSION="0.2.1"
+
+
+SCRIPT=`realpath $0`
+SCRIPTDIR=`dirname $SCRIPT`
+LIBDIR="${SCRIPTDIR}/lib"
+
+java -cp ${SCRIPTDIR}/target/JGNUplot-${JGNUPLOT_VERSION}-jar-with-dependencies.jar:${LIBDIR}/substance-7.0.01.jar:${LIBDIR}/trident-1.4.jar org.hopandfork.jgnuplot.JGP
+
