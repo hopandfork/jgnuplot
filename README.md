@@ -51,7 +51,7 @@ originally released the source code on
 
 The project is now actively mantained by 
 [Hop and Fork](https://www.hopandfork.org) Open Source dev team, and released
-under the terms of GPLv3 license.
+under the terms of GPLv2 license.
 
 We rely on [substance](https://github.com/kirill-grouchnikov/substance) for
 improving the look-and-feel of the UI. This library is released under the terms of
