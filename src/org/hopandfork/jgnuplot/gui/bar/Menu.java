@@ -103,8 +103,6 @@ public class Menu extends JMenuBar implements MenuInterface, ActionListener {
 		edit_menu.setBorderPainted(false);
 		this.add(edit_menu);
 
-		edit_menu.addSeparator();
-
 		add_datafile_menu_item = new JMenuItem("Add DataFile");
 		add_datafile_menu_item.addActionListener(this);
 		add_datafile_menu_item.setActionCommand("add_datafile");

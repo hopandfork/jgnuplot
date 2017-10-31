@@ -80,7 +80,6 @@ public class BottomPanel extends JGPPanel
 
 	private void createButtonPanel() {
 
-		this.setBackground(new Color(0xf0f0f0));
 		// Set the default panel layout.
 		GridBagLayout gbl = new GridBagLayout();
 		this.setLayout(gbl);
