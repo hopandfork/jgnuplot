@@ -43,32 +43,41 @@ import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.bar.Menu;
 import org.hopandfork.jgnuplot.gui.panel.BottomPanel;
 import org.hopandfork.jgnuplot.gui.panel.JGPPanel;
-import org.hopandfork.jgnuplot.gui.panel.MainInterface;
 import org.hopandfork.jgnuplot.gui.panel.OverviewPanel;
 import org.hopandfork.jgnuplot.gui.panel.PreviewPanel;
+import org.hopandfork.jgnuplot.gui.presenter.bar.MenuInterface;
+import org.hopandfork.jgnuplot.gui.presenter.bar.MenuPresenter;
+import org.hopandfork.jgnuplot.gui.presenter.panel.BottomInterface;
 import org.hopandfork.jgnuplot.gui.presenter.panel.BottomPresenter;
+import org.hopandfork.jgnuplot.gui.presenter.panel.MainInterface;
+import org.hopandfork.jgnuplot.gui.presenter.panel.OverviewInterface;
+import org.hopandfork.jgnuplot.gui.presenter.panel.OverviewPresenter;
 import org.hopandfork.jgnuplot.model.Plot;
 
 public class JGP extends JFrame implements MainInterface {
 
-//	private static Logger LOG = Logger.getLogger(JGP.class);
+	// private static Logger LOG = Logger.getLogger(JGP.class);
 
 	public static final boolean debug = true;
 
-//	private ConsoleDialog consoleDialog;
+	// private ConsoleDialog consoleDialog;
 
 	public JTextArea taShell;
 
 	public JTextArea prePlotString;
 
-	private Menu menu;
-
-	private OverviewPanel overviewPanel;
-
 	private JPanel previewPanel;
-
-	private BottomPanel bottomPanel;
 	
+	private MenuInterface menu;
+
+	private OverviewInterface overviewPanel;
+
+	private BottomInterface bottomPanel;
+
+	private MenuPresenter menuPresenter;
+	
+	private OverviewPresenter overviewPresenter;
+
 	private BottomPresenter bottomPresenter;
 
 	private static final long serialVersionUID = 1L;
@@ -90,8 +99,9 @@ public class JGP extends JFrame implements MainInterface {
 		this.setLocationByPlatform(true);
 
 		// Create the menu bar and add it to the dialog box.
-		menu = new Menu(this, plotController, plottableDataController);
-		this.setJMenuBar(menu);
+		menu = new Menu();
+		this.setJMenuBar(menu.toJMenuBar());
+		menuPresenter = new MenuPresenter(this, menu, plottableDataController);
 
 		JGPPanel content_pane = new JGPPanel();
 		this.add(content_pane);
@@ -101,25 +111,28 @@ public class JGP extends JFrame implements MainInterface {
 		content_pane.setLayout(gbl);
 
 		/* Creates panels. */
-		overviewPanel = new OverviewPanel(menu, plotController, plottableDataController, labelController);
+		overviewPanel = new OverviewPanel();
 		bottomPanel = new BottomPanel();
 		previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
 
-		/* Adds presenter */
+		/* Adds Presenter to manage the presentation logic */
 		bottomPresenter = new BottomPresenter(bottomPanel, plotController);
-		
+		overviewPresenter = new OverviewPresenter(overviewPanel, plottableDataController, labelController,
+				plotController);
+
 		/* Inits with default values */
 		Plot plot = plotController.getCurrent();
 		if (plot != null)
 			bottomPresenter.initialize(plot);
-		
+
 		/* Creates split pane. */
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overviewPanel, previewPanel);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overviewPanel.toJPanel(), previewPanel);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setResizeWeight(0.0);
 
 		content_pane.add(splitPane, 0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
-		content_pane.add(bottomPanel, 0, 1, 1, 1, 1, 0, GridBagConstraints.NONE, GridBagConstraints.SOUTHWEST);
+		content_pane.add(bottomPanel.toJPanel(), 0, 1, 1, 1, 1, 0, GridBagConstraints.NONE,
+				GridBagConstraints.SOUTHWEST);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -127,11 +140,11 @@ public class JGP extends JFrame implements MainInterface {
 			}
 		}); // ignore event itself
 
-		int width = Math.max(overviewPanel.getMinimumSize().width + previewPanel.getMinimumSize().width, bottomPanel.getMinimumSize().width)+10;
-		int height = overviewPanel.getMinimumSize().height + bottomPanel.getMinimumSize().height;
+		int width = Math.max(overviewPanel.toJPanel().getMinimumSize().width + previewPanel.getMinimumSize().width,
+				bottomPanel.toJPanel().getMinimumSize().width) + 10;
+		int height = overviewPanel.toJPanel().getMinimumSize().height + bottomPanel.toJPanel().getMinimumSize().height;
 		setMinimumSize(new Dimension(width, height));
 	}
-
 
 	private void exit() {
 		System.exit(0);

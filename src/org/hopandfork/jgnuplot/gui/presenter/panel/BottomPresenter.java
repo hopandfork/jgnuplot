@@ -28,22 +28,22 @@ public class BottomPresenter implements ActionListener, KeyListener, ItemListene
 		this.bottomInterface = bottomInterface;
 		this.plotController = plotController;
 		
-		this.bottomInterface.getTitle().addKeyListener(this);
-		this.bottomInterface.get2D().addItemListener(this);
-		this.bottomInterface.getXLabel().addKeyListener(this);
-		this.bottomInterface.getMinX().addKeyListener(this);
-		this.bottomInterface.getMaxX().addKeyListener(this);
-		this.bottomInterface.getLogScaleX().addChangeListener(this);
-		this.bottomInterface.getYLabel().addKeyListener(this);
-		this.bottomInterface.getMinY().addKeyListener(this);
-		this.bottomInterface.getMaxY().addKeyListener(this);
-		this.bottomInterface.getLogScaleY().addChangeListener(this);
-		this.bottomInterface.getZLabel().addKeyListener(this);
-		this.bottomInterface.getMinZ().addKeyListener(this);
-		this.bottomInterface.getMaxZ().addKeyListener(this);
-		this.bottomInterface.getLogScaleZ().addChangeListener(this);
-		this.bottomInterface.getPlotPs().addActionListener(this);
-		this.bottomInterface.getPlotString().addActionListener(this);
+		bottomInterface.getTitle().addKeyListener(this);
+		bottomInterface.get2D().addItemListener(this);
+		bottomInterface.getXLabel().addKeyListener(this);
+		bottomInterface.getMinX().addKeyListener(this);
+		bottomInterface.getMaxX().addKeyListener(this);
+		bottomInterface.getLogScaleX().addChangeListener(this);
+		bottomInterface.getYLabel().addKeyListener(this);
+		bottomInterface.getMinY().addKeyListener(this);
+		bottomInterface.getMaxY().addKeyListener(this);
+		bottomInterface.getLogScaleY().addChangeListener(this);
+		bottomInterface.getZLabel().addKeyListener(this);
+		bottomInterface.getMinZ().addKeyListener(this);
+		bottomInterface.getMaxZ().addKeyListener(this);
+		bottomInterface.getLogScaleZ().addChangeListener(this);
+		bottomInterface.getPlotPs().addActionListener(this);
+		bottomInterface.getPlotString().addActionListener(this);
 		
 		this.plotController.addObserver(this);
 	}

@@ -2,11 +2,11 @@ package org.hopandfork.jgnuplot.gui.presenter.panel;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
-import org.hopandfork.jgnuplot.model.Plot;
 
 public interface BottomInterface {
 
@@ -45,4 +45,6 @@ public interface BottomInterface {
 	public JButton getPlotString();
 	
 	public ConsoleDialog getConsoleDialog();
+	
+	public JPanel toJPanel();
 }

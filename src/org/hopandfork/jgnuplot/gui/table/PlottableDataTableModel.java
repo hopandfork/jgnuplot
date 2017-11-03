@@ -23,7 +23,10 @@ package org.hopandfork.jgnuplot.gui.table;
 
 
 import java.awt.Color;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.table.AbstractTableModel;
 

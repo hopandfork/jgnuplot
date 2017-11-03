@@ -8,6 +8,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
@@ -258,5 +259,10 @@ public class BottomPanel extends JGPPanel
 	@Override
 	public JButton getPlotString() {
 		return bPlotString;
+	}
+
+	@Override
+	public JPanel toJPanel() {
+		return this;
 	}
 }
