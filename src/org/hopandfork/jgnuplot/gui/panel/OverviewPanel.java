@@ -240,4 +240,22 @@ public class OverviewPanel extends JGPPanel implements OverviewInterface {
 	public JTextArea getPrePlotString() {
 		return prePlotString;
 	}
+
+	@Override
+	public boolean isLabelShown() {
+		int index = this.tp.getSelectedIndex();
+		if (index == 1) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isPlottableDataShown() {
+		int index = this.tp.getSelectedIndex();
+		if (index == 0) {
+			return true;
+		}
+		return false;
+	}
 }

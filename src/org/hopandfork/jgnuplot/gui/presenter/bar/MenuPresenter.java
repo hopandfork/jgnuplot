@@ -3,6 +3,7 @@ package org.hopandfork.jgnuplot.gui.presenter.bar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
@@ -18,7 +19,8 @@ import org.hopandfork.jgnuplot.model.Project;
  *
  */
 public class MenuPresenter implements ActionListener {
-
+	private static final Logger LOG = Logger.getLogger(MenuPresenter.class);
+	
 	private PlottableDataController plottableDataController = null;
 
 	private MainInterface mainPanel = null;
@@ -38,7 +40,7 @@ public class MenuPresenter implements ActionListener {
 		menuBar.getNew_menu_item().setActionCommand("new");
 
 		menuBar.getExit_menu_item().addActionListener(this);
-		menuBar.getExit_menu_item().setActionCommand("Exit");
+		menuBar.getExit_menu_item().setActionCommand("exit");
 
 		menuBar.getAdd_datafile_menu_item().addActionListener(this);
 		menuBar.getAdd_datafile_menu_item().setActionCommand("add_datafile");
@@ -61,44 +63,30 @@ public class MenuPresenter implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("add_datafile")) {
+		if (e.getActionCommand().equals("new")) {
+			acNew();
+		} else if (e.getActionCommand().equals("exit")) {
+			exit();
+		} else if (e.getActionCommand().equals("add_datafile")) {
 			DataFileDialog dataFileDialog = new DataFileDialog(plottableDataController);
 			dataFileDialog.setVisible(true);
 		} else if (e.getActionCommand().equals("add_function")) {
 			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
 			addFunctionDialog.setVisible(true);
-		} else if (e.getActionCommand().equals("Exit")) {
-			exit();
-		} else if (e.getActionCommand().equals("new")) {
-			acNew();
+		} else if (e.getActionCommand().equals("edit")) {
+			mainPanel.edit();
+		} else if (e.getActionCommand().equals("delete")) {
+			mainPanel.delete();
+		} else if (e.getActionCommand().equals("clear")) {
+			//TODO Implements clear
+			LOG.info("Implements clear");
 		} else if (e.getActionCommand().equals("about")) {
 			AboutDialog.showAboutDialog();
-		} else if (e.getActionCommand().equals("Save project to..."))
-			acSaveProjectTo();
-		else if (e.getActionCommand().equals("Save"))
-			acSaveProject();
-		else if (e.getActionCommand().equals("Load project..."))
-			acLoadProject();
-
-	}
-
-	private void acSaveProjectTo() {
-		// TODO
-	}
-
-	private void acSaveProject() {
-		// TODO
-	}
-
-	private void acLoadProject() {
-		// TODO
+		}
 	}
 
 	private void acNew() {
 		mainPanel.reset();
-		mainPanel.setTitle("<New>");
-		
-		// TODO interact with Project
 	}
 
 	private void exit() {

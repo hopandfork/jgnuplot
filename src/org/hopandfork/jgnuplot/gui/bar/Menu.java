@@ -43,25 +43,6 @@ public class Menu extends JMenuBar implements MenuInterface {
 		new_menu_item = new JMenuItem("New");
 		file_menu.add(new_menu_item);
 
-		// JMenuItem save_menu_item = new JMenuItem("Save");
-		// save_menu_item.addActionListener(this);
-		// save_menu_item.setActionCommand("Save");
-		// file_menu.add(save_menu_item);
-		//
-		// JMenuItem save_to_menu_item = new JMenuItem("Save project to...");
-		// save_to_menu_item.addActionListener(this);
-		// save_to_menu_item.setActionCommand("Save project to...");
-		// file_menu.add(save_to_menu_item);
-		//
-		// file_menu.addSeparator();
-		//
-		// JMenuItem load_menu_item = new JMenuItem("Load project...");
-		// load_menu_item.addActionListener(this);
-		// load_menu_item.setActionCommand("Load project...");
-		// file_menu.add(load_menu_item);
-		//
-		// file_menu.addSeparator();
-
 		exit_menu_item = new JMenuItem("Exit");
 		file_menu.add(exit_menu_item);
 

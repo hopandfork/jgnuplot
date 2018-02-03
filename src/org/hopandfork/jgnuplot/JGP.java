@@ -185,5 +185,17 @@ public class JGP extends JFrame implements MainInterface {
 	@Override
 	public void reset() {
 		bottomPresenter.reset();
+		labelController.deleteAll();
+		plottableDataController.deleteAll();
+	}
+
+	@Override
+	public void delete() {
+		overviewPresenter.delete();
+	}
+
+	@Override
+	public void edit() {
+		overviewPresenter.edit();
 	}
 }

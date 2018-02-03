@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -55,7 +57,7 @@ public class OverviewPresenter implements ActionListener, DocumentListener {
 		this.plotController = plotController;
 		
 		this.plottableDataController = plottableDataController;
-
+		
 		this.labelController = labelController;
 
 		this.labelTableModel = new LabelsTableModel(labelController);
@@ -123,7 +125,23 @@ public class OverviewPresenter implements ActionListener, DocumentListener {
 		}
 	}
 
-	private void editPlottableData() {
+	public void edit() {
+		if (overviewPanel.isLabelShown()) {
+			editLabel();
+		} else if (overviewPanel.isPlottableDataShown()) {
+			editPlottableData();
+		}
+	}
+	
+	public void delete() {
+		if (overviewPanel.isLabelShown()) {
+			deleteLabel();
+		} else if (overviewPanel.isPlottableDataShown()) {
+			deletePlottableData();
+		}
+	}
+	
+	public void editPlottableData() {
 		PlottableData plottableData = plottableDataTableModel
 				.getSelectedPlottableData(overviewPanel.getPlottableDataTable().getSelectedRow());
 		if (plottableData == null) {
@@ -213,5 +231,4 @@ public class OverviewPresenter implements ActionListener, DocumentListener {
 	public void changedUpdate(DocumentEvent documentEvent) {
 		plotController.updatePreplotScript(overviewPanel.getPrePlotString().getText());
 	}
-
 }

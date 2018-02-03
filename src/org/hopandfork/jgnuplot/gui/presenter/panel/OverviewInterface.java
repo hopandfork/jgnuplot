@@ -32,4 +32,8 @@ public interface OverviewInterface {
 		JTable getLabelTable();
 		
 		JTextArea getPrePlotString();
+		
+		boolean isLabelShown();
+		
+		boolean isPlottableDataShown();
 }

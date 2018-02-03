@@ -20,30 +20,30 @@ import org.hopandfork.jgnuplot.model.Plot.Mode;
 
 public class BottomPresenter implements ActionListener, KeyListener, ItemListener, ChangeListener, Observer {
 
-	private BottomInterface bottomInterface = null;
+	private BottomInterface bottomPanel = null;
 
 	private PlotController plotController = null;
 
-	public BottomPresenter(BottomInterface bottomInterface, PlotController plotController) {
-		this.bottomInterface = bottomInterface;
+	public BottomPresenter(BottomInterface bottomPanel, PlotController plotController) {
+		this.bottomPanel = bottomPanel;
 		this.plotController = plotController;
 		
-		bottomInterface.getTitle().addKeyListener(this);
-		bottomInterface.get2D().addItemListener(this);
-		bottomInterface.getXLabel().addKeyListener(this);
-		bottomInterface.getMinX().addKeyListener(this);
-		bottomInterface.getMaxX().addKeyListener(this);
-		bottomInterface.getLogScaleX().addChangeListener(this);
-		bottomInterface.getYLabel().addKeyListener(this);
-		bottomInterface.getMinY().addKeyListener(this);
-		bottomInterface.getMaxY().addKeyListener(this);
-		bottomInterface.getLogScaleY().addChangeListener(this);
-		bottomInterface.getZLabel().addKeyListener(this);
-		bottomInterface.getMinZ().addKeyListener(this);
-		bottomInterface.getMaxZ().addKeyListener(this);
-		bottomInterface.getLogScaleZ().addChangeListener(this);
-		bottomInterface.getPlotPs().addActionListener(this);
-		bottomInterface.getPlotString().addActionListener(this);
+		bottomPanel.getTitle().addKeyListener(this);
+		bottomPanel.get2D().addItemListener(this);
+		bottomPanel.getXLabel().addKeyListener(this);
+		bottomPanel.getMinX().addKeyListener(this);
+		bottomPanel.getMaxX().addKeyListener(this);
+		bottomPanel.getLogScaleX().addChangeListener(this);
+		bottomPanel.getYLabel().addKeyListener(this);
+		bottomPanel.getMinY().addKeyListener(this);
+		bottomPanel.getMaxY().addKeyListener(this);
+		bottomPanel.getLogScaleY().addChangeListener(this);
+		bottomPanel.getZLabel().addKeyListener(this);
+		bottomPanel.getMinZ().addKeyListener(this);
+		bottomPanel.getMaxZ().addKeyListener(this);
+		bottomPanel.getLogScaleZ().addChangeListener(this);
+		bottomPanel.getPlotPs().addActionListener(this);
+		bottomPanel.getPlotString().addActionListener(this);
 		
 		this.plotController.addObserver(this);
 	}
@@ -76,11 +76,11 @@ public class BottomPresenter implements ActionListener, KeyListener, ItemListene
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		boolean selected = bottomInterface.get2D().isSelected();
-		bottomInterface.getMaxZ().setEnabled(!selected);
-		bottomInterface.getMinZ().setEnabled(!selected);
-		bottomInterface.getZLabel().setEnabled(!selected);
-		bottomInterface.getLogScaleZ().setEnabled(!selected);
+		boolean selected = bottomPanel.get2D().isSelected();
+		bottomPanel.getMaxZ().setEnabled(!selected);
+		bottomPanel.getMinZ().setEnabled(!selected);
+		bottomPanel.getZLabel().setEnabled(!selected);
+		bottomPanel.getLogScaleZ().setEnabled(!selected);
 
 		updatePlot();
 	}
@@ -97,43 +97,43 @@ public class BottomPresenter implements ActionListener, KeyListener, ItemListene
 	
 	public void initialize (Plot plot)
 	{
-		bottomInterface.get2D().setSelected(plot.getMode().equals(Mode.PLOT_2D));
-		bottomInterface.get3D().setSelected(plot.getMode().equals(Mode.PLOT_3D));
+		bottomPanel.get2D().setSelected(plot.getMode().equals(Mode.PLOT_2D));
+		bottomPanel.get3D().setSelected(plot.getMode().equals(Mode.PLOT_3D));
 
-		bottomInterface.getTitle().setText(str(plot.getTitle()));
+		bottomPanel.getTitle().setText(str(plot.getTitle()));
 
-		bottomInterface.getMaxX().setText(str(plot.getXmax()));
-		bottomInterface.getMaxY().setText(str(plot.getYmax()));
-		bottomInterface.getMinX().setText(str(plot.getXmin()));
-		bottomInterface.getMinY().setText(str(plot.getYmin()));
+		bottomPanel.getMaxX().setText(str(plot.getXmax()));
+		bottomPanel.getMaxY().setText(str(plot.getYmax()));
+		bottomPanel.getMinX().setText(str(plot.getXmin()));
+		bottomPanel.getMinY().setText(str(plot.getYmin()));
 
-		bottomInterface.getXLabel().setText(str(plot.getXlabel()));
-		bottomInterface.getYLabel().setText(str(plot.getYlabel()));
-		bottomInterface.getZLabel().setText(str(plot.getZlabel()));
+		bottomPanel.getXLabel().setText(str(plot.getXlabel()));
+		bottomPanel.getYLabel().setText(str(plot.getYlabel()));
+		bottomPanel.getZLabel().setText(str(plot.getZlabel()));
 
-		bottomInterface.getLogScaleX().setSelected(plot.isLogScaleX());
-		bottomInterface.getLogScaleY().setSelected(plot.isLogScaleY());
-		bottomInterface.getLogScaleZ().setSelected(plot.isLogScaleZ());
+		bottomPanel.getLogScaleX().setSelected(plot.isLogScaleX());
+		bottomPanel.getLogScaleY().setSelected(plot.isLogScaleY());
+		bottomPanel.getLogScaleZ().setSelected(plot.isLogScaleZ());
 	}
 
 	public void reset() {
-		bottomInterface.get2D().setSelected(true);
-		bottomInterface.get3D().setSelected(false);
+		bottomPanel.get2D().setSelected(true);
+		bottomPanel.get3D().setSelected(false);
 
-		bottomInterface.getTitle().setText("");
+		bottomPanel.getTitle().setText("");
 
-		bottomInterface.getMaxX().setText("");
-		bottomInterface.getMinX().setText("");
-		bottomInterface.getMaxY().setText("");
-		bottomInterface.getMinY().setText("");
+		bottomPanel.getMaxX().setText("");
+		bottomPanel.getMinX().setText("");
+		bottomPanel.getMaxY().setText("");
+		bottomPanel.getMinY().setText("");
 
-		bottomInterface.getXLabel().setText("");
-		bottomInterface.getYLabel().setText("");
-		bottomInterface.getZLabel().setText("");
+		bottomPanel.getXLabel().setText("");
+		bottomPanel.getYLabel().setText("");
+		bottomPanel.getZLabel().setText("");
 
-		bottomInterface.getLogScaleX().setSelected(false);
-		bottomInterface.getLogScaleX().setSelected(false);
-		bottomInterface.getLogScaleZ().setSelected(false);
+		bottomPanel.getLogScaleX().setSelected(false);
+		bottomPanel.getLogScaleX().setSelected(false);
+		bottomPanel.getLogScaleZ().setSelected(false);
 	}	
 	
 	/**
@@ -148,14 +148,14 @@ public class BottomPresenter implements ActionListener, KeyListener, ItemListene
 	}
 	
 	private void updatePlot() {
-		Mode mode = bottomInterface.get2D().isSelected() ? Mode.PLOT_2D : Mode.PLOT_3D;
-		plotController.updatePlot(mode, bottomInterface.getTitle().getText(), bottomInterface.getMaxX().getText(),
-				bottomInterface.getMinX().getText(), bottomInterface.getMaxY().getText(),
-				bottomInterface.getMinY().getText(), bottomInterface.getMaxZ().getText(),
-				bottomInterface.getMinZ().getText(), bottomInterface.getXLabel().getText(),
-				bottomInterface.getYLabel().getText(), bottomInterface.getZLabel().getText(),
-				bottomInterface.getLogScaleX().isSelected(), bottomInterface.getLogScaleY().isSelected(),
-				bottomInterface.getLogScaleZ().isSelected());
+		Mode mode = bottomPanel.get2D().isSelected() ? Mode.PLOT_2D : Mode.PLOT_3D;
+		plotController.updatePlot(mode, bottomPanel.getTitle().getText(), bottomPanel.getMaxX().getText(),
+				bottomPanel.getMinX().getText(), bottomPanel.getMaxY().getText(),
+				bottomPanel.getMinY().getText(), bottomPanel.getMaxZ().getText(),
+				bottomPanel.getMinZ().getText(), bottomPanel.getXLabel().getText(),
+				bottomPanel.getYLabel().getText(), bottomPanel.getZLabel().getText(),
+				bottomPanel.getLogScaleX().isSelected(), bottomPanel.getLogScaleY().isSelected(),
+				bottomPanel.getLogScaleZ().isSelected());
 	}
 	
 	private void acGenPlotCmds() {
@@ -187,7 +187,7 @@ public class BottomPresenter implements ActionListener, KeyListener, ItemListene
 	 *            visible already.
 	 */
 	private void showConsole(String text, boolean append, boolean makeVisible) {
-		ConsoleDialog consoleDialog = bottomInterface.getConsoleDialog();
+		ConsoleDialog consoleDialog = bottomPanel.getConsoleDialog();
 		
 		if (consoleDialog == null)
 			consoleDialog = new ConsoleDialog();
