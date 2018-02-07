@@ -14,7 +14,7 @@ import javax.swing.event.ChangeListener;
 
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.gui.dialog.ConsoleDialog;
-import org.hopandfork.jgnuplot.gui.dialog.PlotDialog;
+import org.hopandfork.jgnuplot.gui.dialog.ExportDialog;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.model.Plot.Mode;
 
@@ -51,8 +51,9 @@ public class BottomPresenter implements ActionListener, KeyListener, ItemListene
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("plotps")) {
-			new PlotDialog(plotController).setVisible(true);
-		} else if (e.getActionCommand().equals("genplotcmds")) {
+			new ExportDialog(plotController).setVisible(true);
+		} else 
+		if (e.getActionCommand().equals("genplotcmds")) {
 			acGenPlotCmds();
 		}
 	}

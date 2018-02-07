@@ -17,47 +17,49 @@
  * along with JGNUplot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hopandfork.jgnuplot.model;
+package org.hopandfork.jgnuplot.runtime.terminal;
 
-public class Project {
+import org.hopandfork.jgnuplot.model.Plottable;
 
-	/** Created plot. */
-	private Plot plot;
+import java.io.File;
 
-	/** File name for this project on disk. */
-	private String filename;
+/**
+ * Gnuplot terminal.
+ */
+public abstract class Terminal implements Plottable {
 
-	/** Current project. */
-	static private Project currentProject = new Project();
+	private File outputFile = null;
 
-	/**
-	 * Returns the current project, if any.
-	 * @return Current project.
-	 */
-	static public Project currentProject()
+	public Terminal()
 	{
-		return currentProject;
 	}
 
-	public Project()
+	public Terminal (File outputFile)
 	{
-		this.plot = new Plot();
+		this.outputFile = outputFile;
 	}
 
-	public Plot getPlot() {
-		return plot;
+	public File getOutputFile() {
+		return outputFile;
 	}
 
-	public void setPlot(Plot plot) {
-		this.plot = plot;
+	public void setOutputFile(File outputFile) {
+		this.outputFile = outputFile;
 	}
 
-	public String getFilename() {
-		return filename;
+
+	abstract protected String getTerminalString();
+
+	private String getOutputString()
+	{
+		if (outputFile != null)
+			return String.format("set output \"%s\"\n", outputFile.getAbsolutePath());
+
+		return "";
 	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
+	@Override
+	public String toPlotString() {
+		return getTerminalString() + getOutputString();
 	}
-
 }

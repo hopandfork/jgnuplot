@@ -1,22 +1,20 @@
 /*
- * JGNUplot is a GUI for gnuplot (http://www.gnuplot.info/)
- * The GUI is build on JAVA wrappers for gnuplot alos provided in this package.
+ * Copyright 2006, 2017 Maximilian H Fabricius, Hop and Fork.
  * 
- * Copyright (C) 2006  Maximilian H. Fabricius 
+ * This file is part of JGNUplot.
  * 
- * This program is free software; you can redistribute it and/or
+ * JGNUplot is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful,
+ * JGNUplot is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with JGNUplot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.hopandfork.jgnuplot.model;
@@ -54,12 +52,6 @@ public class Plot implements Plottable {
     private boolean logScaleX = false;
     private boolean logScaleY = false;
     private boolean logScaleZ = false;
-
-    private boolean psColor = false;
-    private int psFontSize = 18;
-
-    private String psFontName = "";
-
 
     public enum Mode {
         PLOT_2D, PLOT_3D;
@@ -156,15 +148,7 @@ public class Plot implements Plottable {
             sb.append(" \n");
         }
 
-        // TODO constants is directly in Function
-		/* Now replaces all string variables with their value. */
         String s = sb.toString();
-        // for (Constants var : variables) {
-        // if (var.getType() == Constants.Type.STRING) {
-        // if (var.isActive())
-        // s = ((Constants) var).apply(s);
-        // }
-        // }
 
         return s;
     }
@@ -199,66 +183,6 @@ public class Plot implements Plottable {
         return s;
     }
 
-    public void plotAndPreview() throws IOException, InterruptedException {
-        String s = "";
-        s += "set terminal X11 \n";
-        s += toPlotString();
-        // we have to add this to keep the plot window open
-        s += ("pause -1\n");
-
-        System.out.println("Calling GnuplotRunner...");
-        GnuplotRunner pr = new GnuplotRunner(s);
-        new Thread(pr).start();
-
-    }
-
-    public void generatePostscriptFile(String printCmd, String printFile) throws IOException, InterruptedException {
-        String s = "";
-
-        s += "set output '" + printFile + ".ps' \n";
-        s += "set terminal postscript \n";
-
-        s += toPlotString();
-
-        s += "set output '|" + printCmd + " " + printFile + "' \n";
-
-        s += ("pause -1 'Press ENTER to continue...' \n");
-
-        System.out.println("Calling GnuplotRunner...");
-        GnuplotRunner pr = new GnuplotRunner(s);
-        new Thread(pr).start();
-    }
-
-    public void plotToFile(String psFileName, OutputFileFormat format) throws IOException, InterruptedException {
-
-        String s = "";
-        s += "set output '" + psFileName + "' \n";
-
-        if (format == OutputFileFormat.POSTSCRIPT) {
-            s += "set terminal " + format;
-            s += " enhanced ";
-            if (psColor)
-                s += " color ";
-            s += "solid defaultplex ";
-            s += "'" + psFontName + "' ";
-            s += psFontSize + " ";
-            s += " \n";
-        } else if (format == OutputFileFormat.SVG) {
-            s += "set terminal " + format;
-            s += " \n";
-        } else {
-            s += "set terminal " + format;
-            s += " \n";
-        }
-
-        s += toPlotString();
-        s += "set terminal X11 \n";
-
-        System.out.println("Calling GnuplotRunner...");
-        GnuplotRunner pr = new GnuplotRunner(s);
-        new Thread(pr).start();
-    }
-
     public String getTitle() {
         return title;
     }
@@ -289,30 +213,6 @@ public class Plot implements Plottable {
 
     public void setXmin(Double xmin) {
         this.xmin = xmin;
-    }
-
-    public boolean isPsColor() {
-        return psColor;
-    }
-
-    public void setPsColor(boolean psColor) {
-        this.psColor = psColor;
-    }
-
-    public String getPsFontName() {
-        return psFontName;
-    }
-
-    public void setPsFontName(String psFontName) {
-        this.psFontName = psFontName;
-    }
-
-    public void setPsFontSize(int psFontSize) {
-        this.psFontSize = psFontSize;
-    }
-
-    public int getPsFontSize() {
-        return psFontSize;
     }
 
     public String getYlabel() {

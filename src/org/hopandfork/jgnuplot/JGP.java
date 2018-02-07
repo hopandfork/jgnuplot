@@ -1,22 +1,20 @@
 /*
- * JGNUplot is a GUI for gnuplot (http://www.gnuplot.info/)
- * The GUI is build on JAVA wrappers for gnuplot alos provided in this package.
+ * Copyright 2006, 2017 Maximilian H Fabricius, Hop and Fork.
  * 
- * Copyright (C) 2006  Maximilian H. Fabricius 
+ * This file is part of JGNUplot.
  * 
- * This program is free software; you can redistribute it and/or
+ * JGNUplot is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful,
+ * JGNUplot is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with JGNUplot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.hopandfork.jgnuplot;
@@ -34,8 +32,10 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
@@ -56,11 +56,9 @@ import org.hopandfork.jgnuplot.model.Plot;
 
 public class JGP extends JFrame implements MainInterface {
 
-	// private static Logger LOG = Logger.getLogger(JGP.class);
+	private static Logger LOG = Logger.getLogger(JGP.class);
 
 	public static final boolean debug = true;
-
-	// private ConsoleDialog consoleDialog;
 
 	public JTextArea taShell;
 
@@ -155,6 +153,15 @@ public class JGP extends JFrame implements MainInterface {
 		return "0.1.2"; // TODO
 	}
 
+	private static void initializeLookAndFeel()
+	{
+		try {
+			UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel");
+		} catch (Exception e) {
+		    LOG.error("Failed to load Substance look and feel!");
+		}
+	}
+
 	public static void main(String[] args) throws MalformedURLException {
 		/* Log4j initialization */
 		PropertyConfigurator.configure(
@@ -163,6 +170,7 @@ public class JGP extends JFrame implements MainInterface {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
+					initializeLookAndFeel();
 					JGP m = new JGP();
 					m.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 					m.pack();

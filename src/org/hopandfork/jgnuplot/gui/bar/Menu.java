@@ -1,3 +1,22 @@
+/*
+ * Copyright 2006, 2017 Maximilian H Fabricius, Hop and Fork.
+ * 
+ * This file is part of JGNUplot.
+ * 
+ * JGNUplot is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * JGNUplot is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with JGNUplot.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.hopandfork.jgnuplot.gui.bar;
 
 import java.awt.FlowLayout;
@@ -31,10 +50,6 @@ public class Menu extends JMenuBar implements MenuInterface {
 		// Set the panel layout.
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-		// Set the menubar's border.
-		this.setBorder(new BevelBorder(BevelBorder.RAISED));
-		this.setBorderPainted(true);
-
 		// Add the file menu the menu bar.
 		file_menu = new JMenu("File");
 		file_menu.setBorderPainted(false);
@@ -50,8 +65,6 @@ public class Menu extends JMenuBar implements MenuInterface {
 		JMenu edit_menu = new JMenu("Edit");
 		edit_menu.setBorderPainted(false);
 		this.add(edit_menu);
-
-		edit_menu.addSeparator();
 
 		add_datafile_menu_item = new JMenuItem("Add DataFile");
 		edit_menu.add(add_datafile_menu_item);
