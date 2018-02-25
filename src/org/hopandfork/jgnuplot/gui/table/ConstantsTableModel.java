@@ -94,10 +94,7 @@ public class ConstantsTableModel extends AbstractTableModel implements Observer 
 	}
 
 	public Class getColumnClass(int c) {
-		if (c == 0)
-			return String.class;
-		else
-			return Double.class;
+		return String.class;
 	}
 
 	/*
