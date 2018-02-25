@@ -8,9 +8,7 @@ import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.dialog.AboutDialog;
 import org.hopandfork.jgnuplot.gui.dialog.DataFileDialog;
 import org.hopandfork.jgnuplot.gui.dialog.FunctionDialog;
-import org.hopandfork.jgnuplot.gui.presenter.panel.MainInterface;
-import org.hopandfork.jgnuplot.model.Plot;
-import org.hopandfork.jgnuplot.model.Project;
+import org.hopandfork.jgnuplot.gui.presenter.panel.MainPresenter;
 
 /**
  * This class allows to manage the presentation logic behind the menu bar.
@@ -23,44 +21,48 @@ public class MenuPresenter implements ActionListener {
 	
 	private PlottableDataController plottableDataController = null;
 
-	private MainInterface mainPanel = null;
+	private MainPresenter mainPresenter = null;
 
 	private MenuInterface menuBar = null;
 
-	public MenuPresenter(MainInterface mainPanel, MenuInterface menuBar,
+	public MenuPresenter(MainPresenter mainPresenter, MenuInterface menuBar,
 			PlottableDataController plottableDataController) {
 		
-		this.mainPanel = mainPanel;
+		this.mainPresenter = mainPresenter;
 		
 		this.menuBar = menuBar;
 		
 		this.plottableDataController = plottableDataController;
-
-		menuBar.getNew_menu_item().addActionListener(this);
-		menuBar.getNew_menu_item().setActionCommand("new");
-
-		menuBar.getExit_menu_item().addActionListener(this);
-		menuBar.getExit_menu_item().setActionCommand("exit");
-
-		menuBar.getAdd_datafile_menu_item().addActionListener(this);
-		menuBar.getAdd_datafile_menu_item().setActionCommand("add_datafile");
-
-		menuBar.getAdd_function_menu_item().addActionListener(this);
-		menuBar.getAdd_function_menu_item().setActionCommand("add_function");
-
-		menuBar.getEdit_menu_item().addActionListener(this);
-		menuBar.getEdit_menu_item().setActionCommand("edit");
-
-		menuBar.getDelete_menu_item().addActionListener(this);
-		menuBar.getDelete_menu_item().setActionCommand("delete");
-
-		menuBar.getClear_menu_item().addActionListener(this);
-		menuBar.getClear_menu_item().setActionCommand("clear");
-
-		menuBar.getAbout_menu_item().addActionListener(this);
-		menuBar.getAbout_menu_item().setActionCommand("about");
+		
+		init();
 	}
 
+	private void init(){
+		this.menuBar.getNew_menu_item().addActionListener(this);
+		this.menuBar.getNew_menu_item().setActionCommand("new");
+
+		this.menuBar.getExit_menu_item().addActionListener(this);
+		this.menuBar.getExit_menu_item().setActionCommand("exit");
+
+		this.menuBar.getAdd_datafile_menu_item().addActionListener(this);
+		this.menuBar.getAdd_datafile_menu_item().setActionCommand("add_datafile");
+
+		this.menuBar.getAdd_function_menu_item().addActionListener(this);
+		this.menuBar.getAdd_function_menu_item().setActionCommand("add_function");
+
+		this.menuBar.getEdit_menu_item().addActionListener(this);
+		this.menuBar.getEdit_menu_item().setActionCommand("edit");
+
+		this.menuBar.getDelete_menu_item().addActionListener(this);
+		this.menuBar.getDelete_menu_item().setActionCommand("delete");
+
+		this.menuBar.getClear_menu_item().addActionListener(this);
+		this.menuBar.getClear_menu_item().setActionCommand("clear");
+
+		this.menuBar.getAbout_menu_item().addActionListener(this);
+		this.menuBar.getAbout_menu_item().setActionCommand("about");
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("new")) {
@@ -74,9 +76,9 @@ public class MenuPresenter implements ActionListener {
 			FunctionDialog addFunctionDialog = new FunctionDialog(plottableDataController);
 			addFunctionDialog.setVisible(true);
 		} else if (e.getActionCommand().equals("edit")) {
-			mainPanel.edit();
+			mainPresenter.edit();
 		} else if (e.getActionCommand().equals("delete")) {
-			mainPanel.delete();
+			mainPresenter.delete();
 		} else if (e.getActionCommand().equals("clear")) {
 			//TODO Implements clear
 			LOG.info("Implements clear");
@@ -86,7 +88,7 @@ public class MenuPresenter implements ActionListener {
 	}
 
 	private void acNew() {
-		mainPanel.reset();
+		mainPresenter.reset();
 	}
 
 	private void exit() {
