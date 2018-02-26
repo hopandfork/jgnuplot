@@ -18,10 +18,9 @@ public class MainPresenter {
 	private LabelController labelController = null;
 
 	private MenuPresenter menuPresenter = null;
-
 	private OverviewPresenter overviewPresenter;
-
 	private BottomPresenter bottomPresenter;
+	private PreviewPresenter previewPresenter;
 
 	public MainPresenter(MainInterface mainPanel, PlotController plotController,
 			PlottableDataController plottableDataController, LabelController labelController) {
@@ -43,12 +42,13 @@ public class MainPresenter {
 		/* Creates panels. */
 		OverviewInterface overviewPanel = new OverviewPanel();
 		BottomInterface bottomPanel = new BottomPanel();
-		PreviewPanel previewPanel = new PreviewPanel(plotController, plottableDataController, labelController);
+		PreviewPanel previewPanel = new PreviewPanel();
 
 		/* Adds Presenter to manage the presentation logic */
 		bottomPresenter = new BottomPresenter(bottomPanel, plotController);
 		overviewPresenter = new OverviewPresenter(overviewPanel, plottableDataController, labelController,
 				plotController);
+		previewPresenter = new PreviewPresenter(previewPanel, plotController, plottableDataController, labelController);
 
 		/* Inits with default values */
 		Plot plot = plotController.getCurrent();
