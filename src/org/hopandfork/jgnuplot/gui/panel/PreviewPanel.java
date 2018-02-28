@@ -19,10 +19,7 @@
 
 package org.hopandfork.jgnuplot.gui.panel;
 
-
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
@@ -30,12 +27,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.LabelController;
 import org.hopandfork.jgnuplot.control.PlotController;
 import org.hopandfork.jgnuplot.control.PlottableDataController;
+import org.hopandfork.jgnuplot.gui.presenter.panel.PreviewInterface;
 import org.hopandfork.jgnuplot.gui.utility.GridBagConstraintsFactory;
 import org.hopandfork.jgnuplot.model.Plot;
 import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
@@ -45,70 +45,22 @@ import org.hopandfork.jgnuplot.runtime.terminal.Terminal;
 /**
  * Panel containing components for plot preview.
  */
-public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.ImageConsumer, ComponentListener {
+public class PreviewPanel extends JGPPanel implements PreviewInterface {
 
 	private static final long serialVersionUID = 824126200434468835L;
 
-	private PlotController plotController;
-	private Image image = null;
-	static private final double WIDTH_HEIGHT_RATIO = 4.0/3.0;
 
-    private boolean refreshEnabled = true;
 
-	static final private Logger LOG = Logger.getLogger(PreviewPanel.class);
 
-    public PreviewPanel(PlotController plotController, PlottableDataController plottableDataController, LabelController labelController)
+	public PreviewPanel() {
+		GridBagLayout gbl = new GridBagLayout();
+		this.setLayout(gbl);
+	}
+
+
+    public void clear()
     {
-        this.plotController = plotController;
-
-        plotController.addObserver(this);
-        plottableDataController.addObserver(this);
-        labelController.addObserver(this);
-
-        GridBagLayout gbl = new GridBagLayout();
-        this.setLayout(gbl);
-
-        this.addComponentListener(this);
-    }
-
-    @Override
-    public void update(Observable observable, Object o) {
-        refreshPlot();
-    }
-
-    private void refreshPlot() {
-        if (!refreshEnabled)
-            return;
-
-        int previewWidth, previewHeight;
-        double panelRatio = (double)getWidth()/(double)getHeight();
-        if (panelRatio > WIDTH_HEIGHT_RATIO) {
-            previewHeight = Math.max(900,getHeight());
-            previewWidth = (int)((double)previewHeight*WIDTH_HEIGHT_RATIO);
-        } else {
-            previewWidth = Math.max(1200, getWidth());
-            previewHeight = (int)((double)previewWidth/WIDTH_HEIGHT_RATIO);
-        }
-
-        Plot plot = plotController.getCurrent();
-        Terminal terminal = new PngcairoTerminal(previewWidth, previewHeight);
-        GnuplotRunner.runGnuplot(terminal, plot, this);
-    }
-
-    @Override
-    public void onImageGenerated (Image image) {
-        this.image = image;
-        renderImage();
-    }
-
-    @Override
-    public void onImageGenerated (File outputFile) {
-        /* nothing to do */
-    }
-
-    protected void renderEmptyPreview()
-    {
-        // TODO
+        safeRemoveAllComponents();
     }
 
     private void safeRemoveAllComponents() {
@@ -120,9 +72,7 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
                         PreviewPanel.this.removeAll();
                     }
                 });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (InterruptedException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         } else {
@@ -130,14 +80,12 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         }
     }
 
-
-
-    private void renderImage ()
+    public void displayImage (Image image)
     {
         safeRemoveAllComponents();
 
         if (image == null) {
-            renderEmptyPreview();
+            clear();
             revalidate();
             repaint();
             return;
@@ -145,12 +93,14 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
 
         int width, height;
         double panelRatio = (double)getWidth()/(double)getHeight();
-        if (panelRatio > WIDTH_HEIGHT_RATIO) {
+        double imageRatio = (double)image.getWidth(null)/(double)image.getHeight(null);
+
+        if (panelRatio > imageRatio) {
             height = getHeight();
-            width = (int)((double)height*WIDTH_HEIGHT_RATIO);
+            width = (int)((double)height*imageRatio);
         } else {
             width = getWidth();
-            height = (int)((double)width/WIDTH_HEIGHT_RATIO);
+            height = (int)((double)width/imageRatio);
         }
 
         if (height < 1 || width < 1)
@@ -170,10 +120,11 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         });
     }
 
-    @Override
-    public void onImageGenerationError(String errorMessage) {
+
+    public void displayMessage (String message)
+    {
         JLabel label;
-        label = new JLabel(errorMessage);
+        label = new JLabel(message);
 
         GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 0, 1, 1, 1, 1, GridBagConstraints.BOTH);
         this.removeAll();
@@ -181,25 +132,4 @@ public class PreviewPanel extends JGPPanel implements Observer, GnuplotRunner.Im
         this.revalidate();
     }
 
-    @Override
-    public void componentResized(ComponentEvent componentEvent) {
-        renderImage();
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent componentEvent) {
-        // nothing to do here
-    }
-
-    @Override
-    public void componentShown(ComponentEvent componentEvent) {
-    	refreshEnabled = true;
-        LOG.info("Enabled preview refreshing");
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent componentEvent) {
-        refreshEnabled = false;
-        LOG.info("Disabled preview refreshing");
-    }
 }
