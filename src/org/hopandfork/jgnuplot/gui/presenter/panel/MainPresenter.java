@@ -37,7 +37,7 @@ public class MainPresenter {
 		// Create the menu bar and add it to the dialog box.
 		MenuInterface menu = new Menu();
 		menuPresenter = new MenuPresenter(this, menu, plottableDataController);
-		mainPanel.setMenuBar(menu.toJMenuBar());
+		mainPanel.setMenuBar(menu.getJMenuBar());
 		
 		/* Creates panels. */
 		OverviewInterface overviewPanel = new OverviewPanel();

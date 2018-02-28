@@ -20,26 +20,23 @@
 package org.hopandfork.jgnuplot.gui.bar;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.border.BevelBorder;
 
-import org.apache.log4j.Logger;
-import org.hopandfork.jgnuplot.control.PlottableDataController;
 import org.hopandfork.jgnuplot.gui.presenter.bar.MenuInterface;
+import org.hopandfork.jgnuplot.gui.presenter.bar.MenuPresenter;
 
-public class Menu extends JMenuBar implements MenuInterface {
-
-	private static Logger LOG = Logger.getLogger(Menu.class);
+public class Menu extends JMenuBar implements MenuInterface,ActionListener {
 
 	private JMenu file_menu;
+	private MenuPresenter menuPresenter;
 
-	private JMenuItem add_datafile_menu_item, add_function_menu_item, delete_menu_item, clear_menu_item, edit_menu_item,
-			exit_menu_item, new_menu_item, about_menu_item;
-
-	private PlottableDataController plottableDataController;
+	private JMenuItem addDataFileMenuItem, addFunctionMenuItem, deleteMenuItem, clearMenuItem, editMenuItem,
+			exitMenuItem, newMenuItem, aboutMenuItem;
 
 	public Menu() {
 		create();
@@ -55,84 +52,86 @@ public class Menu extends JMenuBar implements MenuInterface {
 		file_menu.setBorderPainted(false);
 		this.add(file_menu);
 
-		new_menu_item = new JMenuItem("New");
-		file_menu.add(new_menu_item);
+		newMenuItem = new JMenuItem("New");
+		newMenuItem.addActionListener(this);
+		newMenuItem.setActionCommand("new");
+		file_menu.add(newMenuItem);
 
-		exit_menu_item = new JMenuItem("Exit");
-		file_menu.add(exit_menu_item);
+		exitMenuItem = new JMenuItem("Exit");
+		exitMenuItem.addActionListener(this);
+		exitMenuItem.setActionCommand("exit");
+		file_menu.add(exitMenuItem);
 
 		// Add the edit menu the menu bar.
 		JMenu edit_menu = new JMenu("Edit");
 		edit_menu.setBorderPainted(false);
 		this.add(edit_menu);
 
-		add_datafile_menu_item = new JMenuItem("Add DataFile");
-		edit_menu.add(add_datafile_menu_item);
+		addDataFileMenuItem = new JMenuItem("Add DataFile");
+		addDataFileMenuItem.addActionListener(this);
+		addDataFileMenuItem.setActionCommand("add_datafile");
+		edit_menu.add(addDataFileMenuItem);
 
-		add_function_menu_item = new JMenuItem("Add Function");
-		edit_menu.add(add_function_menu_item);
+		addFunctionMenuItem = new JMenuItem("Add Function");
+		addFunctionMenuItem.addActionListener(this);
+		addFunctionMenuItem.setActionCommand("add_function");
+		edit_menu.add(addFunctionMenuItem);
 
-		edit_menu_item = new JMenuItem("Edit");
-		edit_menu.add(edit_menu_item);
+		editMenuItem = new JMenuItem("Edit");
+		editMenuItem.addActionListener(this);
+		editMenuItem.setActionCommand("edit");
+		edit_menu.add(editMenuItem);
 
-		delete_menu_item = new JMenuItem("Delete");
-		edit_menu.add(delete_menu_item);
+		deleteMenuItem = new JMenuItem("Delete");
+		deleteMenuItem.addActionListener(this);
+		deleteMenuItem.setActionCommand("delete");
+		edit_menu.add(deleteMenuItem);
 
-		clear_menu_item = new JMenuItem("Clear");
-		edit_menu.add(clear_menu_item);
+		clearMenuItem = new JMenuItem("Clear");
+		clearMenuItem.addActionListener(this);
+		clearMenuItem.setActionCommand("clear");
+		edit_menu.add(clearMenuItem);
 
 		// Add the file menu the menu bar.
 		JMenu help_menu = new JMenu("Help");
 		help_menu.setBorderPainted(false);
 		this.add(help_menu);
 
-		about_menu_item = new JMenuItem("About");
-		help_menu.add(about_menu_item);
+		aboutMenuItem = new JMenuItem("About");
+		aboutMenuItem.addActionListener(this);
+		aboutMenuItem.setActionCommand("about");
+		help_menu.add(aboutMenuItem);
 	}
 
 	@Override
-	public JMenuItem getEdit_menu_item() {
-		return edit_menu_item;
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("new")) {
+			menuPresenter.newPlot();
+		} else if (e.getActionCommand().equals("exit")) {
+			menuPresenter.exit();
+		} else if (e.getActionCommand().equals("add_datafile")) {
+			menuPresenter.showDataFileDialog();
+		} else if (e.getActionCommand().equals("add_function")) {
+			menuPresenter.showFunctionDialog();
+		} else if (e.getActionCommand().equals("edit")) {
+			menuPresenter.edit();
+		} else if (e.getActionCommand().equals("delete")) {
+			menuPresenter.delete();
+		} else if (e.getActionCommand().equals("clear")) {
+			menuPresenter.clear();
+		} else if (e.getActionCommand().equals("about")) {
+			menuPresenter.showAboutDialog();
+		}
 	}
 
 	@Override
-	public JMenuItem getDelete_menu_item() {
-		return delete_menu_item;
-	}
-
-	@Override
-	public JMenuItem getNew_menu_item() {
-		return new_menu_item;
-	}
-
-	@Override
-	public JMenuItem getAdd_datafile_menu_item() {
-		return add_datafile_menu_item;
-	}
-
-	@Override
-	public JMenuItem getAdd_function_menu_item() {
-		return add_function_menu_item;
-	}
-
-	@Override
-	public JMenuBar toJMenuBar() {
+	public JMenuBar getJMenuBar() {
 		return this;
 	}
 
 	@Override
-	public JMenuItem getExit_menu_item() {
-		return exit_menu_item;
+	public void setPresenter(MenuPresenter menuPresenter) {
+		this.menuPresenter = menuPresenter;
 	}
-
-	@Override
-	public JMenuItem getClear_menu_item() {
-		return clear_menu_item;
-	}
-
-	@Override
-	public JMenuItem getAbout_menu_item() {
-		return about_menu_item;
-	}
-
+	
 }
