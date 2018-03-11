@@ -26,8 +26,6 @@ import java.util.Observable;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.model.Constant;
 import org.hopandfork.jgnuplot.model.Function;
-import org.hopandfork.jgnuplot.model.Plot;
-import org.hopandfork.jgnuplot.model.Project;
 
 public class ConstantController extends Observable{
 

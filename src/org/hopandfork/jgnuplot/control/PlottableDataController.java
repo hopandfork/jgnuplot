@@ -19,13 +19,18 @@
 
 package org.hopandfork.jgnuplot.control;
 
-import org.apache.log4j.Logger;
-import org.hopandfork.jgnuplot.model.*;
-import org.hopandfork.jgnuplot.model.style.PlottingStyle;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Observable;
+
+import org.apache.log4j.Logger;
+import org.hopandfork.jgnuplot.model.Constant;
+import org.hopandfork.jgnuplot.model.DataFile;
+import org.hopandfork.jgnuplot.model.DataSelection;
+import org.hopandfork.jgnuplot.model.Function;
+import org.hopandfork.jgnuplot.model.Plot;
+import org.hopandfork.jgnuplot.model.PlottableData;
+import org.hopandfork.jgnuplot.model.Project;
+import org.hopandfork.jgnuplot.model.style.PlottingStyle;
 
 
 public class PlottableDataController extends Observable {

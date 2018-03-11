@@ -19,11 +19,8 @@
 
 package org.hopandfork.jgnuplot.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.hopandfork.jgnuplot.runtime.GnuplotRunner;
 
 public class Plot implements Plottable {
 
