@@ -12,7 +12,6 @@
 hs_err_pid*
 work.gnuplot
 /target/
-test
 .JGP
 .classpath
 .settings
