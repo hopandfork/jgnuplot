@@ -5,11 +5,14 @@ jdk:
   - openjdk7 
 notifications:
   email: false
-script:
-  - mvn clean install
-after_script:
-  - mvn test
 before_install:
   - pip install --user codecov
+  - cat /etc/hosts # optionally check the content *before*
+  - sudo hostname "$(hostname | cut -c1-63)"
+  - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts > /tmp/hosts
+  - sudo mv /tmp/hosts /etc/hosts
+  - cat /etc/hosts # optionally check the content *after*
+script:
+  - mvn clean install
 after_success:
   - codecov
