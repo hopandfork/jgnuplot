@@ -29,6 +29,7 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.Logger;
 import org.hopandfork.jgnuplot.control.ConstantController;
 import org.hopandfork.jgnuplot.model.Constant;
+import org.hopandfork.jgnuplot.model.Constant;
 import org.hopandfork.jgnuplot.model.Function;
 
 public class ConstantsTableModel extends AbstractTableModel implements Observer {
