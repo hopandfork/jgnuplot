@@ -1,6 +1,6 @@
 # jGNUplot #
 [![Build Status](https://travis-ci.org/hopandfork/jgnuplot.svg?branch=master)](https://travis-ci.org/hopandfork/jgnuplot)
-[![Coverage](https://codecov.io/gh/hopandfork/jgnuplot/branch/add-code-coverage/graphs/badge.svg?branch=add-code-coverage)](https://codecov.io/gh/hopandfork/jgnuplot)
+[![Coverage](https://codecov.io/gh/hopandfork/jgnuplot/branch/master/graphs/badge.svg?branch=master)](https://codecov.io/gh/hopandfork/jgnuplot)
 
 jGNUplot is a graphical frontend for *gnuplot*, written in Java. So why would
 somebody want to have a GUI for something which is so great because it has
