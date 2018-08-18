@@ -13,6 +13,6 @@ before_install:
   - sudo mv /tmp/hosts /etc/hosts
   - cat /etc/hosts # optionally check the content *after*
 script:
-  - mvn clean install
+  - mvn clean -Dhttps.protocols=TLSv1.2 install
 after_success:
   - codecov
