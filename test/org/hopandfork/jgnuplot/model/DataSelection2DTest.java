@@ -23,6 +23,16 @@ public class DataSelection2DTest {
 		new DataSelection2D(2, 3);
 	}
 	
+	@Test
+	public void setLabelTest() throws IOException {
+		DataSelection2D dataSelection2D = new DataSelection2D(2, 3);
+		dataSelection2D.setLabels(2);
+		dataSelection2D.setLabelled(false);
+		
+		assertEquals(false, dataSelection2D.isLabelled());
+		assertEquals(2, dataSelection2D.getLabels());
+	}
+	
 	@Test(expected=IOException.class)
 	public void withLabelErrorTest() throws IOException {
 		new DataSelection2D(1, 2, 0);
@@ -32,5 +42,12 @@ public class DataSelection2DTest {
 	public void withLabelTest() throws IOException {
 		DataSelection2D dataSelection2D = new DataSelection2D(1, 2, 3);
 		assertEquals(true, dataSelection2D.isLabelled());
+		assertEquals(3, dataSelection2D.getLabels());
+	}
+	
+	@Test
+	public void toPlotStringTest() throws IOException {
+		DataSelection2D dataSelection2D = new DataSelection2D(1, 2, 3);
+		assertEquals("($1*1.000000+0.000000):($2*1.000000+0.000000):3", dataSelection2D.toPlotString());
 	}
 }

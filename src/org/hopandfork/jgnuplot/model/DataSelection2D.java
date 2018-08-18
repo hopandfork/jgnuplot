@@ -59,21 +59,21 @@ public class DataSelection2D extends DataSelection {
 	 */
 	public DataSelection2D(int x, int y, int labels) throws IOException {
 		super(x, y);
+		
 		if (labels <= 0){
 			throw new IOException("labels has to be greather then 0.");
 		}
 		
-		this.labels = labels;
-		labelled = true;
+		setLabels(labels);
 	}
 
 	public int getLabels() {
 		return labels;
 	}
 
-	public void setLabels(int labels) {
+	public void setLabels(int labels) throws IOException {
 		this.labels = labels;
-		labelled = true;
+		this.labelled = true;
 	}
 
 	public boolean isLabelled() {
