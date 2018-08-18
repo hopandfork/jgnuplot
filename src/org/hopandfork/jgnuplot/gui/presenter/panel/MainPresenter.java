@@ -59,6 +59,7 @@ public class MainPresenter {
 		mainPanel.setPreviewPanel(previewPanel);
 		mainPanel.setBottomPanel(bottomPanel);
 		mainPanel.setWindowTitle("JGNUplot");
+		mainPanel.setMainPresenter(this);
 		
 		mainPanel.display();
 	}
